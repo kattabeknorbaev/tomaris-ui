@@ -1,0 +1,100 @@
+import type { Agent } from "@/types";
+
+export const agents: Agent[] = [
+  {
+    id: "study",
+    name: "Study Assistant",
+    description:
+      "Helps students learn, understand concepts, and prepare for exams in Uzbek.",
+    icon: "graduation-cap",
+    category: "Education",
+    systemPrompt:
+      "You are a study assistant helping Uzbek students learn effectively.",
+  },
+  {
+    id: "legal",
+    name: "Legal Assistant",
+    description:
+      "Provides legal information and document assistance for Uzbek law.",
+    icon: "scale",
+    category: "Legal",
+    systemPrompt:
+      "You are a legal assistant specializing in Uzbek law and regulations.",
+  },
+  {
+    id: "business",
+    name: "Business Assistant",
+    description:
+      "Helps with business planning, market analysis, and strategy in Uzbekistan.",
+    icon: "briefcase",
+    category: "Business",
+    systemPrompt:
+      "You are a business assistant helping with Uzbekistan market insights.",
+  },
+  {
+    id: "university",
+    name: "University Assistant",
+    description:
+      "Assists with university applications, research, and academic writing.",
+    icon: "building-columns",
+    category: "Academic",
+    systemPrompt:
+      "You are a university assistant helping with academic tasks in Uzbek.",
+  },
+  {
+    id: "coding",
+    name: "Coding Assistant",
+    description:
+      "Helps write, debug, and explain code with Uzbek language support.",
+    icon: "code",
+    category: "Development",
+    systemPrompt:
+      "You are a coding assistant. Explain concepts clearly in Uzbek when requested.",
+  },
+];
+
+export const suggestedPrompts = [
+  {
+    id: "1",
+    text: "Explain quantum physics in Uzbek",
+    icon: "atom",
+  },
+  {
+    id: "2",
+    text: "Translate this contract to English",
+    icon: "file-text",
+  },
+  {
+    id: "3",
+    text: "Write Python code for a web scraper",
+    icon: "code",
+  },
+  {
+    id: "4",
+    text: "Summarize this document",
+    icon: "file-scan",
+  },
+];
+
+export const mockMessages = [
+  {
+    id: "1",
+    role: "user" as const,
+    content: "O'zbekiston haqida qisqacha ma'lumot bering.",
+    timestamp: new Date(Date.now() - 300000),
+  },
+  {
+    id: "2",
+    role: "assistant" as const,
+    content: `O'zbekiston — Markaziy Osiyoning markazida joylashgan davlat. Poytaxti — Toshkent shahri.
+
+**Asosiy faktlar:**
+- **Aholisi:** 36 milliondan ortiq
+- **Maydoni:** 448,978 km²
+- **Tili:** O'zbek tili (rasmiy)
+- **Valyutasi:** O'zbek so'mi
+
+O'zbekiston boy tarix va madaniyatga ega bo'lib, Ipak yo'li markazlaridan biri hisoblanadi. Mamlakat paxta ishlab chiqarish, oltin qazib olish va IT sohasida faol rivojlanmoqda.`,
+    timestamp: new Date(Date.now() - 280000),
+  },
+];

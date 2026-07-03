@@ -1,0 +1,306 @@
+@import "tailwindcss";
+
+/* ============================================================
+   TOMARIS DESIGN SYSTEM
+   Reference: DESIGN.md
+   ============================================================ */
+
+:root {
+  --canvas: #fafafa;
+  --canvas-soft: #ffffff;
+  --surface-2: #f4f4f5;
+  --surface-3: #e4e4e7;
+  --hairline: #e4e4e7;
+  --hairline-soft: #d4d4d8;
+  --ink: #09090b;
+  --ink-strong: #000000;
+  --body: #71717a;
+  --mute: #a1a1aa;
+  --primary: #0F8F6F;
+  --primary-soft: #12b88a;
+  --primary-deep: #0a6b52;
+  --on-primary: #ffffff;
+  --accent: #C7A96B;
+  --success: #22c55e;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--canvas-soft);
+  --card-foreground: var(--ink);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--body);
+  --border: var(--hairline);
+  --ring: var(--primary);
+  --radius: 8px;
+}
+
+.dark {
+  --canvas: #09090b;
+  --canvas-soft: #111113;
+  --surface-2: #1a1a1e;
+  --surface-3: #222228;
+  --hairline: #27272a;
+  --hairline-soft: #3f3f46;
+  --ink: #fafafa;
+  --ink-strong: #ffffff;
+  --body: #a1a1aa;
+  --mute: #71717a;
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--canvas-soft);
+  --card-foreground: var(--ink);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--body);
+  --border: var(--hairline);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--on-primary);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--ink);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --radius: var(--radius);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-emerald: var(--primary);
+  --color-navy: #0B1120;
+  --color-gold: var(--accent);
+  --color-emerald-dark: var(--primary-deep);
+  --color-emerald-light: var(--primary-soft);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline-soft) transparent;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--hairline-soft); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--mute); }
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+
+.text-display {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.text-heading-1 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.text-heading-2 {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.text-heading-3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.text-eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.text-body-lg {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.text-body {
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+}
+
+.text-body-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.text-caption {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--mute);
+}
+
+/* ============================================================
+   STREAMING CURSOR
+   ============================================================ */
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.streaming-cursor::after {
+  content: "\25ca";
+  animation: blink 1s step-end infinite;
+  color: var(--primary);
+  margin-left: 1px;
+  font-size: 0.8em;
+}
+
+/* ============================================================
+   TYPING DOTS
+   ============================================================ */
+
+@keyframes typing-dot {
+  0%, 60%, 100% { opacity: 0.2; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+
+.typing-dot:nth-child(1) { animation: typing-dot 1.4s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation: typing-dot 1.4s ease-in-out 0.2s infinite; }
+.typing-dot:nth-child(3) { animation: typing-dot 1.4s ease-in-out 0.4s infinite; }
+
+/* ============================================================
+   PROSE (Markdown)
+   ============================================================ */
+
+.prose-tomaris h1, .prose-tomaris h2, .prose-tomaris h3 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+  color: var(--ink);
+}
+
+.prose-tomaris h1 { font-size: 1.375rem; }
+.prose-tomaris h2 { font-size: 1.125rem; }
+.prose-tomaris h3 { font-size: 1rem; }
+
+.prose-tomaris p {
+  margin-bottom: 0.75em;
+  line-height: 1.7;
+  color: var(--body);
+}
+
+.prose-tomaris ul, .prose-tomaris ol {
+  margin-left: 1.25em;
+  margin-bottom: 0.75em;
+}
+
+.prose-tomaris li {
+  margin-bottom: 0.25em;
+  line-height: 1.65;
+  color: var(--body);
+}
+
+.prose-tomaris code {
+  background: var(--surface-2);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.85em;
+  font-family: var(--font-mono), monospace;
+  color: var(--primary-soft);
+}
+
+.prose-tomaris pre {
+  background: var(--canvas-soft);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+  margin-bottom: 1em;
+  font-size: 0.8125rem;
+}
+
+.prose-tomaris pre code {
+  background: transparent;
+  color: var(--ink);
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose-tomaris strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.prose-tomaris blockquote {
+  border-left: 2px solid var(--primary);
+  padding-left: 1em;
+  margin-left: 0;
+  margin-bottom: 0.75em;
+  color: var(--body);
+}
+
+.prose-tomaris a {
+  color: var(--primary-soft);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-tomaris hr {
+  border: none;
+  border-top: 1px solid var(--hairline);
+  margin: 1.5em 0;
+}
+
+/* ============================================================
+   FOCUS
+   ============================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
