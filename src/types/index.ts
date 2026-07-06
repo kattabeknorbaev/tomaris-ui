@@ -3,7 +3,8 @@ export interface Message {
   role: "user" | "assistant";
   content: string;
   reasoning?: string;
-  timestamp: Date;
+  /** ISO 8601 — stored as string so it survives localStorage persistence. */
+  timestamp: string;
   isStreaming?: boolean;
 }
 
@@ -11,8 +12,8 @@ export interface Chat {
   id: string;
   title: string;
   messages: Message[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   model: ModelType;
 }
 

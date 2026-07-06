@@ -5,6 +5,19 @@ const MODEL_NAME = process.env.SERVED_MODEL_NAME || "tomaris";
 
 export const maxDuration = 60;
 
+// Lightweight health check — hits /v1/models instead of running a generation.
+export async function GET() {
+  try {
+    const res = await fetch(`${VAST_API_URL}/v1/models`, {
+      signal: AbortSignal.timeout(5000),
+      cache: "no-store",
+    });
+    return Response.json({ ok: res.ok }, { status: res.ok ? 200 : 502 });
+  } catch {
+    return Response.json({ ok: false }, { status: 502 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { messages } = await req.json();

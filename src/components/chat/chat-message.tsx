@@ -21,7 +21,7 @@ const MarkdownContent = memo(function MarkdownContent({ content }: { content: st
   return <div className="prose-tomaris"><ReactMarkdown>{content}</ReactMarkdown></div>;
 });
 
-export function ChatMessage({ message }: { message: Message }) {
+export const ChatMessage = memo(function ChatMessage({ message }: { message: Message }) {
   const [copied, setCopied] = useState(false);
   const [reaction, setReaction] = useState<"up" | "down" | null>(null);
   const [reasoningOpen, setReasoningOpen] = useState(false);
@@ -93,4 +93,4 @@ export function ChatMessage({ message }: { message: Message }) {
       </div>
     </div>
   );
-}
+});

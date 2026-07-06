@@ -45,7 +45,7 @@ export function ChatSidebar() {
   return (
     <>
       {!sidebarOpen && (
-        <button onClick={toggleSidebar} aria-label="Open sidebar" className="fixed left-3 top-3 z-50 flex h-8 w-8 items-center justify-center rounded-md text-body hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+        <button onClick={toggleSidebar} aria-label="Open sidebar" className="fixed left-3 top-3 z-50 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
           <PanelLeft className="h-4 w-4" />
         </button>
       )}
@@ -58,7 +58,7 @@ export function ChatSidebar() {
             <Image src="/logo.png" alt="Tomaris" width={20} height={20} className="rounded-sm" />
             <span className="text-sm font-semibold text-ink">Tomaris</span>
           </Link>
-          <button onClick={toggleSidebar} aria-label="Close sidebar" className="flex h-7 w-7 items-center justify-center rounded-md text-body hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+          <button onClick={toggleSidebar} aria-label="Close sidebar" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
             <PanelLeftClose className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -74,9 +74,9 @@ export function ChatSidebar() {
             <span className="text-[10px] font-semibold uppercase tracking-widest text-mute">{t.chat.history}</span>
           </div>
           <div className="space-y-px">
-            {chats.length === 0 && <p className="px-2.5 py-4 text-caption text-mute text-center">No chats yet</p>}
+            {chats.length === 0 && <p className="px-2.5 py-4 text-caption text-mute text-center">{t.chat.noChats}</p>}
             {chats.map((chat) => (
-              <div key={chat.id} className={cn("group flex items-center gap-2 rounded-md px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2 text-ink" : "text-body hover:text-ink hover:bg-surface-2")} onClick={() => setActiveChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
+              <div key={chat.id} className={cn("group flex items-center gap-2 rounded-md px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")} onClick={() => setActiveChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
                 <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-40" />
                 {renamingId === chat.id ? (
                   <input ref={renameRef} value={renameValue} onChange={(e) => setRenameValue(e.target.value)} onBlur={handleRenameSubmit} onKeyDown={(e) => { if (e.key === "Enter") handleRenameSubmit(); if (e.key === "Escape") setRenamingId(null); }} className="flex-1 min-w-0 bg-transparent text-[13px] outline-none border-b border-primary" onClick={(e) => e.stopPropagation()} />
@@ -93,11 +93,11 @@ export function ChatSidebar() {
 
         <div className="shrink-0 border-t border-border p-2.5 space-y-px">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className={cn("flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === item.href ? "bg-surface-2 text-ink" : "text-body hover:text-ink hover:bg-surface-2")}>
+            <Link key={item.href} href={item.href} className={cn("flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === item.href ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
               <item.icon className="h-3.5 w-3.5 opacity-50" />{item.label}
             </Link>
           ))}
-          <Link href="/profile" className={cn("flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === "/profile" ? "bg-surface-2 text-ink" : "text-body hover:text-ink hover:bg-surface-2")}>
+          <Link href="/profile" className={cn("flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === "/profile" ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
             <div className="flex h-4 w-4 items-center justify-center rounded-sm bg-primary text-[8px] font-bold text-on-primary">U</div>
             {t.common.profile}
           </Link>

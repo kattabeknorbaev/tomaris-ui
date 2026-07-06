@@ -1,27 +1,15 @@
-"use client";
+import type { Metadata } from "next";
+import { AppShell } from "@/components/chat/app-shell";
 
-import { ChatSidebar } from "@/components/chat/chat-sidebar";
-import { useChatStore } from "@/stores/chat-store";
-import { cn } from "@/lib/utils";
+export const metadata: Metadata = {
+  title: "App",
+  robots: { index: false },
+};
 
 export default function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { sidebarOpen } = useChatStore();
-
-  return (
-    <div className="flex h-screen overflow-hidden">
-      <ChatSidebar />
-      <main
-        className={cn(
-          "flex flex-1 flex-col transition-all duration-200",
-          sidebarOpen ? "md:ml-[260px]" : "ml-0"
-        )}
-      >
-        {children}
-      </main>
-    </div>
-  );
+  return <AppShell>{children}</AppShell>;
 }
