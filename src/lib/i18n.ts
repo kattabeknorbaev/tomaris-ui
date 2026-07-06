@@ -20,8 +20,14 @@ const translations = {
         "Tomaris is the first world-class AI built natively for Uzbek language, culture, and context.",
       cta1: "Try Tomaris",
       cta2: "Join Waitlist",
+      eyebrow: "27B Parameters · Uzbek-Native",
+      statParams: "Parameters",
+      statWords: "Training words",
+      statLanguages: "Languages",
+      statLatency: "Avg latency",
     },
     features: {
+      eyebrow: "Capabilities",
       title: "Built for Uzbek. Built for the World.",
       subtitle:
         "A 27B parameter model trained on 227M words of curated Uzbek data.",
@@ -306,6 +312,7 @@ const translations = {
       errors: "Errors",
     },
     whyTomaris: {
+      eyebrow: "Why Tomaris",
       title: "Not another generic AI model",
       subtitle: "Generic models treat Uzbek as an afterthought. Tomaris was built from the ground up for the Uzbek language.",
       reasons: [
@@ -317,6 +324,7 @@ const translations = {
       ],
     },
     useCases: {
+      eyebrow: "Use Cases",
       title: "Built for every industry",
       education: "Education",
       legal: "Legal",
@@ -335,6 +343,7 @@ const translations = {
       healthcareDesc: "Medical information, appointment scheduling, and health guidance available in Uzbek.",
     },
     comparison: {
+      eyebrow: "Comparison",
       title: "Tomaris vs. Generic AI",
       subtitle: "See how Tomaris compares for Uzbek language tasks.",
       feature: "Feature",
@@ -348,11 +357,15 @@ const translations = {
       good: "Good",
       fair: "Fair",
       freeTier: "Free tier",
+      yes: "Yes",
+      no: "No",
     },
     testimonials: {
+      eyebrow: "Testimonials",
       title: "Trusted by innovators",
     },
     faq: {
+      eyebrow: "FAQ",
       title: "Frequently asked questions",
       items: [
         { q: "What makes Tomaris different from ChatGPT?", a: "Tomaris is built from the ground up for Uzbek language. While ChatGPT supports Uzbek as one of many languages, Tomaris was trained specifically on 227 million words of curated Uzbek data, giving it superior understanding of the language's nuances, cultural context, and idioms." },
@@ -404,8 +417,14 @@ const translations = {
       subheadline: "Tomaris — o'zbek tili, madaniyati va konteksti uchun yaratilgan birinchi jahon darajasidagi AI.",
       cta1: "Tomarisni sinab ko'ring",
       cta2: "Navbatga yoziling",
+      eyebrow: "27B parametr · O'zbek tiliga xos",
+      statParams: "Parametrlar",
+      statWords: "O'quv so'zlari",
+      statLanguages: "Tillar",
+      statLatency: "O'rtacha kechikish",
     },
     features: {
+      eyebrow: "Imkoniyatlar",
       title: "O'zbek uchun yaratilgan. Dunyo uchun yaratilgan.",
       subtitle: "227M so'zlik o'zbek korpusida o'qitilgan 27 milliard parametrli model.",
       items: [
@@ -689,6 +708,7 @@ const translations = {
       errors: "Xatolar",
     },
     whyTomaris: {
+      eyebrow: "Nega Tomaris",
       title: "Yana bir oddiy AI modeli emas",
       subtitle: "Oddiy modellar o'zbek tilini ikkinchi darajali muomala qiladi. Tomaris butunlay o'zbek tili uchun yaratilgan.",
       reasons: [
@@ -700,6 +720,7 @@ const translations = {
       ],
     },
     useCases: {
+      eyebrow: "Foydalanish sohalari",
       title: "Har bir sanoat uchun yaratilgan",
       education: "Ta'lim",
       legal: "Huquq",
@@ -718,6 +739,7 @@ const translations = {
       healthcareDesc: "Tibbiy ma'lumotlar, uchrashuvlarni rejalashtirish va sog'liq bo'yicha maslahatlar o'zbek tilida mavjud.",
     },
     comparison: {
+      eyebrow: "Taqqoslash",
       title: "Tomaris va oddiy AI",
       subtitle: "O'zbek tili vazifalari uchun Tomaris qanday taqqoslanishini ko'ring.",
       feature: "Imkoniyat",
@@ -731,11 +753,15 @@ const translations = {
       good: "Yaxshi",
       fair: "O'rtacha",
       freeTier: "Bepul daraja",
+      yes: "Ha",
+      no: "Yo'q",
     },
     testimonials: {
+      eyebrow: "Fikrlar",
       title: "Innovatorlar tomonidan ishoniladi",
     },
     faq: {
+      eyebrow: "Savol-javob",
       title: "Ko'p beriladigan savollar",
       items: [
         { q: "Tomaris ChatGPT'dan nimasi bilan farq qiladi?", a: "Tomaris butunlay o'zbek tili uchun yaratilgan. ChatGPT o'zbek tilini ko'p tillardan biri sifatida qo'llab-quvvatlasa, Tomaris maxsus 227 million so'zlik o'zbek ma'lumotlari bilan o'qitilgan." },
@@ -787,8 +813,14 @@ const translations = {
       subheadline: "Tomaris — первый мировой ИИ, созданный для узбекского языка, культуры и контекста.",
       cta1: "Попробовать Tomaris",
       cta2: "Присоединиться",
+      eyebrow: "27B параметров · Создан для узбекского",
+      statParams: "Параметры",
+      statWords: "Слов в обучении",
+      statLanguages: "Языки",
+      statLatency: "Средняя задержка",
     },
     features: {
+      eyebrow: "Возможности",
       title: "Создан для Узбекистана. Создан для мира.",
       subtitle: "Модель с 27 млрд параметров, обученная на 227 млн слов узбекского корпуса.",
       items: [
@@ -1072,6 +1104,7 @@ const translations = {
       errors: "Ошибки",
     },
     whyTomaris: {
+      eyebrow: "Почему Tomaris",
       title: "Не очередной ИИ-модель",
       subtitle: "Обычные модели относятся к узбекскому как ко второстепенному. Tomaris создан с нуля для узбекского языка.",
       reasons: [
@@ -1083,6 +1116,7 @@ const translations = {
       ],
     },
     useCases: {
+      eyebrow: "Сценарии использования",
       title: "Создан для каждой отрасли",
       education: "Образование",
       legal: "Юриспруденция",
@@ -1101,6 +1135,7 @@ const translations = {
       healthcareDesc: "Медицинская информация и запись к врачу на узбекском.",
     },
     comparison: {
+      eyebrow: "Сравнение",
       title: "Tomaris vs. Обычный ИИ",
       subtitle: "Сравнение Tomaris для задач на узбекском языке.",
       feature: "Функция",
@@ -1114,11 +1149,15 @@ const translations = {
       good: "Хорошо",
       fair: "Удовлетворительно",
       freeTier: "Бесплатный",
+      yes: "Да",
+      no: "Нет",
     },
     testimonials: {
+      eyebrow: "Отзывы",
       title: "Доверие инноваторов",
     },
     faq: {
+      eyebrow: "Вопросы и ответы",
       title: "Часто задаваемые вопросы",
       items: [
         { q: "Чем Tomaris отличается от ChatGPT?", a: "Tomaris создан с нуля для узбекского языка. ChatGPT поддерживает узбекский как один из многих языков, а Tomaris обучен на 227 миллионах слов узбекских данных." },

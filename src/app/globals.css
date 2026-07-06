@@ -71,7 +71,9 @@
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
+  /* shadcn "accent" = neutral hover surface for menu items etc.
+     Brand gold lives on --color-gold; use text-gold / bg-gold for it. */
+  --color-accent: var(--surface-2);
   --color-accent-foreground: var(--ink);
   --color-border: var(--border);
   --color-ring: var(--ring);
@@ -83,6 +85,13 @@
   --color-gold: var(--accent);
   --color-emerald-dark: var(--primary-deep);
   --color-emerald-light: var(--primary-soft);
+
+  /* shadcn tokens used by the ui/ primitives */
+  --color-popover: var(--card);
+  --color-popover-foreground: var(--ink);
+  --color-input: var(--hairline);
+  --color-destructive: var(--error);
+  --color-destructive-foreground: #ffffff;
 
   /* DESIGN.md token vocabulary — without these, utilities like
      text-ink / bg-surface-2 / text-mute compile to nothing. */

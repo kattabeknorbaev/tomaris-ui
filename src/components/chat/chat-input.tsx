@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Paperclip, Mic, Square, X, FileText, Image as ImageIcon, File } from "lucide-react";
+import { Send, Paperclip, Square, X, FileText, Image as ImageIcon, File } from "lucide-react";
 import { cn, generateId } from "@/lib/utils";
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
@@ -266,13 +266,6 @@ export function ChatInput() {
             className="min-h-[32px] flex-1 resize-none bg-transparent py-1 text-body-sm text-ink outline-none placeholder:text-mute"
           />
           <div className="flex items-center gap-0.5">
-            <button
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-mute hover:text-ink hover:bg-surface-2 transition-colors duration-150"
-              title="Voice"
-              aria-label="Voice input"
-            >
-              <Mic className="h-4 w-4" />
-            </button>
             {isStreaming ? (
               <button
                 onClick={handleStop}
