@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tomaris UI
 
-## Getting Started
+Web platform for **Tomaris** — a 27B-parameter LLM natively optimized for Uzbek language, culture, and context. Marketing site + chat application with streaming responses and reasoning display, in three languages (UZ / EN / RU).
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router) · React 19 · TypeScript
+- **Tailwind CSS v4** — design tokens defined in `src/app/globals.css`, spec in `DESIGN.md`
+- **@base-ui/react** primitives (`src/components/ui/`)
+- **Zustand** (persisted) for chat state
+- Custom cookie-based i18n (`src/lib/i18n.ts`)
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local   # fill in VAST_API_URL
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The chat lives at `/app`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Model backend
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The chat proxies to an OpenAI-compatible vLLM server (`src/app/api/chat/route.ts`):
 
-## Learn More
+- `VAST_API_URL` — host:port of the running vLLM instance (Vast.ai). **This IP changes when the instance restarts** — update it in Vercel env vars too.
+- `SERVED_MODEL_NAME` — defaults to `tomaris`.
 
-To learn more about Next.js, take a look at the following resources:
+See `vast-setup.sh` for the inference server setup. If the model server is unreachable, the chat falls back to demo responses and shows a banner.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> ⚠️ The streaming parser accepts both `delta.reasoning` and `delta.reasoning_content` — different vLLM builds emit different field names. Keep both.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deployed on Vercel from the `main` branch. Only `VAST_API_URL` and `SERVED_MODEL_NAME` need to be set as environment variables.
