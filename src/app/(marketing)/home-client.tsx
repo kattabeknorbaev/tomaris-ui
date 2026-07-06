@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   Zap,
@@ -17,8 +18,19 @@ import {
   Send,
 } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
+import { EASE } from "@/lib/motion";
 
 const featureIcons = [Languages, Zap, Bot, Shield, Eye, Code2];
+
+// Hero entrance — staggered fade-up, each element ≤300ms per DESIGN.md.
+const heroContainer = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
+};
+const heroItem = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE } },
+};
 
 export default function HomePage() {
   const { t } = useI18n();
@@ -52,43 +64,70 @@ export default function HomePage() {
       <main id="main">
         {/* ===== HERO ===== */}
         <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28">
-          <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
-            <p className="text-eyebrow mb-5">{t.hero.eyebrow}</p>
-            <h1 className="text-display">{t.hero.headline}</h1>
-            <p className="mt-5 text-body-lg text-muted-foreground max-w-xl mx-auto">{t.hero.subheadline}</p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/app" className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary hover:bg-primary-deep transition-colors duration-150">
-                {t.hero.cta1} <ArrowRight className="h-3.5 w-3.5" />
+          <div className="hero-backdrop" aria-hidden="true" />
+          <motion.div
+            variants={heroContainer}
+            initial="hidden"
+            animate="visible"
+            className="relative mx-auto max-w-3xl px-5 text-center sm:px-8"
+          >
+            <motion.div variants={heroItem} className="mb-6 flex justify-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-3.5 py-1.5 text-[13px] font-medium text-primary-soft">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                </span>
+                {t.hero.eyebrow}
+              </span>
+            </motion.div>
+            <motion.h1 variants={heroItem} className="text-display text-ink-strong">
+              {t.hero.headline}
+            </motion.h1>
+            <motion.p variants={heroItem} className="mt-5 text-body-lg text-muted-foreground max-w-xl mx-auto">
+              {t.hero.subheadline}
+            </motion.p>
+            <motion.div variants={heroItem} className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link href="/app" className="btn-lift inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary shadow-[0_4px_16px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
+                {t.hero.cta1} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
-              <Link href="/waitlist" className="inline-flex h-11 items-center gap-2 rounded-md border border-border px-5 text-sm font-semibold text-ink hover:bg-surface-2 transition-colors duration-150">
+              <Link href="/waitlist" className="btn-lift inline-flex h-11 items-center gap-2 rounded-md border border-border bg-card px-5 text-sm font-semibold text-ink hover:border-hairline-soft hover:bg-surface-2">
                 {t.hero.cta2}
               </Link>
-            </div>
+            </motion.div>
 
             {/* Stats */}
-            <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-lg overflow-hidden border border-border">
+            <motion.div
+              variants={heroItem}
+              className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-xl overflow-hidden border border-border bg-border"
+            >
               {[
                 { value: "27B", label: t.hero.statParams },
                 { value: "227M", label: t.hero.statWords },
                 { value: "3", label: t.hero.statLanguages },
                 { value: "<200ms", label: t.hero.statLatency },
               ].map((s) => (
-                <div key={s.label} className="bg-card px-4 py-4 text-center">
-                  <div className="font-mono text-lg font-semibold text-ink">{s.value}</div>
-                  <div className="text-caption mt-0.5">{s.label}</div>
+                <div key={s.label} className="group bg-card px-4 py-5 text-center transition-colors duration-200 hover:bg-surface-2">
+                  <div className="font-mono text-xl font-semibold text-ink-strong transition-colors group-hover:text-primary">{s.value}</div>
+                  <div className="text-caption mt-1">{s.label}</div>
                 </div>
               ))}
-            </div>
+            </motion.div>
 
             {/* Chat mock */}
-            <div className="mt-12 rounded-lg border border-border bg-card text-left overflow-hidden">
+            <motion.div
+              variants={heroItem}
+              className="mt-12 rounded-xl border border-border bg-card text-left overflow-hidden shadow-[var(--shadow-lg)]"
+            >
               <div className="flex items-center gap-2 border-b border-border px-4 py-2.5">
                 <div className="flex gap-1.5">
-                  <div className="h-2 w-2 rounded-full bg-[#ff5f57]" />
-                  <div className="h-2 w-2 rounded-full bg-[#febc2e]" />
-                  <div className="h-2 w-2 rounded-full bg-[#28c840]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+                  <div className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
                 </div>
-                <span className="text-caption ml-2">Tomaris AI</span>
+                <span className="text-caption ml-2 flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  Tomaris AI
+                </span>
               </div>
               <div className="p-4 space-y-3">
                 <div className="flex justify-end">
@@ -109,11 +148,13 @@ export default function HomePage() {
               <div className="border-t border-border px-4 py-2.5">
                 <div className="flex items-center gap-2 rounded-md border border-border bg-canvas-soft px-3 py-2 text-body-sm text-mute">
                   <span className="flex-1">{t.chat.placeholder}</span>
-                  <Send className="h-3.5 w-3.5" />
+                  <span className="flex h-6 w-6 items-center justify-center rounded bg-primary text-on-primary">
+                    <Send className="h-3 w-3" aria-hidden="true" />
+                  </span>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </section>
 
         {/* ===== FEATURES ===== */}
@@ -128,11 +169,11 @@ export default function HomePage() {
               {t.features.items.map((f, i) => {
                 const Icon = featureIcons[i] || Zap;
                 return (
-                  <div key={f.title} className="rounded-lg border border-border bg-card p-6 hover:border-hairline-soft transition-colors duration-150">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
-                      <Icon className="h-4 w-4" />
+                  <div key={f.title} className="card-lift group rounded-xl border border-border bg-card p-6">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-on-primary">
+                      <Icon className="h-5 w-5" aria-hidden="true" />
                     </div>
-                    <h3 className="mt-3 text-heading-3">{f.title}</h3>
+                    <h3 className="mt-4 text-heading-3">{f.title}</h3>
                     <p className="mt-1.5 text-body-sm text-muted-foreground leading-relaxed">{f.desc}</p>
                   </div>
                 );

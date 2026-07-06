@@ -324,6 +324,92 @@ body {
 }
 
 /* ============================================================
+   ELEVATION (DESIGN.md — hairlines first, shadows sparing)
+   ============================================================ */
+
+:root {
+  --shadow-sm: 0 1px 2px rgba(9, 9, 11, 0.04);
+  --shadow-md: 0 4px 14px rgba(9, 9, 11, 0.08);
+  --shadow-lg: 0 12px 32px rgba(9, 9, 11, 0.12);
+}
+
+.dark {
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* ============================================================
+   PREMIUM MICROINTERACTIONS
+   ============================================================ */
+
+/* Card: hairline brightens + gentle lift on hover. */
+.card-lift {
+  transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
+    border-color 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  border-color: var(--hairline-soft);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Button/link: subtle lift on hover, press on active. */
+.btn-lift {
+  transition: transform 0.15s cubic-bezier(0.25, 0.1, 0.25, 1),
+    background-color 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-lift:hover {
+  transform: translateY(-1px);
+}
+.btn-lift:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ============================================================
+   HERO BACKDROP (static, CSS-only — no canvas/animation)
+   ============================================================ */
+
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Faint emerald wash from the top — reads engineered, not "AI gradient". */
+.hero-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    60% 42% at 50% -8%,
+    rgba(15, 143, 111, 0.1),
+    transparent 70%
+  );
+}
+/* Hairline grid that fades out toward the content. */
+.hero-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(var(--hairline) 1px, transparent 1px),
+    linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 75% 55% at 50% 0%,
+    #000 0%,
+    transparent 72%
+  );
+  mask-image: radial-gradient(
+    ellipse 75% 55% at 50% 0%,
+    #000 0%,
+    transparent 72%
+  );
+  opacity: 0.6;
+}
+
+/* ============================================================
    DECORATIVE
    ============================================================ */
 
