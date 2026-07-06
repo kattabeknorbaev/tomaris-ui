@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { motion } from "framer-motion";
-import { Mic, Square, Play } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { Mic, Square } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
 
 export default function VoicePage() {
@@ -10,6 +10,7 @@ export default function VoicePage() {
   const [hasRecording, setHasRecording] = useState(false);
   const [language, setLanguage] = useState("uz");
   const { t } = useI18n();
+  const reducedMotion = useReducedMotion();
 
   // Pre-compute deterministic wave heights to avoid Math.random in render
   const waveHeights = useMemo(
@@ -70,18 +71,18 @@ export default function VoicePage() {
         >
           {/* Mic Button */}
           <div className="relative">
-            {recording && (
+            {recording && !reducedMotion && (
               <>
-                <div className="absolute inset-0 -m-4 rounded-full bg-primary/20 pulse-ring" />
-                <div className="absolute inset-0 -m-8 rounded-full bg-primary/10 pulse-ring" />
+                <div className="absolute inset-0 -m-4 animate-ping rounded-full bg-primary/20 [animation-duration:2s]" aria-hidden="true" />
+                <div className="absolute inset-0 -m-8 animate-ping rounded-full bg-primary/10 [animation-duration:2.5s]" aria-hidden="true" />
               </>
             )}
             <button
               onClick={handleRecord}
               className={`relative flex h-24 w-24 items-center justify-center rounded-full transition-all ${
                 recording
-                  ? "bg-red-500 text-white shadow-lg shadow-red-500/30"
-                  : "bg-primary text-primary-foreground shadow-lg shadow-primary/30 hover:bg-emerald-dark"
+                  ? "bg-error text-white shadow-lg shadow-error/30"
+                  : "bg-primary text-on-primary shadow-lg shadow-primary/30 hover:bg-primary-deep"
               }`}
               aria-label={recording ? "Stop recording" : "Start recording"}
             >
@@ -112,7 +113,8 @@ export default function VoicePage() {
                 <motion.div
                   key={i}
                   className="w-1 bg-primary rounded-full"
-                  animate={{ height: heights }}
+                  style={reducedMotion ? { height: heights[1] } : undefined}
+                  animate={reducedMotion ? undefined : { height: heights }}
                   transition={{
                     duration: 1.2,
                     repeat: Infinity,
@@ -154,10 +156,6 @@ export default function VoicePage() {
                   36 milliondan ortiq. O&apos;zbekiston Markaziy Osiyoning eng
                   ko&apos;p aholisi yashaydigan mamlakatlaridan biri hisoblanadi.
                 </p>
-                <button className="mt-3 flex items-center gap-1.5 text-xs text-primary">
-                  <Play className="h-3 w-3" />
-                  {t.voicePage.playAudio}
-                </button>
               </div>
             </motion.div>
           )}
