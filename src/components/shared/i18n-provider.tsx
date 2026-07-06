@@ -28,6 +28,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     );
     if (cookie) {
       const val = cookie.split("=")[1].trim() as Locale;
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time cookie read after mount; SSR must render the default locale to avoid a hydration mismatch
       if (val in translations) setLocaleState(val);
     }
   }, []);
