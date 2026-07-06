@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Send, Paperclip, Mic, Square, X, FileText, Image as ImageIcon, File } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 
@@ -19,6 +19,8 @@ const MOCK_RESPONSES = [
   "Albatta! Keling, bu masalani birga ko'rib chiqaylik.\n\n1. **Tushunish** — avval muammoni yaxshi tushunish kerak\n2. **Rejalashtirish** — eng yaxshi yechimni tanlash\n3. **Amalga oshirish** — qadamlarni bajaratish",
   "O'zbekiston — Markaziy Osiyoning eng qiziqarli mamlakatlaridan biri. Boy tarixi, go'zal tabiati va mehmondo'st xalqi bilan ajralib turadi.\n\n```python\nmamlakat = {\n    'nomi': \"O'zbekiston\",\n    'poytaxti': 'Toshkent',\n    'aholisi': 36_000_000\n}\n```",
 ];
+
+const TEXTAREA_MAX_HEIGHT = 200;
 
 function getFileIcon(type: string) {
   if (type.startsWith("image/")) return ImageIcon;
@@ -40,23 +42,23 @@ export function ChatInput() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const { activeChatId, addMessage, createChat, updateMessage, updateMessageReasoning } = useChatStore();
+  const activeChatId = useChatStore((s) => s.activeChatId);
+  const addMessage = useChatStore((s) => s.addMessage);
+  const createChat = useChatStore((s) => s.createChat);
+  const patchMessage = useChatStore((s) => s.patchMessage);
   const { t } = useI18n();
 
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 200) + "px";
+      textareaRef.current.style.height =
+        Math.min(textareaRef.current.scrollHeight, TEXTAREA_MAX_HEIGHT) + "px";
     }
   }, [input]);
 
-  // Check API health on mount
+  // Check API health on mount (GET hits /v1/models upstream — no generation cost)
   useEffect(() => {
-    fetch("/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: [{ role: "user", content: "ping" }] }),
-    })
+    fetch("/api/chat")
       .then((r) => setApiStatus(r.ok ? "ok" : "error"))
       .catch(() => setApiStatus("error"));
   }, []);
@@ -65,7 +67,7 @@ export function ChatInput() {
     const files = e.target.files;
     if (!files) return;
     const newAttachments: Attachment[] = Array.from(files).map((file) => ({
-      id: Math.random().toString(36).slice(2),
+      id: generateId(),
       name: file.name,
       type: file.type,
       size: file.size,
@@ -123,15 +125,16 @@ export function ChatInput() {
             try {
               const parsed = JSON.parse(data);
               const delta = parsed.choices?.[0]?.delta || {};
+              // Different vLLM builds emit `reasoning` or `reasoning_content` — keep both.
               const reasoningChunk = delta.reasoning_content || delta.reasoning || "";
               const token = delta.content || "";
               if (reasoningChunk) {
                 fullReasoning += reasoningChunk;
-                updateMessageReasoning(chatId, assistantMsgId, fullReasoning);
+                patchMessage(chatId, assistantMsgId, { reasoning: fullReasoning });
               }
               if (token) {
                 fullContent += token;
-                updateMessage(chatId, assistantMsgId, fullContent);
+                patchMessage(chatId, assistantMsgId, { content: fullContent });
               }
             } catch {}
           }
@@ -146,27 +149,16 @@ export function ChatInput() {
         let charIndex = 0;
         const interval = setInterval(() => {
           charIndex += Math.floor(Math.random() * 4) + 2;
-          updateMessage(chatId, assistantMsgId, mock.slice(0, charIndex));
+          patchMessage(chatId, assistantMsgId, { content: mock.slice(0, charIndex) });
           if (charIndex >= mock.length) clearInterval(interval);
         }, 30);
         await new Promise((resolve) => setTimeout(resolve, mock.length * 60));
       } finally {
         setIsStreaming(false);
-        useChatStore.setState((s) => ({
-          chats: s.chats.map((c) =>
-            c.id === chatId
-              ? {
-                  ...c,
-                  messages: c.messages.map((m) =>
-                    m.id === assistantMsgId ? { ...m, isStreaming: false } : m
-                  ),
-                }
-              : c
-          ),
-        }));
+        patchMessage(chatId, assistantMsgId, { isStreaming: false });
       }
     },
-    [updateMessage, updateMessageReasoning]
+    [patchMessage]
   );
 
   const handleSend = useCallback(() => {
@@ -183,17 +175,15 @@ export function ChatInput() {
     }
 
     addMessage(chatId, { role: "user", content: messageContent });
-    addMessage(chatId, { role: "assistant", content: "", isStreaming: true });
+    const assistantMsgId = addMessage(chatId, {
+      role: "assistant",
+      content: "",
+      isStreaming: true,
+    });
     setInput("");
     setAttachments([]);
     setIsStreaming(true);
-
-    // Get the assistant message ID we just created
-    const state = useChatStore.getState();
-    const chat = state.chats.find((c) => c.id === chatId);
-    const assistantMsgId = chat?.messages[chat.messages.length - 1]?.id;
-    if (assistantMsgId) streamResponse(chatId, assistantMsgId);
-    else setIsStreaming(false);
+    streamResponse(chatId, assistantMsgId);
   }, [input, attachments, isStreaming, activeChatId, addMessage, createChat, streamResponse]);
 
   const handleKeyDown = useCallback(
@@ -218,7 +208,7 @@ export function ChatInput() {
         {apiStatus === "error" && (
           <div className="mb-2 rounded-md bg-warning/10 border border-warning/20 px-3 py-1.5 text-caption flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-warning shrink-0" />
-            AI model not connected — using demo responses
+            {t.chat.demoBanner}
           </div>
         )}
 
@@ -272,7 +262,8 @@ export function ChatInput() {
             onKeyDown={handleKeyDown}
             placeholder={t.chat.placeholder}
             rows={1}
-            className="max-h-[200px] min-h-[32px] flex-1 resize-none bg-transparent py-1 text-body-sm text-ink outline-none placeholder:text-mute"
+            style={{ maxHeight: TEXTAREA_MAX_HEIGHT }}
+            className="min-h-[32px] flex-1 resize-none bg-transparent py-1 text-body-sm text-ink outline-none placeholder:text-mute"
           />
           <div className="flex items-center gap-0.5">
             <button
@@ -310,7 +301,7 @@ export function ChatInput() {
           </div>
         </div>
         <p className="mt-2 text-center text-[11px] text-mute">
-          Tomaris can make mistakes. Check important information.
+          {t.chat.disclaimer}
         </p>
       </div>
     </div>

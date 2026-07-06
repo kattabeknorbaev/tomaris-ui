@@ -76,25 +76,3 @@ export const suggestedPrompts = [
   },
 ];
 
-export const mockMessages = [
-  {
-    id: "1",
-    role: "user" as const,
-    content: "O'zbekiston haqida qisqacha ma'lumot bering.",
-    timestamp: new Date(Date.now() - 300000),
-  },
-  {
-    id: "2",
-    role: "assistant" as const,
-    content: `O'zbekiston — Markaziy Osiyoning markazida joylashgan davlat. Poytaxti — Toshkent shahri.
-
-**Asosiy faktlar:**
-- **Aholisi:** 36 milliondan ortiq
-- **Maydoni:** 448,978 km²
-- **Tili:** O'zbek tili (rasmiy)
-- **Valyutasi:** O'zbek so'mi
-
-O'zbekiston boy tarix va madaniyatga ega bo'lib, Ipak yo'li markazlaridan biri hisoblanadi. Mamlakat paxta ishlab chiqarish, oltin qazib olish va IT sohasida faol rivojlanmoqda.`,
-    timestamp: new Date(Date.now() - 280000),
-  },
-];

@@ -5,16 +5,21 @@ import { ChatMessage } from "@/components/chat/chat-message";
 import { ChatInput } from "@/components/chat/chat-input";
 import { ModelSelector } from "@/components/chat/model-selector";
 import { WelcomeScreen } from "@/components/chat/welcome-screen";
-import { Search, MoreHorizontal, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { useI18n } from "@/components/shared/i18n-provider";
 import { useEffect, useRef } from "react";
 
 export default function AppPage() {
-  const { chats, activeChatId } = useChatStore();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const activeChat = useChatStore((s) =>
+    s.chats.find((c) => c.id === s.activeChatId)
+  );
+  const createChat = useChatStore((s) => s.createChat);
+  const { t } = useI18n();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollRef = useRef(true);
-  const activeChat = chats.find((c) => c.id === activeChatId);
+  const scrollRafRef = useRef<number | null>(null);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -27,11 +32,27 @@ export default function AppPage() {
     return () => container.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const lastMessage = activeChat?.messages[activeChat.messages.length - 1];
+
+  // Follow the stream: throttled to one scroll per frame, instant (not smooth)
+  // so per-token updates don't queue competing smooth animations.
   useEffect(() => {
-    if (autoScrollRef.current) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [activeChat?.messages?.length, activeChat?.messages?.[activeChat.messages.length - 1]?.content]);
+    if (!autoScrollRef.current) return;
+    if (scrollRafRef.current !== null) return;
+    scrollRafRef.current = requestAnimationFrame(() => {
+      scrollRafRef.current = null;
+      const container = scrollContainerRef.current;
+      if (container && autoScrollRef.current) {
+        container.scrollTop = container.scrollHeight;
+      }
+    });
+  }, [activeChat?.messages.length, lastMessage?.content, lastMessage?.reasoning]);
+
+  useEffect(() => {
+    return () => {
+      if (scrollRafRef.current !== null) cancelAnimationFrame(scrollRafRef.current);
+    };
+  }, []);
 
   const hasMessages = activeChat && activeChat.messages.length > 0;
 
@@ -41,12 +62,7 @@ export default function AppPage() {
         <ModelSelector />
         <div className="flex items-center gap-1">
           <LanguageSwitcher />
-          <button className="flex h-7 w-7 items-center justify-center rounded-md text-body hover:bg-surface-2 hover:text-ink transition-colors duration-150" aria-label="Search">
-            <Search className="h-3.5 w-3.5" />
-          </button>
-          <button className="flex h-7 w-7 items-center justify-center rounded-md text-body hover:bg-surface-2 hover:text-ink transition-colors duration-150" aria-label="More options">
-            <MoreHorizontal className="h-3.5 w-3.5" />
-          </button>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -56,23 +72,22 @@ export default function AppPage() {
             {activeChat.messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
-            <div ref={messagesEndRef} />
           </div>
         </div>
       ) : activeChat ? (
         <WelcomeScreen />
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center px-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted text-muted-foreground mb-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-2 text-mute mb-4">
             <MessageSquare className="h-5 w-5" />
           </div>
-          <h2 className="text-sm font-medium mb-1">No chat selected</h2>
-          <p className="text-xs text-muted-foreground mb-4">Create a new chat to get started</p>
+          <h2 className="text-body-sm font-medium mb-1">{t.chat.noChatSelected}</h2>
+          <p className="text-caption mb-4">{t.chat.noChatDesc}</p>
           <button
-            onClick={() => useChatStore.getState().createChat()}
-            className="rounded-md bg-foreground px-4 py-2 text-sm font-medium text-background hover:bg-foreground/90 transition-colors"
+            onClick={() => createChat()}
+            className="rounded-md bg-primary px-4 py-2 text-body-sm font-medium text-on-primary hover:bg-primary-deep active:scale-[0.98] transition-all duration-150"
           >
-            New Chat
+            {t.chat.newChat}
           </button>
         </div>
       )}

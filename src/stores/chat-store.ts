@@ -1,9 +1,25 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Chat, Message, ModelType } from "@/types";
+import { generateId } from "@/lib/utils";
 
-function generateId(): string {
-  return Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+function now(): string {
+  return new Date().toISOString();
+}
+
+const CHAT_TITLE_MAX_LENGTH = 50;
+
+/**
+ * A reload mid-stream persists messages stuck with isStreaming: true.
+ * Drop empty ones and clear the flag on the rest when rehydrating.
+ */
+function sanitizeChats(chats: Chat[]): Chat[] {
+  return chats.map((chat) => ({
+    ...chat,
+    messages: chat.messages
+      .filter((m) => m.content || m.reasoning || !m.isStreaming)
+      .map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)),
+  }));
 }
 
 interface ChatState {
@@ -16,13 +32,16 @@ interface ChatState {
   deleteChat: (id: string) => void;
   renameChat: (id: string, title: string) => void;
   setActiveChat: (id: string) => void;
-  addMessage: (chatId: string, message: Omit<Message, "id" | "timestamp">) => void;
-  updateMessage: (chatId: string, messageId: string, content: string) => void;
-  updateMessageReasoning: (chatId: string, messageId: string, reasoning: string) => void;
+  /** Returns the id of the newly created message. */
+  addMessage: (chatId: string, message: Omit<Message, "id" | "timestamp">) => string;
+  patchMessage: (
+    chatId: string,
+    messageId: string,
+    patch: Partial<Omit<Message, "id">>
+  ) => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
   setModel: (model: ModelType) => void;
-  getActiveChat: () => Chat | undefined;
   clearAllChats: () => void;
 }
 
@@ -40,8 +59,8 @@ export const useChatStore = create<ChatState>()(
           id,
           title: "New Chat",
           messages: [],
-          createdAt: new Date().toISOString() as unknown as Date,
-          updatedAt: new Date().toISOString() as unknown as Date,
+          createdAt: now(),
+          updatedAt: now(),
           model: get().model,
         };
         set((state) => ({
@@ -66,60 +85,41 @@ export const useChatStore = create<ChatState>()(
 
       renameChat: (id: string, title: string) => {
         set((state) => ({
-          chats: state.chats.map((c) =>
-            c.id === id ? { ...c, title } : c
-          ),
+          chats: state.chats.map((c) => (c.id === id ? { ...c, title } : c)),
         }));
       },
 
       setActiveChat: (id: string) => set({ activeChatId: id }),
 
       addMessage: (chatId, message) => {
-        const msg: Message = {
-          ...message,
-          id: generateId(),
-          timestamp: new Date().toISOString() as unknown as Date,
-        };
+        const id = generateId();
+        const msg: Message = { ...message, id, timestamp: now() };
         set((state) => ({
           chats: state.chats.map((chat) =>
             chat.id === chatId
               ? {
                   ...chat,
                   messages: [...chat.messages, msg],
-                  updatedAt: new Date().toISOString() as unknown as Date,
+                  updatedAt: now(),
                   title:
                     chat.messages.length === 0 && message.role === "user"
-                      ? message.content.slice(0, 50)
+                      ? message.content.slice(0, CHAT_TITLE_MAX_LENGTH)
                       : chat.title,
                 }
               : chat
           ),
         }));
+        return id;
       },
 
-      updateMessage: (chatId, messageId, content) => {
+      patchMessage: (chatId, messageId, patch) => {
         set((state) => ({
           chats: state.chats.map((chat) =>
             chat.id === chatId
               ? {
                   ...chat,
                   messages: chat.messages.map((msg) =>
-                    msg.id === messageId ? { ...msg, content } : msg
-                  ),
-                }
-              : chat
-          ),
-        }));
-      },
-
-      updateMessageReasoning: (chatId, messageId, reasoning) => {
-        set((state) => ({
-          chats: state.chats.map((chat) =>
-            chat.id === chatId
-              ? {
-                  ...chat,
-                  messages: chat.messages.map((msg) =>
-                    msg.id === messageId ? { ...msg, reasoning } : msg
+                    msg.id === messageId ? { ...msg, ...patch } : msg
                   ),
                 }
               : chat
@@ -131,15 +131,16 @@ export const useChatStore = create<ChatState>()(
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
       setModel: (model: ModelType) => set({ model }),
 
-      getActiveChat: () => {
-        const state = get();
-        return state.chats.find((c) => c.id === state.activeChatId);
-      },
-
       clearAllChats: () => set({ chats: [], activeChatId: null }),
     }),
     {
       name: "tomaris-chat-storage",
+      version: 1,
+      migrate: (persisted) => persisted as ChatState,
+      merge: (persisted, current) => {
+        const p = (persisted ?? {}) as Partial<ChatState>;
+        return { ...current, ...p, chats: sanitizeChats(p.chats ?? []) };
+      },
       partialize: (state) => ({
         chats: state.chats,
         activeChatId: state.activeChatId,
