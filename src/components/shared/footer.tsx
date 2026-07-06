@@ -16,32 +16,32 @@ export function Footer() {
               <Image src="/logo.png" alt="Tomaris" width={22} height={22} className="rounded-sm" />
               <span className="text-sm font-semibold text-ink">Tomaris</span>
             </Link>
-            <p className="mt-4 text-body-sm text-body leading-relaxed max-w-xs">{t.footer.description}</p>
+            <p className="mt-4 text-body-sm text-muted-foreground leading-relaxed max-w-xs">{t.footer.description}</p>
           </div>
           <div>
-            <h4 className="text-caption font-semibold text-body uppercase tracking-wider mb-3">{t.footer.product}</h4>
+            <h4 className="text-caption font-semibold text-muted-foreground uppercase tracking-wider mb-3">{t.footer.product}</h4>
             <ul className="space-y-2">
-              <li><Link href="/#features" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.features}</Link></li>
-              <li><Link href="/pricing" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.pricing}</Link></li>
-              <li><Link href="#" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.apiDocs}</Link></li>
-              <li><Link href="#" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.changelog}</Link></li>
+              <li><Link href="/#features" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.features}</Link></li>
+              <li><Link href="/pricing" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.pricing}</Link></li>
+              <li><Link href="#" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.apiDocs}</Link></li>
+              <li><Link href="#" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.changelog}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-caption font-semibold text-body uppercase tracking-wider mb-3">{t.footer.company}</h4>
+            <h4 className="text-caption font-semibold text-muted-foreground uppercase tracking-wider mb-3">{t.footer.company}</h4>
             <ul className="space-y-2">
-              <li><Link href="/about" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.about}</Link></li>
-              <li><Link href="/blog" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.blog}</Link></li>
-              <li><Link href="#" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.careers}</Link></li>
-              <li><Link href="/contact" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.contact}</Link></li>
+              <li><Link href="/about" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.about}</Link></li>
+              <li><Link href="/blog" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.blog}</Link></li>
+              <li><Link href="#" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.careers}</Link></li>
+              <li><Link href="/contact" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.contact}</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-caption font-semibold text-body uppercase tracking-wider mb-3">{t.footer.legal}</h4>
+            <h4 className="text-caption font-semibold text-muted-foreground uppercase tracking-wider mb-3">{t.footer.legal}</h4>
             <ul className="space-y-2">
-              <li><Link href="/security" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.privacy}</Link></li>
-              <li><Link href="#" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.terms}</Link></li>
-              <li><Link href="/security" className="text-body-sm text-body hover:text-ink transition-colors duration-150">{t.footer.security}</Link></li>
+              <li><Link href="/security" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.privacy}</Link></li>
+              <li><Link href="#" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.terms}</Link></li>
+              <li><Link href="/security" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.security}</Link></li>
             </ul>
           </div>
         </div>
