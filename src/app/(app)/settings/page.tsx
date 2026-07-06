@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 import { Globe, Moon, Sun, Bell, Shield, Trash2, Download } from "lucide-react";
 import { useTheme } from "next-themes";
+import { toast } from "sonner";
 import { useI18n } from "@/components/shared/i18n-provider";
+import { useChatStore } from "@/stores/chat-store";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -24,6 +26,31 @@ export default function SettingsPage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
+  const exportData = () => {
+    const data = {
+      exportedAt: new Date().toISOString(),
+      chats: useChatStore.getState().chats,
+      settings: { notifications, locale, theme },
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tomaris-export.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const clearData = () => {
+    if (!window.confirm(t.settingsPage.deleteConfirm)) return;
+    useChatStore.getState().clearAllChats();
+    localStorage.removeItem("tomaris-notifications");
+    setNotifications({ email: true, push: false, marketing: false });
+    toast.success(t.settingsPage.dataCleared);
+  };
+
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="mx-auto max-w-xl px-4 py-8">
@@ -33,7 +60,7 @@ export default function SettingsPage() {
         </div>
 
         {saved && (
-          <div className="mb-4 rounded-md bg-primary/10 px-3 py-2 text-sm text-primary">Settings saved</div>
+          <div className="mb-4 rounded-md bg-primary/10 px-3 py-2 text-sm text-primary" role="status">{t.settingsPage.saved}</div>
         )}
 
         <div className="space-y-4">
@@ -98,17 +125,17 @@ export default function SettingsPage() {
               <span className="text-sm font-medium">{t.settingsPage.privacyData}</span>
             </div>
             <div className="space-y-2">
-              <button className="flex w-full items-center gap-2 rounded-md border border-border px-3 py-2 text-sm hover:bg-muted transition-colors">
-                <Download className="h-4 w-4 text-muted-foreground" />
+              <button onClick={exportData} className="flex w-full items-center gap-2 rounded-md border border-border px-3 py-2 text-sm hover:bg-muted transition-colors">
+                <Download className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                 <div className="text-left">
                   <div className="font-medium">{t.settingsPage.exportData}</div>
                   <div className="text-xs text-muted-foreground">{t.settingsPage.exportDesc}</div>
                 </div>
               </button>
-              <button className="flex w-full items-center gap-2 rounded-md border border-red-500/20 px-3 py-2 text-sm hover:bg-red-500/5 transition-colors">
-                <Trash2 className="h-4 w-4 text-red-400" />
+              <button onClick={clearData} className="flex w-full items-center gap-2 rounded-md border border-error/20 px-3 py-2 text-sm hover:bg-error/5 transition-colors">
+                <Trash2 className="h-4 w-4 text-error" aria-hidden="true" />
                 <div className="text-left">
-                  <div className="font-medium text-red-400">{t.settingsPage.deleteAccount}</div>
+                  <div className="font-medium text-error">{t.settingsPage.deleteAccount}</div>
                   <div className="text-xs text-muted-foreground">{t.settingsPage.deleteDesc}</div>
                 </div>
               </button>

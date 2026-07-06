@@ -38,6 +38,10 @@ const modelHealth = [
   { model: "Tomaris Code", uptime: "99.95%", latency: "210ms", errors: "0.05%" },
 ];
 
+// Scale bars against the largest value so the chart never overflows.
+const maxUsers = Math.max(...dailyData.map((d) => d.users));
+const maxChats = Math.max(...dailyData.map((d) => d.chats));
+
 export default function AdminPage() {
   const { t } = useI18n();
 
@@ -61,6 +65,8 @@ export default function AdminPage() {
       value: "187ms",
       change: "-5.3%",
       trend: "down" as const,
+      // Latency going down is an improvement.
+      good: true,
       icon: Clock,
     },
     {
@@ -116,13 +122,13 @@ export default function AdminPage() {
                 </div>
                 <div
                   className={`flex items-center gap-1 text-xs font-medium ${
-                    stat.trend === "up" ? "text-primary" : "text-red-400"
+                    stat.trend === "up" || ("good" in stat && stat.good) ? "text-primary" : "text-error"
                   }`}
                 >
                   {stat.trend === "up" ? (
-                    <ArrowUpRight className="h-3 w-3" />
+                    <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
                   ) : (
-                    <ArrowDownRight className="h-3 w-3" />
+                    <ArrowDownRight className="h-3 w-3" aria-hidden="true" />
                   )}
                   {stat.change}
                 </div>
@@ -164,7 +170,7 @@ export default function AdminPage() {
                     <div
                       className="flex-1 rounded-t-sm bg-primary/30"
                       style={{
-                        height: `${(day.users / 3000) * 100}%`,
+                        height: `${(day.users / maxUsers) * 100}%`,
                       }}
                     >
                       <div className="h-full w-full bg-primary opacity-70 rounded-t-sm" />
@@ -172,7 +178,7 @@ export default function AdminPage() {
                     <div
                       className="flex-1 rounded-t-sm bg-gold/30"
                       style={{
-                        height: `${(day.chats / 20000) * 100}%`,
+                        height: `${(day.chats / maxChats) * 100}%`,
                       }}
                     >
                       <div className="h-full w-full bg-gold opacity-70 rounded-t-sm" />
@@ -235,18 +241,15 @@ export default function AdminPage() {
         >
           <div className="flex items-center justify-between border-b border-border p-4">
             <h2 className="font-semibold">{t.adminPage.recentActivity}</h2>
-            <button className="text-sm text-primary hover:underline">
-              {t.adminPage.viewAll}
-            </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-border text-xs text-muted-foreground">
-                  <th className="px-4 py-3 text-left font-medium">{t.adminPage.users}</th>
-                  <th className="px-4 py-3 text-left font-medium">Tokens</th>
-                  <th className="px-4 py-3 text-left font-medium">{t.adminPage.latency}</th>
-                  <th className="px-4 py-3 text-left font-medium">Time</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">{t.adminPage.users}</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">{t.adminPage.tokens}</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">{t.adminPage.latency}</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">{t.adminPage.time}</th>
                 </tr>
               </thead>
               <tbody>

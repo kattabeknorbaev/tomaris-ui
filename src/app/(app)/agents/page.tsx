@@ -10,9 +10,10 @@ import {
   Code2,
   ArrowRight,
 } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { agents } from "@/lib/mock-data";
 import { useI18n } from "@/components/shared/i18n-provider";
+import { useChatStore } from "@/stores/chat-store";
 
 const iconMap: Record<string, typeof GraduationCap> = {
   "graduation-cap": GraduationCap,
@@ -25,6 +26,15 @@ const iconMap: Record<string, typeof GraduationCap> = {
 
 export default function AgentsPage() {
   const { t } = useI18n();
+  const router = useRouter();
+  const createChat = useChatStore((s) => s.createChat);
+  const renameChat = useChatStore((s) => s.renameChat);
+
+  const launchAgent = (name: string) => {
+    const id = createChat();
+    renameChat(id, name);
+    router.push("/app");
+  };
 
   return (
     <div className="flex-1 overflow-y-auto">
@@ -47,9 +57,9 @@ export default function AgentsPage() {
                 variants={fadeUp}
                 custom={i}
               >
-                <Link
-                  href="/app"
-                  className="group flex flex-col rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:shadow-lg"
+                <button
+                  onClick={() => launchAgent(agent.name)}
+                  className="group flex h-full w-full flex-col rounded-2xl border border-border bg-card p-6 text-left transition-all hover:border-primary/30 hover:shadow-lg"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                     <Icon className="h-6 w-6" />
@@ -63,9 +73,9 @@ export default function AgentsPage() {
                   </p>
                   <div className="mt-4 flex items-center gap-1 text-sm font-medium text-primary">
                     {t.agentsPage.launch}
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                   </div>
-                </Link>
+                </button>
               </motion.div>
             );
           })}
