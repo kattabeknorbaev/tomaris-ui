@@ -32,6 +32,11 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Keep <html lang> in sync for screen readers and search engines.
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
+
   const setLocale = (newLocale: Locale) => {
     document.cookie = `${COOKIE_NAME}=${newLocale};path=/;max-age=31536000`;
     setLocaleState(newLocale);

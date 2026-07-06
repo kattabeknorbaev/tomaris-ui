@@ -1,20 +1,11 @@
 "use client";
 
+import { fadeUp } from "@/lib/motion";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Clock, ArrowRight } from "lucide-react";
-import { Navbar } from "@/components/shared/navbar";
-import { Footer } from "@/components/shared/footer";
 import { useI18n } from "@/components/shared/i18n-provider";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.5 },
-  }),
-};
 
 const posts = [
   {
@@ -78,7 +69,6 @@ export default function BlogPage() {
 
   return (
     <>
-      <Navbar />
       <main className="pt-16">
         <section className="py-24 sm:py-32">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -151,7 +141,6 @@ export default function BlogPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

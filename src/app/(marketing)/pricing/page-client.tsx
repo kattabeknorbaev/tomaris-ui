@@ -1,21 +1,12 @@
 "use client";
 
+import { fadeUp } from "@/lib/motion";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, X } from "lucide-react";
-import { Navbar } from "@/components/shared/navbar";
-import { Footer } from "@/components/shared/footer";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { useState } from "react";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.08, duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] },
-  }),
-};
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(false);
@@ -74,7 +65,6 @@ export default function PricingPage() {
 
   return (
     <>
-      <Navbar />
       <main className="pt-14">
         <section className="py-24 sm:py-32">
           <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-12">
@@ -219,7 +209,6 @@ export default function PricingPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }
