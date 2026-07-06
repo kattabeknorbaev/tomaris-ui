@@ -50,6 +50,7 @@ export default function VisionPage() {
       });
       setAnalyzed(false);
     };
+    img.onerror = () => URL.revokeObjectURL(url);
     img.src = url;
   }, []);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Search as SearchIcon, Sparkles, ExternalLink, Globe, ArrowLeft, Loader2 } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
@@ -35,17 +35,26 @@ export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [status, setStatus] = useState<"idle" | "searching" | "done">("idle");
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { t } = useI18n();
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const runSearch = (q: string) => {
     if (!q.trim()) return;
+    if (timerRef.current) clearTimeout(timerRef.current);
     setSubmittedQuery(q.trim());
     setStatus("searching");
     // Demo: canned results after a realistic delay — no search backend yet.
-    setTimeout(() => setStatus("done"), SEARCH_DELAY_MS);
+    timerRef.current = setTimeout(() => setStatus("done"), SEARCH_DELAY_MS);
   };
 
   const reset = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
     setStatus("idle");
     setQuery("");
     setSubmittedQuery("");

@@ -8,6 +8,7 @@ function now(): string {
 }
 
 const CHAT_TITLE_MAX_LENGTH = 50;
+const DEFAULT_CHAT_TITLE = "New Chat";
 
 /**
  * A reload mid-stream persists messages stuck with isStreaming: true.
@@ -57,7 +58,7 @@ export const useChatStore = create<ChatState>()(
         const id = generateId();
         const newChat: Chat = {
           id,
-          title: "New Chat",
+          title: DEFAULT_CHAT_TITLE,
           messages: [],
           createdAt: now(),
           updatedAt: now(),
@@ -101,8 +102,12 @@ export const useChatStore = create<ChatState>()(
                   ...chat,
                   messages: [...chat.messages, msg],
                   updatedAt: now(),
+                  // Derive a title from the first user message, but never
+                  // overwrite an explicit title (rename, agent launch).
                   title:
-                    chat.messages.length === 0 && message.role === "user"
+                    chat.messages.length === 0 &&
+                    message.role === "user" &&
+                    chat.title === DEFAULT_CHAT_TITLE
                       ? message.content.slice(0, CHAT_TITLE_MAX_LENGTH)
                       : chat.title,
                 }
