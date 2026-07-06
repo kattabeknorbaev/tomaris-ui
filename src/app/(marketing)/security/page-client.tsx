@@ -46,7 +46,6 @@ export default function SecurityPage() {
     <>
       <main className="pt-16">
         <section className="relative py-24 sm:py-32">
-          <div className="glow-orb -left-40 top-0 h-80 w-80 bg-primary" />
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <motion.div
               initial="hidden"
@@ -103,49 +102,39 @@ export default function SecurityPage() {
             {/* Additional sections */}
             <div className="mt-24 space-y-16">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                id="privacy"
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="rounded-2xl border border-border bg-card p-8"
+                className="scroll-mt-24 rounded-2xl border border-border bg-card p-8"
               >
                 <h2 className="text-xl font-bold">{t.security.dataHandling}</h2>
                 <div className="mt-4 space-y-4 text-sm text-muted-foreground">
                   <p>
-                    <strong className="text-foreground">Collection:</strong> We
-                    only collect data necessary to provide our services. Chat
-                    history is stored locally on your device by default.
+                    <strong className="text-foreground">{t.security.collectionLabel}:</strong>{" "}
+                    {t.security.collection}
                   </p>
                   <p>
-                    <strong className="text-foreground">Processing:</strong>{" "}
-                    All AI inference runs on our secure infrastructure in
-                    Uzbekistan. No data is sent to third-party AI providers.
+                    <strong className="text-foreground">{t.security.processingLabel}:</strong>{" "}
+                    {t.security.processing}
                   </p>
                   <p>
-                    <strong className="text-foreground">Retention:</strong> You
-                    have full control over your data. Delete your account and
-                    all associated data at any time.
+                    <strong className="text-foreground">{t.security.retentionLabel}:</strong>{" "}
+                    {t.security.retention}
                   </p>
                 </div>
               </motion.div>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 className="rounded-2xl border border-border bg-card p-8"
               >
                 <h2 className="text-xl font-bold">{t.security.responsibleAi}</h2>
                 <div className="mt-4 space-y-4 text-sm text-muted-foreground">
-                  <p>
-                    Tomaris is committed to responsible AI development. Our
-                    models undergo rigorous testing for bias, safety, and
-                    accuracy before deployment.
-                  </p>
-                  <p>
-                    We maintain transparency about our model&apos;s
-                    capabilities and limitations, and we actively work to
-                    improve fairness across all Uzbek dialects and communities.
-                  </p>
+                  <p>{t.security.responsible1}</p>
+                  <p>{t.security.responsible2}</p>
                 </div>
               </motion.div>
             </div>

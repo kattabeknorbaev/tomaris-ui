@@ -23,8 +23,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="/#features" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.features}</Link></li>
               <li><Link href="/pricing" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.pricing}</Link></li>
-              <li><Link href="#" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.apiDocs}</Link></li>
-              <li><Link href="#" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.changelog}</Link></li>
+              <li><Link href="/waitlist" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.hero.cta2}</Link></li>
             </ul>
           </div>
           <div>
@@ -32,16 +31,14 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="/about" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.about}</Link></li>
               <li><Link href="/blog" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.blog}</Link></li>
-              <li><Link href="#" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.careers}</Link></li>
               <li><Link href="/contact" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.contact}</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-caption font-semibold text-muted-foreground uppercase tracking-wider mb-3">{t.footer.legal}</h4>
             <ul className="space-y-2">
-              <li><Link href="/security" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.privacy}</Link></li>
-              <li><Link href="#" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.terms}</Link></li>
               <li><Link href="/security" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.security}</Link></li>
+              <li><Link href="/security#privacy" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.privacy}</Link></li>
             </ul>
           </div>
         </div>

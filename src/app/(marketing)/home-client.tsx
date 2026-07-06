@@ -39,10 +39,12 @@ export default function HomePage() {
     { name: "Jamshid Alimov", role: "Legal Counsel, UzLaw", content: "Drafting legal documents in Uzbek used to take hours. With Tomaris, it takes minutes with better accuracy." },
   ];
 
+  // Single source of truth with /pricing: names, descriptions, and features
+  // all come from t.pricing. The landing shows the first 5 features per plan.
   const plans = [
-    { name: t.pricing.free, price: "0", desc: "Perfect for trying Tomaris", features: ["50 messages/day", "Tomaris Fast model", "Basic agents", "Community support"], cta: t.pricing.getStarted, popular: false },
-    { name: t.pricing.pro, price: "19", desc: "For power users and professionals", features: ["Unlimited messages", "All models (27B, Fast, Code)", "All agents", "Workspace & file uploads", "Priority support"], cta: t.pricing.startTrial, popular: true },
-    { name: t.pricing.enterprise, price: "Custom", desc: "For organizations and teams", features: ["Everything in Pro", "Custom model fine-tuning", "Dedicated infrastructure", "SLA & compliance", "Dedicated support"], cta: t.pricing.contactSales, popular: false },
+    { name: t.pricing.free, price: "0", desc: t.pricing.freeDesc, features: t.pricing.freeFeatures.slice(0, 4), cta: t.pricing.getStarted, popular: false },
+    { name: t.pricing.pro, price: "19", desc: t.pricing.proDesc, features: t.pricing.proFeatures.slice(0, 5), cta: t.pricing.startTrial, popular: true },
+    { name: t.pricing.enterprise, price: t.pricing.custom, desc: t.pricing.enterpriseDesc, features: t.pricing.enterpriseFeatures.slice(0, 5), cta: t.pricing.contactSales, popular: false },
   ];
 
   return (

@@ -1,9 +1,8 @@
 "use client";
 
 import { fadeUp } from "@/lib/motion";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { Clock, ArrowRight } from "lucide-react";
+import { Clock } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
 
 
@@ -126,13 +125,6 @@ export default function BlogPage() {
                       <span className="text-xs text-muted-foreground">
                         {post.date}
                       </span>
-                      <Link
-                        href="#"
-                        className="flex items-center gap-1 text-sm font-medium text-primary"
-                      >
-                        {t.blog.readMore}
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
                     </div>
                   </div>
                 </motion.article>
