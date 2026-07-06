@@ -26,11 +26,11 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState(0);
 
   const useCaseTabs = [
-    { label: t.useCases.education, title: t.useCases.educationTitle, desc: t.useCases.educationDesc, icon: "ðŸŽ“" },
-    { label: t.useCases.legal, title: t.useCases.legalTitle, desc: t.useCases.legalDesc, icon: "âš–ï¸" },
-    { label: t.useCases.business, title: t.useCases.businessTitle, desc: t.useCases.businessDesc, icon: "ðŸ’¼" },
-    { label: t.useCases.government, title: t.useCases.governmentTitle, desc: t.useCases.governmentDesc, icon: "ðŸ›ï¸" },
-    { label: t.useCases.healthcare, title: t.useCases.healthcareTitle, desc: t.useCases.healthcareDesc, icon: "ðŸ¥" },
+    { label: t.useCases.education, title: t.useCases.educationTitle, desc: t.useCases.educationDesc, icon: "🎓" },
+    { label: t.useCases.legal, title: t.useCases.legalTitle, desc: t.useCases.legalDesc, icon: "⚖️" },
+    { label: t.useCases.business, title: t.useCases.businessTitle, desc: t.useCases.businessDesc, icon: "💼" },
+    { label: t.useCases.government, title: t.useCases.governmentTitle, desc: t.useCases.governmentDesc, icon: "🏛️" },
+    { label: t.useCases.healthcare, title: t.useCases.healthcareTitle, desc: t.useCases.healthcareDesc, icon: "🏥" },
   ];
 
   const testimonials = [
@@ -44,16 +44,16 @@ export default function HomePage() {
   const plans = [
     { name: t.pricing.free, price: "0", desc: t.pricing.freeDesc, features: t.pricing.freeFeatures.slice(0, 4), cta: t.pricing.getStarted, popular: false },
     { name: t.pricing.pro, price: "19", desc: t.pricing.proDesc, features: t.pricing.proFeatures.slice(0, 5), cta: t.pricing.startTrial, popular: true },
-    { name: t.pricing.enterprise, price: t.pricing.custom, desc: t.pricing.enterpriseDesc, features: t.pricing.enterpriseFeatures.slice(0, 5), cta: t.pricing.contactSales, popular: false },
+    { name: t.pricing.enterprise, price: null, desc: t.pricing.enterpriseDesc, features: t.pricing.enterpriseFeatures.slice(0, 5), cta: t.pricing.contactSales, popular: false },
   ];
 
   return (
     <>
-      <main>
+      <main id="main">
         {/* ===== HERO ===== */}
         <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28">
           <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
-            <p className="text-eyebrow mb-5">27B Parameters &middot; Uzbek-Native</p>
+            <p className="text-eyebrow mb-5">{t.hero.eyebrow}</p>
             <h1 className="text-display">{t.hero.headline}</h1>
             <p className="mt-5 text-body-lg text-muted-foreground max-w-xl mx-auto">{t.hero.subheadline}</p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -68,10 +68,10 @@ export default function HomePage() {
             {/* Stats */}
             <div className="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-lg overflow-hidden border border-border">
               {[
-                { value: "27B", label: "Parameters" },
-                { value: "227M", label: "Training words" },
-                { value: "3", label: "Languages" },
-                { value: "<200ms", label: "Avg latency" },
+                { value: "27B", label: t.hero.statParams },
+                { value: "227M", label: t.hero.statWords },
+                { value: "3", label: t.hero.statLanguages },
+                { value: "<200ms", label: t.hero.statLatency },
               ].map((s) => (
                 <div key={s.label} className="bg-card px-4 py-4 text-center">
                   <div className="font-mono text-lg font-semibold text-ink">{s.value}</div>
@@ -120,7 +120,7 @@ export default function HomePage() {
         <section id="features" className="border-t border-border py-20 sm:py-24">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
             <div className="text-center mb-12">
-              <p className="text-eyebrow mb-3">Capabilities</p>
+              <p className="text-eyebrow mb-3">{t.features.eyebrow}</p>
               <h2 className="text-heading-1 text-ink-strong">{t.features.title}</h2>
               <p className="mt-3 text-body text-muted-foreground max-w-lg mx-auto">{t.features.subtitle}</p>
             </div>
@@ -146,7 +146,7 @@ export default function HomePage() {
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
               <div>
-                <p className="text-eyebrow mb-3">Why Tomaris</p>
+                <p className="text-eyebrow mb-3">{t.whyTomaris.eyebrow}</p>
                 <h2 className="text-heading-1 text-ink-strong">{t.whyTomaris.title}</h2>
                 <p className="mt-3 text-body text-muted-foreground">{t.whyTomaris.subtitle}</p>
                 <ul className="mt-6 space-y-2.5">
@@ -189,22 +189,36 @@ export default function HomePage() {
         <section className="border-t border-border py-20 sm:py-24">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
             <div className="text-center mb-10">
-              <p className="text-eyebrow mb-3">Use Cases</p>
+              <p className="text-eyebrow mb-3">{t.useCases.eyebrow}</p>
               <h2 className="text-heading-1 text-ink-strong">{t.useCases.title}</h2>
             </div>
-            <div className="flex flex-wrap justify-center gap-1.5 mb-8">
+            <div role="tablist" aria-label={t.useCases.title} className="flex flex-wrap justify-center gap-1.5 mb-8">
               {useCaseTabs.map((tab, i) => (
                 <button
                   key={tab.label}
+                  role="tab"
+                  id={`use-case-tab-${i}`}
+                  aria-selected={activeTab === i}
+                  aria-controls="use-case-panel"
+                  tabIndex={activeTab === i ? 0 : -1}
                   onClick={() => setActiveTab(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowRight") setActiveTab((i + 1) % useCaseTabs.length);
+                    if (e.key === "ArrowLeft") setActiveTab((i - 1 + useCaseTabs.length) % useCaseTabs.length);
+                  }}
                   className={`rounded-md px-3.5 py-1.5 text-body-sm font-semibold transition-colors duration-150 ${activeTab === i ? "bg-ink text-canvas" : "text-muted-foreground hover:text-ink hover:bg-surface-2"}`}
                 >
                   {tab.label}
                 </button>
               ))}
             </div>
-            <div className="rounded-lg border border-border bg-card p-6 max-w-xl mx-auto">
-              <div className="text-2xl mb-3">{useCaseTabs[activeTab].icon}</div>
+            <div
+              role="tabpanel"
+              id="use-case-panel"
+              aria-labelledby={`use-case-tab-${activeTab}`}
+              className="rounded-lg border border-border bg-card p-6 max-w-xl mx-auto"
+            >
+              <div className="text-2xl mb-3" aria-hidden="true">{useCaseTabs[activeTab].icon}</div>
               <h3 className="text-heading-3">{useCaseTabs[activeTab].title}</h3>
               <p className="mt-2 text-body-sm text-muted-foreground">{useCaseTabs[activeTab].desc}</p>
             </div>
@@ -215,18 +229,18 @@ export default function HomePage() {
         <section className="border-t border-border py-20 sm:py-24">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
             <div className="text-center mb-10">
-              <p className="text-eyebrow mb-3">Comparison</p>
+              <p className="text-eyebrow mb-3">{t.comparison.eyebrow}</p>
               <h2 className="text-heading-1 text-ink-strong">{t.comparison.title}</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px]">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="pb-3 text-left text-body-sm font-semibold text-muted-foreground">{t.comparison.feature}</th>
-                    <th className="pb-3 text-center text-body-sm font-semibold text-ink">Tomaris</th>
-                    <th className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">ChatGPT</th>
-                    <th className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">Gemini</th>
-                    <th className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">Claude</th>
+                    <th scope="col" className="pb-3 text-left text-body-sm font-semibold text-muted-foreground">{t.comparison.feature}</th>
+                    <th scope="col" className="pb-3 text-center text-body-sm font-semibold text-ink">Tomaris</th>
+                    <th scope="col" className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">ChatGPT</th>
+                    <th scope="col" className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">Gemini</th>
+                    <th scope="col" className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">Claude</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -244,9 +258,15 @@ export default function HomePage() {
                         {row.isText ? (
                           <span className="text-body-sm font-semibold text-primary">{row.t as string}</span>
                         ) : row.t ? (
-                          <Check className="mx-auto h-4 w-4 text-primary" />
+                          <>
+                            <Check className="mx-auto h-4 w-4 text-primary" aria-hidden="true" />
+                            <span className="sr-only">{t.comparison.yes}</span>
+                          </>
                         ) : (
-                          <X className="mx-auto h-4 w-4 text-hairline-soft" />
+                          <>
+                            <X className="mx-auto h-4 w-4 text-hairline-soft" aria-hidden="true" />
+                            <span className="sr-only">{t.comparison.no}</span>
+                          </>
                         )}
                       </td>
                       {["g", "ge", "c"].map((k) => {
@@ -256,9 +276,15 @@ export default function HomePage() {
                             {typeof val === "string" ? (
                               <span className="text-body-sm text-muted-foreground">{val}</span>
                             ) : val ? (
-                              <Check className="mx-auto h-4 w-4 text-hairline-soft" />
+                              <>
+                                <Check className="mx-auto h-4 w-4 text-hairline-soft" aria-hidden="true" />
+                                <span className="sr-only">{t.comparison.yes}</span>
+                              </>
                             ) : (
-                              <X className="mx-auto h-4 w-4 text-hairline" />
+                              <>
+                                <X className="mx-auto h-4 w-4 text-hairline" aria-hidden="true" />
+                                <span className="sr-only">{t.comparison.no}</span>
+                              </>
                             )}
                           </td>
                         );
@@ -275,7 +301,7 @@ export default function HomePage() {
         <section className="border-t border-border py-20 sm:py-24">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
             <div className="text-center mb-10">
-              <p className="text-eyebrow mb-3">Testimonials</p>
+              <p className="text-eyebrow mb-3">{t.testimonials.eyebrow}</p>
               <h2 className="text-heading-1 text-ink-strong">{t.testimonials.title}</h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -283,7 +309,7 @@ export default function HomePage() {
                 <div key={t.name} className="rounded-lg border border-border bg-card p-5">
                   <div className="flex gap-0.5 mb-3">
                     {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} className="h-3 w-3 fill-accent text-accent" />
+                      <Star key={j} className="h-3 w-3 fill-gold text-gold" aria-hidden="true" />
                     ))}
                   </div>
                   <p className="text-body-sm text-muted-foreground leading-relaxed">&ldquo;{t.content}&rdquo;</p>
@@ -304,7 +330,7 @@ export default function HomePage() {
         <section className="border-t border-border py-20 sm:py-24">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
             <div className="text-center mb-10">
-              <p className="text-eyebrow mb-3">Pricing</p>
+              <p className="text-eyebrow mb-3">{t.pricing.eyebrow}</p>
               <h2 className="text-heading-1 text-ink-strong">{t.pricing.title}</h2>
               <p className="mt-3 text-body text-muted-foreground">{t.pricing.subtitle}</p>
             </div>
@@ -314,8 +340,8 @@ export default function HomePage() {
                   {plan.popular && <div className="absolute -top-2.5 left-5 rounded-sm bg-primary px-2.5 py-0.5 text-[10px] font-semibold text-on-primary uppercase tracking-wider">{t.pricing.mostPopular}</div>}
                   <h3 className="text-body-sm font-semibold text-ink">{plan.name}</h3>
                   <div className="mt-1.5 flex items-baseline gap-0.5">
-                    <span className="text-heading-1 text-ink-strong">{plan.price === "Custom" ? "" : "$"}{plan.price}</span>
-                    {plan.price !== "Custom" && <span className="text-caption">{t.pricing.perMonth}</span>}
+                    <span className="text-heading-1 text-ink-strong">{plan.price === null ? t.pricing.custom : `$${plan.price}`}</span>
+                    {plan.price !== null && <span className="text-caption">{t.pricing.perMonth}</span>}
                   </div>
                   <p className="mt-1.5 text-caption">{plan.desc}</p>
                   <ul className="mt-4 space-y-2">
@@ -336,17 +362,24 @@ export default function HomePage() {
         <section className="border-t border-border py-20 sm:py-24">
           <div className="mx-auto max-w-2xl px-5 sm:px-8">
             <div className="text-center mb-10">
-              <p className="text-eyebrow mb-3">FAQ</p>
+              <p className="text-eyebrow mb-3">{t.faq.eyebrow}</p>
               <h2 className="text-heading-1 text-ink-strong">{t.faq.title}</h2>
             </div>
             <div className="divide-y divide-border">
               {t.faq.items.map((faq, i) => (
                 <div key={i}>
-                  <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="flex w-full items-center justify-between py-4 text-left">
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    aria-expanded={openFaq === i}
+                    aria-controls={`faq-answer-${i}`}
+                    className="flex w-full items-center justify-between py-4 text-left"
+                  >
                     <span className="text-body-sm font-semibold text-ink pr-4">{faq.q}</span>
-                    <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150 ${openFaq === i ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150 ${openFaq === i ? "rotate-180" : ""}`} aria-hidden="true" />
                   </button>
-                  {openFaq === i && <p className="pb-4 text-body-sm text-muted-foreground leading-relaxed">{faq.a}</p>}
+                  {openFaq === i && (
+                    <p id={`faq-answer-${i}`} className="pb-4 text-body-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+                  )}
                 </div>
               ))}
             </div>

@@ -23,6 +23,12 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-1.5 focus:text-body-sm focus:font-semibold focus:text-on-primary"
+      >
+        Skip to content
+      </a>
       <div className="border-b border-border bg-canvas/80 backdrop-blur-xl">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5 sm:px-8">
           <Link href="/" className="flex items-center gap-2">
@@ -50,15 +56,21 @@ export function Navbar() {
             </Link>
           </div>
 
-          <button className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground md:hidden" onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle menu">
-            {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          <button
+            className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground md:hidden"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+          >
+            {mobileOpen ? <X className="h-4 w-4" aria-hidden="true" /> : <Menu className="h-4 w-4" aria-hidden="true" />}
           </button>
         </div>
       </div>
 
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.15 }} className="border-b border-border bg-canvas/95 backdrop-blur-xl md:hidden overflow-hidden">
+          <motion.div id="mobile-menu" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.15 }} className="border-b border-border bg-canvas/95 backdrop-blur-xl md:hidden overflow-hidden">
             <div className="px-5 py-4 space-y-1">
               {navLinks.map((link) => (
                 <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="block rounded-md px-3 py-2.5 text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">

@@ -1,10 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { useChatStore } from "@/stores/chat-store";
-import { cn } from "@/lib/utils";
 import { ChevronDown, Zap, Cpu, Code2 } from "lucide-react";
 import type { ModelType } from "@/types";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 const models: {
   id: ModelType;
@@ -33,61 +37,37 @@ const models: {
 ];
 
 export function ModelSelector() {
-  const [open, setOpen] = useState(false);
-  const { model, setModel } = useChatStore();
+  const model = useChatStore((s) => s.model);
+  const setModel = useChatStore((s) => s.setModel);
   const current = models.find((m) => m.id === model) || models[0];
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm transition-colors hover:bg-muted"
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        aria-label={`Model: ${current.name}`}
+        className="flex items-center gap-1.5 rounded-md px-2 py-1 text-sm transition-colors hover:bg-muted data-popup-open:bg-muted"
       >
         <span className="font-medium text-[13px]">{current.name}</span>
-        <ChevronDown
-          className={cn(
-            "h-3 w-3 text-muted-foreground transition-transform duration-150",
-            open && "rotate-180"
-          )}
-        />
-      </button>
-
-      {open && (
-        <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
-          />
-          <div className="absolute left-0 top-full z-50 mt-1.5 w-56 overflow-hidden rounded-xl border border-border bg-card shadow-lg">
-            <div className="p-1">
-              {models.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => {
-                    setModel(m.id);
-                    setOpen(false);
-                  }}
-                  className={cn(
-                    "flex w-full items-start gap-2.5 rounded-lg px-3 py-2 text-left transition-colors hover:bg-muted",
-                    model === m.id && "bg-muted"
-                  )}
-                >
-                  <m.icon className="mt-0.5 h-4 w-4 text-muted-foreground" />
-                  <div className="flex-1">
-                    <div className="text-[13px] font-medium">{m.name}</div>
-                    <div className="text-[11px] text-muted-foreground">
-                      {m.desc}
-                    </div>
-                  </div>
-                  {model === m.id && (
-                    <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
-                  )}
-                </button>
-              ))}
+        <ChevronDown className="h-3 w-3 text-muted-foreground transition-transform duration-150" aria-hidden="true" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-56">
+        {models.map((m) => (
+          <DropdownMenuItem
+            key={m.id}
+            onClick={() => setModel(m.id)}
+            className="items-start gap-2.5 px-3 py-2"
+          >
+            <m.icon className="mt-0.5 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+            <div className="flex-1">
+              <div className="text-[13px] font-medium">{m.name}</div>
+              <div className="text-[11px] text-muted-foreground">{m.desc}</div>
             </div>
-          </div>
-        </>
-      )}
-    </div>
+            {model === m.id && (
+              <div className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary" aria-hidden="true" />
+            )}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

@@ -31,7 +31,7 @@ export default function WaitlistPage() {
 
   return (
     <>
-      <main className="pt-16">
+      <main id="main" className="pt-16">
         <section className="relative py-24 sm:py-32">
           <div className="relative mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
             <motion.div

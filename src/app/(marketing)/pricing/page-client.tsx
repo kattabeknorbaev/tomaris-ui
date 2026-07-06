@@ -53,7 +53,7 @@ export default function PricingPage() {
 
   return (
     <>
-      <main className="pt-14">
+      <main id="main" className="pt-14">
         <section className="py-24 sm:py-32">
           <div className="mx-auto max-w-6xl px-5 sm:px-8 lg:px-12">
             <motion.div

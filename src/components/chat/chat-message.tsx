@@ -3,7 +3,7 @@
 import { useState, memo } from "react";
 import { cn } from "@/lib/utils";
 import type { Message } from "@/types";
-import { Copy, Check, ThumbsUp, ThumbsDown, RotateCcw, Brain, ChevronDown } from "lucide-react";
+import { Copy, Check, ThumbsUp, ThumbsDown, Brain, ChevronDown } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useI18n } from "@/components/shared/i18n-provider";
 
@@ -51,6 +51,7 @@ export const ChatMessage = memo(function ChatMessage({ message }: { message: Mes
               <div className="mb-1.5">
                 <button
                   onClick={() => setReasoningOpen((o) => !o)}
+                  aria-expanded={reasoningExpanded}
                   className="flex items-center gap-1 text-caption text-mute hover:text-ink transition-colors duration-150"
                 >
                   <Brain className="h-3 w-3" />
@@ -74,14 +75,11 @@ export const ChatMessage = memo(function ChatMessage({ message }: { message: Mes
                 <button onClick={handleCopy} className="flex h-6 w-6 items-center justify-center rounded text-mute hover:text-ink hover:bg-surface-2 transition-colors duration-150" title="Copy" aria-label="Copy">
                   {copied ? <Check className="h-3 w-3 text-primary" /> : <Copy className="h-3 w-3" />}
                 </button>
-                <button onClick={() => setReaction(reaction === "up" ? null : "up")} className={cn("flex h-6 w-6 items-center justify-center rounded transition-colors duration-150 hover:bg-surface-2", reaction === "up" ? "text-primary" : "text-mute hover:text-ink")} title="Good" aria-label="Good response">
+                <button onClick={() => setReaction(reaction === "up" ? null : "up")} aria-pressed={reaction === "up"} className={cn("flex h-6 w-6 items-center justify-center rounded transition-colors duration-150 hover:bg-surface-2", reaction === "up" ? "text-primary" : "text-mute hover:text-ink")} title="Good" aria-label="Good response">
                   <ThumbsUp className="h-3 w-3" />
                 </button>
-                <button onClick={() => setReaction(reaction === "down" ? null : "down")} className={cn("flex h-6 w-6 items-center justify-center rounded transition-colors duration-150 hover:bg-surface-2", reaction === "down" ? "text-error" : "text-mute hover:text-ink")} title="Bad" aria-label="Bad response">
+                <button onClick={() => setReaction(reaction === "down" ? null : "down")} aria-pressed={reaction === "down"} className={cn("flex h-6 w-6 items-center justify-center rounded transition-colors duration-150 hover:bg-surface-2", reaction === "down" ? "text-error" : "text-mute hover:text-ink")} title="Bad" aria-label="Bad response">
                   <ThumbsDown className="h-3 w-3" />
-                </button>
-                <button className="flex h-6 w-6 items-center justify-center rounded text-mute hover:text-ink hover:bg-surface-2 transition-colors duration-150" title="Regenerate" aria-label="Regenerate">
-                  <RotateCcw className="h-3 w-3" />
                 </button>
               </div>
             )}

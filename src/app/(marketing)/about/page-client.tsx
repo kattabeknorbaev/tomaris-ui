@@ -25,7 +25,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <main className="pt-14">
+      <main id="main" className="pt-14">
         {/* Hero */}
         <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
@@ -47,7 +47,7 @@ export default function AboutPage() {
                 <p className="mt-2 text-body-sm text-muted-foreground leading-relaxed">{t.about.missionText}</p>
               </div>
               <div className="rounded-lg border border-border bg-card p-6">
-                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-accent/10 text-accent">
+                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-gold/10 text-gold">
                   <Eye className="h-4 w-4" />
                 </div>
                 <h2 className="mt-3 text-heading-3 text-ink">{t.about.vision}</h2>
