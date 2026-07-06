@@ -42,6 +42,8 @@ export function ChatInput() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const mockTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const stoppedRef = useRef(false);
   const activeChatId = useChatStore((s) => s.activeChatId);
   const addMessage = useChatStore((s) => s.addMessage);
   const createChat = useChatStore((s) => s.createChat);
@@ -90,6 +92,7 @@ export function ChatInput() {
         .map((m) => ({ role: m.role, content: m.content }));
 
       // Try real API first
+      stoppedRef.current = false;
       try {
         abortRef.current = new AbortController();
         const res = await fetch("/api/chat", {
@@ -146,13 +149,26 @@ export function ChatInput() {
         console.warn("API unavailable, using mock response");
         const mock =
           MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)];
-        let charIndex = 0;
-        const interval = setInterval(() => {
-          charIndex += Math.floor(Math.random() * 4) + 2;
-          patchMessage(chatId, assistantMsgId, { content: mock.slice(0, charIndex) });
-          if (charIndex >= mock.length) clearInterval(interval);
-        }, 30);
-        await new Promise((resolve) => setTimeout(resolve, mock.length * 60));
+        // Type the mock out char-by-char, resolving exactly when it finishes
+        // (or when the user hits Stop, which flips stoppedRef).
+        await new Promise<void>((resolve) => {
+          let charIndex = 0;
+          mockTimerRef.current = setInterval(() => {
+            if (stoppedRef.current) {
+              if (mockTimerRef.current) clearInterval(mockTimerRef.current);
+              mockTimerRef.current = null;
+              resolve();
+              return;
+            }
+            charIndex += Math.floor(Math.random() * 4) + 2;
+            patchMessage(chatId, assistantMsgId, { content: mock.slice(0, charIndex) });
+            if (charIndex >= mock.length) {
+              if (mockTimerRef.current) clearInterval(mockTimerRef.current);
+              mockTimerRef.current = null;
+              resolve();
+            }
+          }, 30);
+        });
       } finally {
         setIsStreaming(false);
         patchMessage(chatId, assistantMsgId, { isStreaming: false });
@@ -198,7 +214,18 @@ export function ChatInput() {
 
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
+    stoppedRef.current = true;
+    if (mockTimerRef.current) {
+      clearInterval(mockTimerRef.current);
+      mockTimerRef.current = null;
+    }
     setIsStreaming(false);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (mockTimerRef.current) clearInterval(mockTimerRef.current);
+    };
   }, []);
 
   return (
