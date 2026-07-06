@@ -1,8 +1,6 @@
 "use client";
 
 import { Target, Eye, CheckCircle } from "lucide-react";
-import { Navbar } from "@/components/shared/navbar";
-import { Footer } from "@/components/shared/footer";
 import { useI18n } from "@/components/shared/i18n-provider";
 
 const team = [
@@ -27,14 +25,13 @@ export default function AboutPage() {
 
   return (
     <>
-      <Navbar />
       <main className="pt-14">
         {/* Hero */}
         <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
             <p className="text-eyebrow mb-4">About</p>
             <h1 className="text-heading-1 text-ink-strong">{t.about.title}</h1>
-            <p className="mt-4 text-body text-body max-w-xl mx-auto">{t.about.subtitle}</p>
+            <p className="mt-4 text-body text-muted-foreground max-w-xl mx-auto">{t.about.subtitle}</p>
           </div>
         </section>
 
@@ -47,14 +44,14 @@ export default function AboutPage() {
                   <Target className="h-4 w-4" />
                 </div>
                 <h2 className="mt-3 text-heading-3 text-ink">{t.about.mission}</h2>
-                <p className="mt-2 text-body-sm text-body leading-relaxed">{t.about.missionText}</p>
+                <p className="mt-2 text-body-sm text-muted-foreground leading-relaxed">{t.about.missionText}</p>
               </div>
               <div className="rounded-lg border border-border bg-card p-6">
                 <div className="flex h-9 w-9 items-center justify-center rounded-md bg-accent/10 text-accent">
                   <Eye className="h-4 w-4" />
                 </div>
                 <h2 className="mt-3 text-heading-3 text-ink">{t.about.vision}</h2>
-                <p className="mt-2 text-body-sm text-body leading-relaxed">{t.about.visionText}</p>
+                <p className="mt-2 text-body-sm text-muted-foreground leading-relaxed">{t.about.visionText}</p>
               </div>
             </div>
           </div>
@@ -65,7 +62,7 @@ export default function AboutPage() {
           <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
             <p className="text-eyebrow mb-4">The Problem</p>
             <h2 className="text-heading-1 text-ink-strong">{t.about.problem}</h2>
-            <p className="mt-4 text-body max-w-xl mx-auto">{t.about.problemText}</p>
+            <p className="mt-4 text-body text-muted-foreground max-w-xl mx-auto">{t.about.problemText}</p>
           </div>
         </section>
 
@@ -75,7 +72,7 @@ export default function AboutPage() {
             <div className="text-center mb-10">
               <p className="text-eyebrow mb-3">Team</p>
               <h2 className="text-heading-1 text-ink-strong">{t.about.team}</h2>
-              <p className="mt-3 text-body max-w-lg mx-auto">{t.about.teamSubtitle}</p>
+              <p className="mt-3 text-body text-muted-foreground max-w-lg mx-auto">{t.about.teamSubtitle}</p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {team.map((member) => (
@@ -115,7 +112,7 @@ export default function AboutPage() {
                       <h3 className="mt-1 text-body-sm font-semibold text-ink">{phase.title}</h3>
                       <ul className="mt-2 space-y-0.5">
                         {phase.items.map((item) => (
-                          <li key={item} className="text-caption text-body">&middot; {item}</li>
+                          <li key={item} className="text-caption text-muted-foreground">&middot; {item}</li>
                         ))}
                       </ul>
                     </div>
@@ -126,7 +123,6 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

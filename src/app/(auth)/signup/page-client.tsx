@@ -71,7 +71,7 @@ export default function SignupPage() {
                   <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <input
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
+                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
                     className="w-full rounded-lg border border-border bg-card py-2.5 pl-10 pr-10 text-body-sm outline-none transition-colors focus:border-ring"
                   />
                   <button
@@ -180,7 +180,7 @@ export default function SignupPage() {
         </div>
       </div>
 
-      {/* Right side — pattern */}
+      {/* Right side â€” pattern */}
       <div className="relative hidden lg:flex lg:flex-1 lg:items-center lg:justify-center bg-secondary">
         <div className="absolute inset-0 dot-grid" />
         <div className="relative max-w-sm px-8 text-center">

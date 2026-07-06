@@ -1,20 +1,11 @@
 "use client";
 
+import { fadeUp } from "@/lib/motion";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, Users } from "lucide-react";
-import { Navbar } from "@/components/shared/navbar";
-import { Footer } from "@/components/shared/footer";
 import { useI18n } from "@/components/shared/i18n-provider";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.5 },
-  }),
-};
 
 export default function WaitlistPage() {
   const [submitted, setSubmitted] = useState(false);
@@ -22,7 +13,6 @@ export default function WaitlistPage() {
 
   return (
     <>
-      <Navbar />
       <main className="pt-16">
         <section className="relative py-24 sm:py-32">
           <div className="animated-gradient absolute inset-0 opacity-10" />
@@ -144,7 +134,6 @@ export default function WaitlistPage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }

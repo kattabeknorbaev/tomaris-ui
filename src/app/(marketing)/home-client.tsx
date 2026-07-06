@@ -16,8 +16,6 @@ import {
   X,
   Send,
 } from "lucide-react";
-import { Navbar } from "@/components/shared/navbar";
-import { Footer } from "@/components/shared/footer";
 import { useI18n } from "@/components/shared/i18n-provider";
 
 const featureIcons = [Languages, Zap, Bot, Shield, Eye, Code2];
@@ -28,11 +26,11 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState(0);
 
   const useCaseTabs = [
-    { label: t.useCases.education, title: t.useCases.educationTitle, desc: t.useCases.educationDesc, icon: "🎓" },
-    { label: t.useCases.legal, title: t.useCases.legalTitle, desc: t.useCases.legalDesc, icon: "⚖️" },
-    { label: t.useCases.business, title: t.useCases.businessTitle, desc: t.useCases.businessDesc, icon: "💼" },
-    { label: t.useCases.government, title: t.useCases.governmentTitle, desc: t.useCases.governmentDesc, icon: "🏛️" },
-    { label: t.useCases.healthcare, title: t.useCases.healthcareTitle, desc: t.useCases.healthcareDesc, icon: "🏥" },
+    { label: t.useCases.education, title: t.useCases.educationTitle, desc: t.useCases.educationDesc, icon: "ðŸŽ“" },
+    { label: t.useCases.legal, title: t.useCases.legalTitle, desc: t.useCases.legalDesc, icon: "âš–ï¸" },
+    { label: t.useCases.business, title: t.useCases.businessTitle, desc: t.useCases.businessDesc, icon: "ðŸ’¼" },
+    { label: t.useCases.government, title: t.useCases.governmentTitle, desc: t.useCases.governmentDesc, icon: "ðŸ›ï¸" },
+    { label: t.useCases.healthcare, title: t.useCases.healthcareTitle, desc: t.useCases.healthcareDesc, icon: "ðŸ¥" },
   ];
 
   const testimonials = [
@@ -49,14 +47,13 @@ export default function HomePage() {
 
   return (
     <>
-      <Navbar />
       <main>
         {/* ===== HERO ===== */}
         <section className="relative pt-32 pb-20 sm:pt-40 sm:pb-28">
           <div className="mx-auto max-w-3xl px-5 text-center sm:px-8">
             <p className="text-eyebrow mb-5">27B Parameters &middot; Uzbek-Native</p>
             <h1 className="text-display">{t.hero.headline}</h1>
-            <p className="mt-5 text-body-lg text-body max-w-xl mx-auto">{t.hero.subheadline}</p>
+            <p className="mt-5 text-body-lg text-muted-foreground max-w-xl mx-auto">{t.hero.subheadline}</p>
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link href="/app" className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary hover:bg-primary-deep transition-colors duration-150">
                 {t.hero.cta1} <ArrowRight className="h-3.5 w-3.5" />
@@ -97,7 +94,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex gap-2.5">
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-primary text-[10px] font-semibold text-on-primary">T</div>
-                  <div className="rounded-lg rounded-bl-sm bg-surface-2 px-3 py-2 text-body-sm text-body">
+                  <div className="rounded-lg rounded-bl-sm bg-surface-2 px-3 py-2 text-body-sm text-muted-foreground">
                     {t.chat.greeting}
                     <div className="mt-1.5 flex gap-0.5">
                       <span className="typing-dot inline-block h-1 w-1 rounded-full bg-primary" />
@@ -134,7 +131,7 @@ export default function HomePage() {
                       <Icon className="h-4 w-4" />
                     </div>
                     <h3 className="mt-3 text-heading-3">{f.title}</h3>
-                    <p className="mt-1.5 text-body-sm text-body leading-relaxed">{f.desc}</p>
+                    <p className="mt-1.5 text-body-sm text-muted-foreground leading-relaxed">{f.desc}</p>
                   </div>
                 );
               })}
@@ -149,10 +146,10 @@ export default function HomePage() {
               <div>
                 <p className="text-eyebrow mb-3">Why Tomaris</p>
                 <h2 className="text-heading-1 text-ink-strong">{t.whyTomaris.title}</h2>
-                <p className="mt-3 text-body">{t.whyTomaris.subtitle}</p>
+                <p className="mt-3 text-body text-muted-foreground">{t.whyTomaris.subtitle}</p>
                 <ul className="mt-6 space-y-2.5">
                   {t.whyTomaris.reasons.map((r, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-body-sm text-body">
+                    <li key={i} className="flex items-start gap-2.5 text-body-sm text-muted-foreground">
                       <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
                       {r}
                     </li>
@@ -172,8 +169,8 @@ export default function HomePage() {
                   ].map((m) => (
                     <div key={m.name}>
                       <div className="flex justify-between text-body-sm mb-1">
-                        <span className={m.hl ? "font-semibold text-ink" : "text-body"}>{m.name}</span>
-                        <span className={`font-mono ${m.hl ? "text-primary font-semibold" : "text-body"}`}>{m.score}%</span>
+                        <span className={m.hl ? "font-semibold text-ink" : "text-muted-foreground"}>{m.name}</span>
+                        <span className={`font-mono ${m.hl ? "text-primary font-semibold" : "text-muted-foreground"}`}>{m.score}%</span>
                       </div>
                       <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden">
                         <div className={`h-full rounded-full ${m.hl ? "bg-primary" : "bg-hairline-soft"}`} style={{ width: `${m.score}%` }} />
@@ -198,7 +195,7 @@ export default function HomePage() {
                 <button
                   key={tab.label}
                   onClick={() => setActiveTab(i)}
-                  className={`rounded-md px-3.5 py-1.5 text-body-sm font-semibold transition-colors duration-150 ${activeTab === i ? "bg-ink text-canvas" : "text-body hover:text-ink hover:bg-surface-2"}`}
+                  className={`rounded-md px-3.5 py-1.5 text-body-sm font-semibold transition-colors duration-150 ${activeTab === i ? "bg-ink text-canvas" : "text-muted-foreground hover:text-ink hover:bg-surface-2"}`}
                 >
                   {tab.label}
                 </button>
@@ -207,7 +204,7 @@ export default function HomePage() {
             <div className="rounded-lg border border-border bg-card p-6 max-w-xl mx-auto">
               <div className="text-2xl mb-3">{useCaseTabs[activeTab].icon}</div>
               <h3 className="text-heading-3">{useCaseTabs[activeTab].title}</h3>
-              <p className="mt-2 text-body-sm text-body">{useCaseTabs[activeTab].desc}</p>
+              <p className="mt-2 text-body-sm text-muted-foreground">{useCaseTabs[activeTab].desc}</p>
             </div>
           </div>
         </section>
@@ -223,11 +220,11 @@ export default function HomePage() {
               <table className="w-full min-w-[560px]">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="pb-3 text-left text-body-sm font-semibold text-body">{t.comparison.feature}</th>
+                    <th className="pb-3 text-left text-body-sm font-semibold text-muted-foreground">{t.comparison.feature}</th>
                     <th className="pb-3 text-center text-body-sm font-semibold text-ink">Tomaris</th>
-                    <th className="pb-3 text-center text-body-sm font-semibold text-body">ChatGPT</th>
-                    <th className="pb-3 text-center text-body-sm font-semibold text-body">Gemini</th>
-                    <th className="pb-3 text-center text-body-sm font-semibold text-body">Claude</th>
+                    <th className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">ChatGPT</th>
+                    <th className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">Gemini</th>
+                    <th className="pb-3 text-center text-body-sm font-semibold text-muted-foreground">Claude</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -240,7 +237,7 @@ export default function HomePage() {
                     { f: t.comparison.pricingLabel, t: t.comparison.freeTier, g: "$20/mo", ge: "$20/mo", c: "$20/mo", isText: true },
                   ].map((row) => (
                     <tr key={row.f} className="border-b border-border">
-                      <td className="py-3 text-body-sm text-body">{row.f}</td>
+                      <td className="py-3 text-body-sm text-muted-foreground">{row.f}</td>
                       <td className="py-3 text-center">
                         {row.isText ? (
                           <span className="text-body-sm font-semibold text-primary">{row.t as string}</span>
@@ -255,7 +252,7 @@ export default function HomePage() {
                         return (
                           <td key={k} className="py-3 text-center">
                             {typeof val === "string" ? (
-                              <span className="text-body-sm text-body">{val}</span>
+                              <span className="text-body-sm text-muted-foreground">{val}</span>
                             ) : val ? (
                               <Check className="mx-auto h-4 w-4 text-hairline-soft" />
                             ) : (
@@ -287,7 +284,7 @@ export default function HomePage() {
                       <Star key={j} className="h-3 w-3 fill-accent text-accent" />
                     ))}
                   </div>
-                  <p className="text-body-sm text-body leading-relaxed">&ldquo;{t.content}&rdquo;</p>
+                  <p className="text-body-sm text-muted-foreground leading-relaxed">&ldquo;{t.content}&rdquo;</p>
                   <div className="mt-4 pt-3 border-t border-border flex items-center gap-2.5">
                     <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-primary/10 text-xs font-semibold text-primary">{t.name[0]}</div>
                     <div>
@@ -307,7 +304,7 @@ export default function HomePage() {
             <div className="text-center mb-10">
               <p className="text-eyebrow mb-3">Pricing</p>
               <h2 className="text-heading-1 text-ink-strong">{t.pricing.title}</h2>
-              <p className="mt-3 text-body">{t.pricing.subtitle}</p>
+              <p className="mt-3 text-body text-muted-foreground">{t.pricing.subtitle}</p>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {plans.map((plan) => (
@@ -321,7 +318,7 @@ export default function HomePage() {
                   <p className="mt-1.5 text-caption">{plan.desc}</p>
                   <ul className="mt-4 space-y-2">
                     {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-body-sm text-body"><Check className="h-3 w-3 shrink-0 text-primary" />{f}</li>
+                      <li key={f} className="flex items-center gap-2 text-body-sm text-muted-foreground"><Check className="h-3 w-3 shrink-0 text-primary" />{f}</li>
                     ))}
                   </ul>
                   <Link href={plan.name === t.pricing.enterprise ? "/contact" : "/signup"} className={`mt-5 flex h-10 items-center justify-center rounded-md text-body-sm font-semibold transition-colors duration-150 ${plan.popular ? "bg-primary text-on-primary hover:bg-primary-deep" : "border border-border text-ink hover:bg-surface-2"}`}>
@@ -345,9 +342,9 @@ export default function HomePage() {
                 <div key={i}>
                   <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="flex w-full items-center justify-between py-4 text-left">
                     <span className="text-body-sm font-semibold text-ink pr-4">{faq.q}</span>
-                    <ChevronDown className={`h-4 w-4 shrink-0 text-body transition-transform duration-150 ${openFaq === i ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-150 ${openFaq === i ? "rotate-180" : ""}`} />
                   </button>
-                  {openFaq === i && <p className="pb-4 text-body-sm text-body leading-relaxed">{faq.a}</p>}
+                  {openFaq === i && <p className="pb-4 text-body-sm text-muted-foreground leading-relaxed">{faq.a}</p>}
                 </div>
               ))}
             </div>
@@ -372,7 +369,6 @@ export default function HomePage() {
           </div>
         </section>
       </main>
-      <Footer />
     </>
   );
 }
