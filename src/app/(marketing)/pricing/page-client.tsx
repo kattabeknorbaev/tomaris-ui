@@ -12,20 +12,19 @@ export default function PricingPage() {
   const [annual, setAnnual] = useState(false);
   const { t } = useI18n();
 
+  // Which features are included per plan — text comes from i18n.
+  const FREE_INCLUDED = [true, true, true, true, false, false];
+
   const plans = [
     {
       name: t.pricing.free,
       monthlyPrice: 0,
       yearlyPrice: 0,
-      desc: "Perfect for trying Tomaris",
-      features: [
-        { text: "50 messages/day", included: true },
-        { text: "Tomaris Fast model", included: true },
-        { text: "Basic agents", included: true },
-        { text: "Community support", included: true },
-        { text: "Workspace uploads", included: false },
-        { text: "API access", included: false },
-      ],
+      desc: t.pricing.freeDesc,
+      features: t.pricing.freeFeatures.map((text, i) => ({
+        text,
+        included: FREE_INCLUDED[i],
+      })),
       cta: t.pricing.getStarted,
       popular: false,
     },
@@ -33,15 +32,8 @@ export default function PricingPage() {
       name: t.pricing.pro,
       monthlyPrice: 19,
       yearlyPrice: 190,
-      desc: "For power users and professionals",
-      features: [
-        { text: "Unlimited messages", included: true },
-        { text: "All models (27B, Fast, Code)", included: true },
-        { text: "All agents", included: true },
-        { text: "Workspace & file uploads", included: true },
-        { text: "API access (10K tokens/day)", included: true },
-        { text: "Priority support", included: true },
-      ],
+      desc: t.pricing.proDesc,
+      features: t.pricing.proFeatures.map((text) => ({ text, included: true })),
       cta: t.pricing.startTrial,
       popular: true,
     },
@@ -49,15 +41,11 @@ export default function PricingPage() {
       name: t.pricing.enterprise,
       monthlyPrice: null,
       yearlyPrice: null,
-      desc: "For organizations and teams",
-      features: [
-        { text: "Everything in Pro", included: true },
-        { text: "Custom model fine-tuning", included: true },
-        { text: "Dedicated infrastructure", included: true },
-        { text: "SLA & compliance", included: true },
-        { text: "Unlimited API access", included: true },
-        { text: "On-premise deployment", included: true },
-      ],
+      desc: t.pricing.enterpriseDesc,
+      features: t.pricing.enterpriseFeatures.map((text) => ({
+        text,
+        included: true,
+      })),
       cta: t.pricing.contactSales,
       popular: false,
     },
@@ -76,9 +64,9 @@ export default function PricingPage() {
               <motion.p
                 variants={fadeUp}
                 custom={0}
-                className="text-caption text-primary mb-4"
+                className="text-eyebrow mb-4"
               >
-                {t.pricing.title}
+                {t.pricing.eyebrow}
               </motion.p>
               <motion.h1
                 variants={fadeUp}
@@ -164,7 +152,7 @@ export default function PricingPage() {
                         </span>
                       </>
                     ) : (
-                      <span className="text-display">Custom</span>
+                      <span className="text-display">{t.pricing.custom}</span>
                     )}
                   </div>
                   <p className="mt-2 text-body-sm text-muted-foreground">
@@ -177,9 +165,9 @@ export default function PricingPage() {
                         className="flex items-center gap-2.5 text-body-sm"
                       >
                         {f.included ? (
-                          <Check className="h-3.5 w-3.5 shrink-0 text-primary" />
+                          <Check className="h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
                         ) : (
-                          <X className="h-3.5 w-3.5 shrink-0 text-muted-foreground/20" />
+                          <X className="h-3.5 w-3.5 shrink-0 text-muted-foreground/20" aria-hidden="true" />
                         )}
                         <span
                           className={

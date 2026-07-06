@@ -1,13 +1,37 @@
 "use client";
 
 import { fadeUp } from "@/lib/motion";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Phone, Send } from "lucide-react";
+import { Mail, MapPin, Phone, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function ContactPage() {
   const { t } = useI18n();
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [errors, setErrors] = useState<Partial<typeof form>>({});
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+
+  const set = (field: keyof typeof form) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => setForm((f) => ({ ...f, [field]: e.target.value }));
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const next: Partial<typeof form> = {};
+    if (!form.name.trim()) next.name = t.common.required;
+    if (!EMAIL_RE.test(form.email)) next.email = t.auth.emailInvalid;
+    if (!form.subject.trim()) next.subject = t.common.required;
+    if (!form.message.trim()) next.message = t.common.required;
+    setErrors(next);
+    if (Object.keys(next).length > 0) return;
+
+    // Demo: no backend yet — show honest sending + confirmation states.
+    setStatus("sending");
+    setTimeout(() => setStatus("sent"), 800);
+  };
 
   return (
     <>
@@ -43,52 +67,91 @@ export default function ContactPage() {
                 transition={{ delay: 0.3 }}
               >
                 <h2 className="text-xl font-bold mb-6">{t.contact.formTitle}</h2>
-                <form
-                  onSubmit={(e) => e.preventDefault()}
-                  className="space-y-5"
-                >
+                {status === "sent" ? (
+                  <div className="rounded-2xl border border-primary/30 bg-card p-10 text-center" role="status">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
+                      <CheckCircle2 className="h-7 w-7 text-primary" />
+                    </div>
+                    <h3 className="mt-4 text-lg font-semibold">{t.contact.successTitle}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{t.contact.successText}</p>
+                  </div>
+                ) : (
+                <form onSubmit={handleSubmit} noValidate className="space-y-5">
                   <div className="grid gap-5 sm:grid-cols-2">
                     <div>
-                      <label className="text-sm font-medium">{t.common.name}</label>
+                      <label htmlFor="contact-name" className="text-sm font-medium">{t.common.name}</label>
                       <input
+                        id="contact-name"
                         type="text"
+                        autoComplete="name"
+                        value={form.name}
+                        onChange={set("name")}
                         placeholder={t.contact.name}
-                        className="mt-1.5 w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                        aria-invalid={!!errors.name}
+                        className="mt-1.5 w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary aria-invalid:border-error"
                       />
+                      {errors.name && <p className="mt-1 text-xs text-error">{errors.name}</p>}
                     </div>
                     <div>
-                      <label className="text-sm font-medium">{t.common.email}</label>
+                      <label htmlFor="contact-email" className="text-sm font-medium">{t.common.email}</label>
                       <input
+                        id="contact-email"
                         type="email"
+                        autoComplete="email"
+                        value={form.email}
+                        onChange={set("email")}
                         placeholder={t.contact.email}
-                        className="mt-1.5 w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                        aria-invalid={!!errors.email}
+                        className="mt-1.5 w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary aria-invalid:border-error"
                       />
+                      {errors.email && <p className="mt-1 text-xs text-error">{errors.email}</p>}
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">{t.common.subject}</label>
+                    <label htmlFor="contact-subject" className="text-sm font-medium">{t.common.subject}</label>
                     <input
+                      id="contact-subject"
                       type="text"
+                      value={form.subject}
+                      onChange={set("subject")}
                       placeholder={t.contact.subject}
-                      className="mt-1.5 w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
+                      aria-invalid={!!errors.subject}
+                      className="mt-1.5 w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary aria-invalid:border-error"
                     />
+                    {errors.subject && <p className="mt-1 text-xs text-error">{errors.subject}</p>}
                   </div>
                   <div>
-                    <label className="text-sm font-medium">{t.common.message}</label>
+                    <label htmlFor="contact-message" className="text-sm font-medium">{t.common.message}</label>
                     <textarea
+                      id="contact-message"
                       rows={5}
+                      value={form.message}
+                      onChange={set("message")}
                       placeholder={t.contact.message}
-                      className="mt-1.5 w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary resize-none"
+                      aria-invalid={!!errors.message}
+                      className="mt-1.5 w-full rounded-xl border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary resize-none aria-invalid:border-error"
                     />
+                    {errors.message && <p className="mt-1 text-xs text-error">{errors.message}</p>}
                   </div>
                   <button
                     type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-medium text-primary-foreground transition-all hover:bg-emerald-dark"
+                    disabled={status === "sending"}
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-medium text-on-primary transition-all hover:bg-primary-deep active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none"
                   >
-                    {t.contact.send}
-                    <Send className="h-4 w-4" />
+                    {status === "sending" ? (
+                      <>
+                        {t.common.sending}
+                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                      </>
+                    ) : (
+                      <>
+                        {t.contact.send}
+                        <Send className="h-4 w-4" aria-hidden="true" />
+                      </>
+                    )}
                   </button>
                 </form>
+                )}
               </motion.div>
 
               {/* Contact Info */}

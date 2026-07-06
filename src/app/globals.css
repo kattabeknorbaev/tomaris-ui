@@ -315,6 +315,30 @@ body {
 }
 
 /* ============================================================
+   DECORATIVE
+   ============================================================ */
+
+.dot-grid {
+  background-image: radial-gradient(var(--hairline-soft) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
    FOCUS
    ============================================================ */
 
