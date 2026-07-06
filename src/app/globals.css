@@ -83,6 +83,25 @@
   --color-gold: var(--accent);
   --color-emerald-dark: var(--primary-deep);
   --color-emerald-light: var(--primary-soft);
+
+  /* DESIGN.md token vocabulary — without these, utilities like
+     text-ink / bg-surface-2 / text-mute compile to nothing. */
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-hairline: var(--hairline);
+  --color-hairline-soft: var(--hairline-soft);
+  --color-ink: var(--ink);
+  --color-ink-strong: var(--ink-strong);
+  --color-mute: var(--mute);
+  --color-on-primary: var(--on-primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-deep: var(--primary-deep);
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
 }
 
 /* ============================================================

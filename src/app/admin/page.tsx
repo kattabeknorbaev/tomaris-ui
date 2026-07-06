@@ -1,5 +1,6 @@
 "use client";
 
+import { fadeUp } from "@/lib/motion";
 import { motion } from "framer-motion";
 import {
   Users,
@@ -12,14 +13,6 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.1, duration: 0.4 },
-  }),
-};
 
 const dailyData = [
   { day: "Mon", users: 2100, chats: 14200 },
