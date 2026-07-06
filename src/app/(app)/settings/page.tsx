@@ -15,6 +15,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     const stored = localStorage.getItem("tomaris-notifications");
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time localStorage read after mount; SSR can't know client prefs
     if (stored) setNotifications(JSON.parse(stored));
   }, []);
 
