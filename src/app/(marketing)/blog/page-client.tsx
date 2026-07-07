@@ -101,7 +101,7 @@ export default function BlogPage() {
                   viewport={{ once: true }}
                   variants={fadeUp}
                   custom={i}
-                  className="group rounded-2xl border border-border bg-card transition-all hover:border-primary/30 hover:shadow-lg"
+                  className="card-lift group rounded-2xl border border-border bg-card"
                 >
                   {/* Image placeholder */}
                   <div className="h-48 rounded-t-2xl bg-gradient-to-br from-primary/20 via-muted to-gold/20" />

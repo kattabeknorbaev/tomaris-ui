@@ -84,7 +84,7 @@ export default function SecurityPage() {
                   viewport={{ once: true }}
                   variants={fadeUp}
                   custom={i}
-                  className="rounded-2xl border border-border bg-card p-6"
+                  className="card-lift rounded-2xl border border-border bg-card p-6"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <feature.icon className="h-6 w-6" />

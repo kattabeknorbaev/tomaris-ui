@@ -199,7 +199,7 @@ export default function HomePage() {
                   ))}
                 </ul>
               </div>
-              <div className="rounded-lg border border-border bg-card overflow-hidden">
+              <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[var(--shadow-md)]">
                 <div className="border-b border-border px-4 py-2.5">
                   <h3 className="text-body-sm font-semibold text-ink">{t.comparison.uzbekQuality}</h3>
                 </div>
@@ -209,14 +209,20 @@ export default function HomePage() {
                     { name: "GPT-4", score: 62, hl: false },
                     { name: "Gemini", score: 58, hl: false },
                     { name: "Claude", score: 55, hl: false },
-                  ].map((m) => (
+                  ].map((m, i) => (
                     <div key={m.name}>
                       <div className="flex justify-between text-body-sm mb-1">
                         <span className={m.hl ? "font-semibold text-ink" : "text-muted-foreground"}>{m.name}</span>
                         <span className={`font-mono ${m.hl ? "text-primary font-semibold" : "text-muted-foreground"}`}>{m.score}%</span>
                       </div>
                       <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden">
-                        <div className={`h-full rounded-full ${m.hl ? "bg-primary" : "bg-hairline-soft"}`} style={{ width: `${m.score}%` }} />
+                        <motion.div
+                          className={`h-full rounded-full ${m.hl ? "bg-primary" : "bg-hairline-soft"}`}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${m.score}%` }}
+                          viewport={{ once: true, margin: "-40px" }}
+                          transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
+                        />
                       </div>
                     </div>
                   ))}
@@ -347,7 +353,7 @@ export default function HomePage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {testimonials.map((t) => (
-                <div key={t.name} className="rounded-lg border border-border bg-card p-5">
+                <div key={t.name} className="card-lift rounded-xl border border-border bg-card p-5">
                   <div className="flex gap-0.5 mb-3">
                     {Array.from({ length: 5 }).map((_, j) => (
                       <Star key={j} className="h-3 w-3 fill-gold text-gold" aria-hidden="true" />
@@ -377,7 +383,7 @@ export default function HomePage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {plans.map((plan) => (
-                <div key={plan.name} className={`rounded-lg border bg-card p-5 relative ${plan.popular ? "border-primary" : "border-border"}`}>
+                <div key={plan.name} className={`card-lift relative rounded-xl border bg-card p-5 ${plan.popular ? "border-primary shadow-[0_0_0_1px_var(--primary),var(--shadow-lg)]" : "border-border"}`}>
                   {plan.popular && <div className="absolute -top-2.5 left-5 rounded-sm bg-primary px-2.5 py-0.5 text-[10px] font-semibold text-on-primary uppercase tracking-wider">{t.pricing.mostPopular}</div>}
                   <h3 className="text-body-sm font-semibold text-ink">{plan.name}</h3>
                   <div className="mt-1.5 flex items-baseline gap-0.5">
@@ -387,10 +393,10 @@ export default function HomePage() {
                   <p className="mt-1.5 text-caption">{plan.desc}</p>
                   <ul className="mt-4 space-y-2">
                     {plan.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-body-sm text-muted-foreground"><Check className="h-3 w-3 shrink-0 text-primary" />{f}</li>
+                      <li key={f} className="flex items-center gap-2 text-body-sm text-muted-foreground"><Check className="h-3 w-3 shrink-0 text-primary" aria-hidden="true" />{f}</li>
                     ))}
                   </ul>
-                  <Link href={plan.name === t.pricing.enterprise ? "/contact" : "/signup"} className={`mt-5 flex h-10 items-center justify-center rounded-md text-body-sm font-semibold transition-colors duration-150 ${plan.popular ? "bg-primary text-on-primary hover:bg-primary-deep" : "border border-border text-ink hover:bg-surface-2"}`}>
+                  <Link href={plan.name === t.pricing.enterprise ? "/contact" : "/signup"} className={`btn-lift mt-5 flex h-10 items-center justify-center rounded-md text-body-sm font-semibold ${plan.popular ? "bg-primary text-on-primary hover:bg-primary-deep" : "border border-border text-ink hover:bg-surface-2"}`}>
                     {plan.cta}
                   </Link>
                 </div>
@@ -430,18 +436,31 @@ export default function HomePage() {
         {/* ===== CTA ===== */}
         <section className="py-20 sm:py-24">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
-            <div className="rounded-lg bg-ink px-8 py-14 text-center sm:px-16">
-              <h2 className="text-heading-1 text-canvas">{t.cta.title}</h2>
-              <p className="mt-3 text-body-sm text-mute max-w-md mx-auto">{t.cta.subtitle}</p>
-              <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
-                <Link href="/app" className="inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary hover:bg-primary-deep transition-colors duration-150">
-                  {t.cta.cta1} <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-                <Link href="/waitlist" className="inline-flex h-11 items-center gap-2 rounded-md border border-hairline-soft px-5 text-sm font-semibold text-canvas hover:bg-surface-3 transition-colors duration-150">
-                  {t.cta.cta2}
-                </Link>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.4, ease: EASE }}
+              className="relative overflow-hidden rounded-2xl bg-ink px-8 py-14 text-center sm:px-16"
+            >
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{ background: "radial-gradient(50% 60% at 50% 0%, rgba(15,143,111,0.22), transparent 70%)" }}
+                aria-hidden="true"
+              />
+              <div className="relative">
+                <h2 className="text-heading-1 text-canvas">{t.cta.title}</h2>
+                <p className="mt-3 text-body-sm text-mute max-w-md mx-auto">{t.cta.subtitle}</p>
+                <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <Link href="/app" className="btn-lift inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary shadow-[0_4px_16px_-4px_rgba(15,143,111,0.6)] hover:bg-primary-deep">
+                    {t.cta.cta1} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </Link>
+                  <Link href="/waitlist" className="btn-lift inline-flex h-11 items-center gap-2 rounded-md border border-hairline-soft px-5 text-sm font-semibold text-canvas hover:bg-surface-3">
+                    {t.cta.cta2}
+                  </Link>
+                </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </section>
       </main>

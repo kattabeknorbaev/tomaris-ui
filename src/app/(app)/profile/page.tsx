@@ -55,7 +55,7 @@ export default function ProfilePage() {
             </div>
             <Link
               href="/pricing"
-              className="ml-auto flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-emerald-dark"
+              className="btn-lift ml-auto flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-primary-deep"
             >
               {t.profilePage.upgrade}
               <ArrowUpRight className="h-3.5 w-3.5" />

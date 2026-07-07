@@ -59,7 +59,7 @@ export default function AgentsPage() {
               >
                 <button
                   onClick={() => launchAgent(agent.name)}
-                  className="group flex h-full w-full flex-col rounded-2xl border border-border bg-card p-6 text-left transition-all hover:border-primary/30 hover:shadow-lg"
+                  className="card-lift group flex h-full w-full flex-col rounded-2xl border border-border bg-card p-6 text-left"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                     <Icon className="h-6 w-6" />
