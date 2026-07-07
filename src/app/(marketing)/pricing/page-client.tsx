@@ -129,14 +129,14 @@ export default function PricingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 + i * 0.1 }}
-                  className={`relative rounded-xl border bg-card p-6 ${
+                  className={`card-lift relative rounded-xl border bg-card p-6 ${
                     plan.popular
-                      ? "border-foreground shadow-lg"
+                      ? "border-primary shadow-[0_0_0_1px_var(--primary),var(--shadow-lg)]"
                       : "border-border"
                   }`}
                 >
                   {plan.popular && (
-                    <div className="absolute -top-2.5 left-6 rounded-md bg-foreground px-3 py-0.5 text-caption text-background normal-case">
+                    <div className="absolute -top-2.5 left-6 rounded-md bg-primary px-3 py-0.5 text-caption font-semibold text-on-primary normal-case">
                       {t.pricing.mostPopular}
                     </div>
                   )}
@@ -183,9 +183,9 @@ export default function PricingPage() {
                     href={
                       plan.name === t.pricing.enterprise ? "/contact" : "/signup"
                     }
-                    className={`mt-6 flex h-10 items-center justify-center rounded-lg text-sm font-medium transition-all active:scale-[0.98] ${
+                    className={`btn-lift mt-6 flex h-10 items-center justify-center rounded-lg text-sm font-medium ${
                       plan.popular
-                        ? "bg-foreground text-background hover:bg-foreground/90"
+                        ? "bg-primary text-on-primary hover:bg-primary-deep"
                         : "border border-border hover:bg-muted"
                     }`}
                   >

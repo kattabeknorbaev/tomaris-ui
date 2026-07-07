@@ -120,7 +120,7 @@ export default function LoginClient() {
         <button
           type="submit"
           disabled={submitting}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-on-primary transition-all hover:bg-primary-deep active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none"
+          className="btn-lift flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-on-primary shadow-[0_4px_16px_-6px_rgba(15,143,111,0.5)] hover:bg-primary-deep disabled:opacity-60 disabled:pointer-events-none"
         >
           {submitting && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
           {submitting ? t.auth.signingIn : t.auth.signIn}

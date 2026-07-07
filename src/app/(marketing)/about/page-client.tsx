@@ -39,14 +39,14 @@ export default function AboutPage() {
         <section className="border-t border-border py-20 sm:py-24">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-lg border border-border bg-card p-6">
+              <div className="card-lift rounded-xl border border-border bg-card p-6">
                 <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 text-primary">
                   <Target className="h-4 w-4" />
                 </div>
                 <h2 className="mt-3 text-heading-3 text-ink">{t.about.mission}</h2>
                 <p className="mt-2 text-body-sm text-muted-foreground leading-relaxed">{t.about.missionText}</p>
               </div>
-              <div className="rounded-lg border border-border bg-card p-6">
+              <div className="card-lift rounded-xl border border-border bg-card p-6">
                 <div className="flex h-9 w-9 items-center justify-center rounded-md bg-gold/10 text-gold">
                   <Eye className="h-4 w-4" />
                 </div>
@@ -76,7 +76,7 @@ export default function AboutPage() {
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {team.map((member) => (
-                <div key={member.name} className="flex items-center gap-3 rounded-lg border border-border bg-card p-4">
+                <div key={member.name} className="card-lift flex items-center gap-3 rounded-xl border border-border bg-card p-4">
                   <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-primary/10 text-sm font-semibold text-primary">{member.initial}</div>
                   <div>
                     <div className="text-body-sm font-semibold text-ink">{member.name}</div>
