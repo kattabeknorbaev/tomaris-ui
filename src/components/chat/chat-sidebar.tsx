@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { MessageSquare, Plus, Bot, FolderOpen, Settings, Trash2, PanelLeftClose, PanelLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
@@ -14,6 +14,7 @@ import { ThemeToggle } from "@/components/shared/theme-toggle";
 export function ChatSidebar() {
   const { chats, activeChatId, setActiveChat, createChat, deleteChat, renameChat, sidebarOpen, toggleSidebar } = useChatStore();
   const pathname = usePathname();
+  const router = useRouter();
   const { t } = useI18n();
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
@@ -42,6 +43,18 @@ export function ChatSidebar() {
     setRenamingId(null);
   };
 
+  // Selecting or creating a chat from another page (settings, agents, …)
+  // must also bring the user back to the chat surface.
+  const openChat = (id: string) => {
+    setActiveChat(id);
+    if (pathname !== "/app") router.push("/app");
+  };
+
+  const handleNewChat = () => {
+    createChat();
+    if (pathname !== "/app") router.push("/app");
+  };
+
   return (
     <>
       {/* Collapsed state — mobile: floating chip over the page; desktop: slim in-flow rail */}
@@ -55,7 +68,7 @@ export function ChatSidebar() {
           <button onClick={toggleSidebar} aria-label="Open sidebar" className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
             <PanelLeft className="h-4 w-4" />
           </button>
-          <button onClick={() => createChat()} aria-label={t.chat.newChat} title={t.chat.newChat} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+          <button onClick={handleNewChat} aria-label={t.chat.newChat} title={t.chat.newChat} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
             <Plus className="h-4 w-4" />
           </button>
         </div>
@@ -75,7 +88,7 @@ export function ChatSidebar() {
         </div>
 
         <div className="shrink-0 p-2.5">
-          <button onClick={() => createChat()} className="flex w-full items-center gap-2 rounded-md border border-border bg-canvas px-3 py-2 text-body-sm text-ink hover:bg-surface-2 transition-colors duration-150">
+          <button onClick={handleNewChat} className="flex w-full items-center gap-2 rounded-md border border-border bg-canvas px-3 py-2 text-body-sm text-ink hover:bg-surface-2 transition-colors duration-150">
             <Plus className="h-4 w-4" />{t.chat.newChat}
           </button>
         </div>
@@ -87,7 +100,7 @@ export function ChatSidebar() {
           <div className="space-y-px">
             {chats.length === 0 && <p className="px-2.5 py-4 text-caption text-mute text-center">{t.chat.noChats}</p>}
             {chats.map((chat) => (
-              <div key={chat.id} className={cn("group flex items-center gap-2 rounded-md px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")} onClick={() => setActiveChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
+              <div key={chat.id} className={cn("group flex items-center gap-2 rounded-md px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")} onClick={() => openChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
                 <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-40" />
                 {renamingId === chat.id ? (
                   <input ref={renameRef} value={renameValue} onChange={(e) => setRenameValue(e.target.value)} onBlur={handleRenameSubmit} onKeyDown={(e) => { if (e.key === "Enter") handleRenameSubmit(); if (e.key === "Escape") setRenamingId(null); }} className="flex-1 min-w-0 bg-transparent text-[13px] outline-none border-b border-primary" onClick={(e) => e.stopPropagation()} />
