@@ -31,7 +31,7 @@ export function Navbar() {
       </a>
       <div className="border-b border-border bg-canvas/80 backdrop-blur-xl">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5 sm:px-8">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/home" className="flex items-center gap-2">
             <Image src="/logo.png" alt="Tomaris" width={24} height={24} className="rounded-sm" />
             <span className="text-sm font-semibold text-ink tracking-tight">Tomaris</span>
           </Link>

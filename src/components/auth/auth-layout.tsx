@@ -13,7 +13,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
       {/* Left side — form */}
       <div className="flex flex-1 flex-col justify-center px-5 py-10 sm:px-8 lg:px-16 xl:px-24">
         <div className="mx-auto w-full max-w-sm">
-          <Link href="/" className="inline-flex items-center gap-2">
+          <Link href="/home" className="inline-flex items-center gap-2">
             <Image
               src="/logo.png"
               alt="Tomaris"

@@ -5,7 +5,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tomaris-ui.vercel.
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
-    "",
+    "/home",
     "/about",
     "/blog",
     "/contact",
@@ -18,8 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...routes.map((route) => ({
       url: `${SITE_URL}${route}`,
       lastModified: new Date(),
-      changeFrequency: (route === "" ? "weekly" : "monthly") as "weekly" | "monthly",
-      priority: route === "" ? 1 : 0.7,
+      changeFrequency: (route === "/home" ? "weekly" : "monthly") as "weekly" | "monthly",
+      priority: route === "/home" ? 1 : 0.7,
     })),
     ...posts.map((post) => ({
       url: `${SITE_URL}/blog/${post.slug}`,
