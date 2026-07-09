@@ -12,7 +12,7 @@ export function Footer() {
       <div className="mx-auto max-w-5xl px-5 py-12 sm:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href="/home" className="flex items-center gap-2">
               <Image src="/logo.png" alt="Tomaris" width={22} height={22} className="rounded-sm" />
               <span className="text-sm font-semibold text-ink">Tomaris</span>
             </Link>
