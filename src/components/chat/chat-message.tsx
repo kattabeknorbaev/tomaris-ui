@@ -72,14 +72,14 @@ export const ChatMessage = memo(function ChatMessage({ message }: { message: Mes
             </div>
             {!isUser && !message.isStreaming && message.content && (
               <div className="mt-1.5 flex items-center gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-150">
-                <button onClick={handleCopy} className="flex h-6 w-6 items-center justify-center rounded text-mute hover:text-ink hover:bg-surface-2 transition-colors duration-150" title="Copy" aria-label="Copy">
-                  {copied ? <Check className="h-3 w-3 text-primary" /> : <Copy className="h-3 w-3" />}
+                <button onClick={handleCopy} className="flex h-7 w-7 items-center justify-center rounded-lg text-mute hover:text-ink hover:bg-surface-2 active:scale-90 transition-all duration-150" title="Copy" aria-label="Copy">
+                  {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
                 </button>
-                <button onClick={() => setReaction(reaction === "up" ? null : "up")} aria-pressed={reaction === "up"} className={cn("flex h-6 w-6 items-center justify-center rounded transition-colors duration-150 hover:bg-surface-2", reaction === "up" ? "text-primary" : "text-mute hover:text-ink")} title="Good" aria-label="Good response">
-                  <ThumbsUp className="h-3 w-3" />
+                <button onClick={() => setReaction(reaction === "up" ? null : "up")} aria-pressed={reaction === "up"} className={cn("flex h-7 w-7 items-center justify-center rounded-lg active:scale-90 transition-all duration-150 hover:bg-surface-2", reaction === "up" ? "text-primary" : "text-mute hover:text-ink")} title="Good" aria-label="Good response">
+                  <ThumbsUp className="h-3.5 w-3.5" />
                 </button>
-                <button onClick={() => setReaction(reaction === "down" ? null : "down")} aria-pressed={reaction === "down"} className={cn("flex h-6 w-6 items-center justify-center rounded transition-colors duration-150 hover:bg-surface-2", reaction === "down" ? "text-error" : "text-mute hover:text-ink")} title="Bad" aria-label="Bad response">
-                  <ThumbsDown className="h-3 w-3" />
+                <button onClick={() => setReaction(reaction === "down" ? null : "down")} aria-pressed={reaction === "down"} className={cn("flex h-7 w-7 items-center justify-center rounded-lg active:scale-90 transition-all duration-150 hover:bg-surface-2", reaction === "down" ? "text-error" : "text-mute hover:text-ink")} title="Bad" aria-label="Bad response">
+                  <ThumbsDown className="h-3.5 w-3.5" />
                 </button>
               </div>
             )}

@@ -86,7 +86,7 @@ export default function AppPage() {
           <p className="text-caption mb-4">{t.chat.noChatDesc}</p>
           <button
             onClick={() => createChat()}
-            className="rounded-md bg-primary px-4 py-2 text-body-sm font-medium text-on-primary hover:bg-primary-deep active:scale-[0.98] transition-all duration-150"
+            className="btn-lift rounded-xl bg-primary px-4 py-2 text-body-sm font-medium text-on-primary hover:bg-primary-deep shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)]"
           >
             {t.chat.newChat}
           </button>
