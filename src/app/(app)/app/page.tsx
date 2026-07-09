@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { useI18n } from "@/components/shared/i18n-provider";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 export default function AppPage() {
   const activeChat = useChatStore((s) =>
@@ -18,22 +18,48 @@ export default function AppPage() {
   const createChat = useChatStore((s) => s.createChat);
   const sidebarOpen = useChatStore((s) => s.sidebarOpen);
   const { t } = useI18n();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const autoScrollRef = useRef(true);
   const scrollRafRef = useRef<number | null>(null);
+  const prevChatIdRef = useRef<string | undefined>(undefined);
+  const prevLenRef = useRef(0);
 
-  useEffect(() => {
+  // If the user is within 100px of the bottom we keep following the stream;
+  // scrolling up further releases the follow so they can read earlier replies.
+  const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      autoScrollRef.current = scrollHeight - scrollTop - clientHeight < 100;
-    };
-    container.addEventListener("scroll", handleScroll, { passive: true });
-    return () => container.removeEventListener("scroll", handleScroll);
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    autoScrollRef.current = scrollHeight - scrollTop - clientHeight < 100;
   }, []);
 
+  // Callback ref so the listener attaches the moment the scroll container
+  // mounts. The container renders conditionally, so a mount-time effect with
+  // [] deps would run while it's still null and never attach — which left
+  // auto-scroll stuck on and made it impossible to scroll up mid-stream.
+  const setScrollContainer = useCallback(
+    (node: HTMLDivElement | null) => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.removeEventListener("scroll", handleScroll);
+      }
+      scrollContainerRef.current = node;
+      if (node) node.addEventListener("scroll", handleScroll, { passive: true });
+    },
+    [handleScroll]
+  );
+
   const lastMessage = activeChat?.messages[activeChat.messages.length - 1];
+
+  // A new chat or a new message (a new turn) should snap back to the bottom.
+  useEffect(() => {
+    const id = activeChat?.id;
+    const len = activeChat?.messages.length ?? 0;
+    if (id !== prevChatIdRef.current || len > prevLenRef.current) {
+      autoScrollRef.current = true;
+    }
+    prevChatIdRef.current = id;
+    prevLenRef.current = len;
+  }, [activeChat?.id, activeChat?.messages.length]);
 
   // Follow the stream: throttled to one scroll per frame, instant (not smooth)
   // so per-token updates don't queue competing smooth animations.
@@ -68,7 +94,7 @@ export default function AppPage() {
       </header>
 
       {hasMessages ? (
-        <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
+        <div ref={setScrollContainer} className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-2xl py-4">
             {activeChat.messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
