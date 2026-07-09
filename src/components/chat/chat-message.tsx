@@ -1,11 +1,67 @@
 "use client";
 
-import { useState, memo } from "react";
+import { useState, memo, isValidElement, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { Message } from "@/types";
 import { Copy, Check, ThumbsUp, ThumbsDown, Brain, ChevronDown } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { useI18n } from "@/components/shared/i18n-provider";
+
+// Pull the raw text out of a React node tree (for copying code verbatim).
+function extractText(node: ReactNode): string {
+  if (typeof node === "string") return node;
+  if (typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (isValidElement(node)) {
+    return extractText((node.props as { children?: ReactNode }).children);
+  }
+  return "";
+}
+
+// Fenced code block with a language label and a copy button.
+function CodeBlock({ children }: { children?: ReactNode }) {
+  const [copied, setCopied] = useState(false);
+  const codeEl = Array.isArray(children) ? children[0] : children;
+  const className = isValidElement(codeEl)
+    ? (codeEl.props as { className?: string }).className ?? ""
+    : "";
+  const lang = /language-(\w+)/.exec(className)?.[1] ?? "";
+  const raw = extractText(children).replace(/\n$/, "");
+
+  const handleCopyCode = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(raw);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="code-block my-3 overflow-hidden rounded-lg border border-hairline">
+      <div className="flex items-center justify-between border-b border-hairline bg-surface-2/50 px-3 py-1.5">
+        <span className="font-mono text-[11px] uppercase tracking-wide text-mute">
+          {lang || "code"}
+        </span>
+        <button
+          onClick={handleCopyCode}
+          className="flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] text-mute transition-all duration-150 hover:bg-surface-2 hover:text-ink active:scale-90"
+          aria-label="Copy code"
+        >
+          {copied ? (
+            <>
+              <Check className="h-3 w-3 text-primary" /> Copied
+            </>
+          ) : (
+            <>
+              <Copy className="h-3 w-3" /> Copy
+            </>
+          )}
+        </button>
+      </div>
+      <pre>{children}</pre>
+    </div>
+  );
+}
 
 function StreamingDots() {
   return (
@@ -18,7 +74,11 @@ function StreamingDots() {
 }
 
 const MarkdownContent = memo(function MarkdownContent({ content }: { content: string }) {
-  return <div className="prose-tomaris"><ReactMarkdown>{content}</ReactMarkdown></div>;
+  return (
+    <div className="prose-tomaris">
+      <ReactMarkdown components={{ pre: CodeBlock }}>{content}</ReactMarkdown>
+    </div>
+  );
 });
 
 export const ChatMessage = memo(function ChatMessage({ message }: { message: Message }) {
