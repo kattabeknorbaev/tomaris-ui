@@ -1,4 +1,5 @@
 import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { user } from "./auth-schema";
 
 /**
  * The database schema — the shape of our data.
@@ -15,8 +16,10 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 export const chats = pgTable("chats", {
   // A text id (we generate UUIDs in the app, same as today's crypto.randomUUID).
   id: text("id").primaryKey(),
-  // Which account owns this chat.
-  userId: text("user_id").notNull(),
+  // Which account owns this chat. Delete the user -> delete their chats.
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
   title: text("title").notNull().default("New Chat"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
