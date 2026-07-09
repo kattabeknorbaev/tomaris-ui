@@ -1,12 +1,7 @@
-import type { Metadata } from "next";
-import SignupClient from "./page-client";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "Sign Up",
-  description: "Create your Tomaris account and start chatting with Uzbekistan's first native AI.",
-  robots: { index: false },
-};
-
+// Email-OTP login handles both new and returning users in one flow, so there's
+// no separate signup form — send anyone here straight to the login screen.
 export default function SignupPage() {
-  return <SignupClient />;
+  redirect("/login");
 }
