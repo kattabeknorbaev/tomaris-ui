@@ -247,14 +247,14 @@ export function ChatInput() {
               return (
                 <div
                   key={att.id}
-                  className="flex items-center gap-2 rounded-md border border-border bg-surface-2 px-2.5 py-1.5 text-body-sm"
+                  className="flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-2.5 py-1.5 text-body-sm transition-colors duration-150 hover:border-hairline-soft"
                 >
                   <Icon className="h-3.5 w-3.5 text-primary shrink-0" />
                   <span className="truncate max-w-[160px] text-ink">{att.name}</span>
                   <span className="text-caption">{formatSize(att.size)}</span>
                   <button
                     onClick={() => removeAttachment(att.id)}
-                    className="text-mute hover:text-error transition-colors duration-150 ml-0.5"
+                    className="flex h-5 w-5 items-center justify-center rounded-full text-mute hover:text-error hover:bg-error/10 active:scale-90 transition-all duration-150 ml-0.5"
                     aria-label="Remove"
                   >
                     <X className="h-3 w-3" />
@@ -265,7 +265,7 @@ export function ChatInput() {
           </div>
         )}
 
-        <div className="flex items-end gap-2 rounded-lg border border-border bg-canvas-soft px-3 py-2 transition-colors duration-150 focus-within:border-hairline-soft">
+        <div className="flex items-end gap-2 rounded-2xl border border-border bg-canvas-soft px-3 py-2 transition-all duration-200 focus-within:border-primary/40 focus-within:shadow-[0_0_0_3px_rgba(15,143,111,0.08)]">
           <input
             ref={fileInputRef}
             type="file"
@@ -276,7 +276,7 @@ export function ChatInput() {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-mute hover:text-ink hover:bg-surface-2 transition-colors duration-150"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-mute hover:text-ink hover:bg-surface-2 active:scale-90 transition-all duration-150"
             title="Attach file"
             aria-label="Attach file"
           >
@@ -296,7 +296,7 @@ export function ChatInput() {
             {isStreaming ? (
               <button
                 onClick={handleStop}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded text-error hover:bg-error/10 transition-colors duration-150"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-error hover:bg-error/10 active:scale-90 transition-all duration-150"
                 title="Stop"
                 aria-label="Stop"
               >
@@ -307,9 +307,9 @@ export function ChatInput() {
                 onClick={handleSend}
                 disabled={!input.trim() && attachments.length === 0}
                 className={cn(
-                  "flex h-8 w-8 shrink-0 items-center justify-center rounded transition-all duration-150",
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-200",
                   input.trim() || attachments.length > 0
-                    ? "bg-primary text-on-primary hover:bg-primary-deep"
+                    ? "bg-primary text-on-primary hover:bg-primary-deep hover:-translate-y-0.5 active:translate-y-0 active:scale-95 shadow-[0_4px_14px_-4px_rgba(15,143,111,0.6)]"
                     : "text-hairline-soft"
                 )}
                 title="Send"

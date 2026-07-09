@@ -88,7 +88,7 @@ export function ChatSidebar() {
         </div>
 
         <div className="shrink-0 p-2.5">
-          <button onClick={handleNewChat} className="flex w-full items-center gap-2 rounded-md border border-border bg-canvas px-3 py-2 text-body-sm text-ink hover:bg-surface-2 transition-colors duration-150">
+          <button onClick={handleNewChat} className="flex w-full items-center gap-2 rounded-xl border border-border bg-canvas px-3 py-2 text-body-sm text-ink hover:bg-surface-2 hover:border-hairline-soft active:scale-[0.98] transition-all duration-150">
             <Plus className="h-4 w-4" />{t.chat.newChat}
           </button>
         </div>
@@ -100,7 +100,7 @@ export function ChatSidebar() {
           <div className="space-y-px">
             {chats.length === 0 && <p className="px-2.5 py-4 text-caption text-mute text-center">{t.chat.noChats}</p>}
             {chats.map((chat) => (
-              <div key={chat.id} className={cn("group flex items-center gap-2 rounded-md px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")} onClick={() => openChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
+              <div key={chat.id} className={cn("group flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")} onClick={() => openChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
                 <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-40" />
                 {renamingId === chat.id ? (
                   <input ref={renameRef} value={renameValue} onChange={(e) => setRenameValue(e.target.value)} onBlur={handleRenameSubmit} onKeyDown={(e) => { if (e.key === "Enter") handleRenameSubmit(); if (e.key === "Escape") setRenamingId(null); }} className="flex-1 min-w-0 bg-transparent text-[13px] outline-none border-b border-primary" onClick={(e) => e.stopPropagation()} />
@@ -117,11 +117,11 @@ export function ChatSidebar() {
 
         <div className="shrink-0 border-t border-border p-2.5 space-y-px">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className={cn("flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === item.href ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
+            <Link key={item.href} href={item.href} className={cn("flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === item.href ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
               <item.icon className="h-3.5 w-3.5 opacity-50" />{item.label}
             </Link>
           ))}
-          <Link href="/profile" className={cn("flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === "/profile" ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
+          <Link href="/profile" className={cn("flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === "/profile" ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
             <div className="flex h-4 w-4 items-center justify-center rounded-sm bg-primary text-[8px] font-bold text-on-primary">U</div>
             {t.common.profile}
           </Link>
