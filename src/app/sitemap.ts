@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { posts } from "@/lib/blog";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tomaris-ui.vercel.app";
 
@@ -13,10 +14,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/waitlist",
   ];
 
-  return routes.map((route) => ({
-    url: `${SITE_URL}${route}`,
-    lastModified: new Date(),
-    changeFrequency: route === "" ? "weekly" : "monthly",
-    priority: route === "" ? 1 : 0.7,
-  }));
+  return [
+    ...routes.map((route) => ({
+      url: `${SITE_URL}${route}`,
+      lastModified: new Date(),
+      changeFrequency: (route === "" ? "weekly" : "monthly") as "weekly" | "monthly",
+      priority: route === "" ? 1 : 0.7,
+    })),
+    ...posts.map((post) => ({
+      url: `${SITE_URL}/blog/${post.slug}`,
+      lastModified: new Date(post.date),
+      changeFrequency: "yearly" as const,
+      priority: 0.5,
+    })),
+  ];
 }
