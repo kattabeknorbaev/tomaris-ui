@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { I18nProvider } from "@/components/shared/i18n-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -70,6 +71,7 @@ export default function RootLayout({
             <Toaster />
           </I18nProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
