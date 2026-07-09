@@ -3,19 +3,22 @@
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Plus, Settings, Trash2, PanelLeftClose, PanelLeft } from "lucide-react";
+import { MessageSquare, Plus, Settings, Trash2, PanelLeftClose, PanelLeft, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { authClient } from "@/lib/auth-client";
 
 export function ChatSidebar() {
   const { chats, activeChatId, setActiveChat, createChat, deleteChat, renameChat, sidebarOpen, toggleSidebar } = useChatStore();
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useI18n();
+  const { data: session } = authClient.useSession();
+  const [signingOut, setSigningOut] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const renameRef = useRef<HTMLInputElement>(null);
@@ -51,6 +54,12 @@ export function ChatSidebar() {
   const handleNewChat = () => {
     createChat();
     if (pathname !== "/app") router.push("/app");
+  };
+
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    await authClient.signOut();
+    router.push("/login");
   };
 
   return (
@@ -120,9 +129,15 @@ export function ChatSidebar() {
             </Link>
           ))}
           <Link href="/profile" className={cn("flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === "/profile" ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
-            <div className="flex h-4 w-4 items-center justify-center rounded-sm bg-primary text-[8px] font-bold text-on-primary">U</div>
-            {t.common.profile}
+            <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-sm bg-primary text-[8px] font-bold uppercase text-on-primary">
+              {session?.user?.email?.[0] ?? "U"}
+            </div>
+            <span className="flex-1 truncate">{session?.user?.email ?? t.common.profile}</span>
           </Link>
+          <button onClick={handleSignOut} disabled={signingOut} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink disabled:opacity-60">
+            <LogOut className="h-3.5 w-3.5 opacity-50" />
+            {signingOut ? "Signing out…" : "Sign out"}
+          </button>
           <div className="flex items-center gap-2 px-2.5 pt-2 mt-1 border-t border-border">
             <LanguageSwitcher />
             <ThemeToggle />
