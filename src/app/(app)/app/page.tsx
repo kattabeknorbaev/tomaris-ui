@@ -3,9 +3,9 @@
 import { useChatStore } from "@/stores/chat-store";
 import { ChatMessage } from "@/components/chat/chat-message";
 import { ChatInput } from "@/components/chat/chat-input";
-import { ModelSelector } from "@/components/chat/model-selector";
 import { WelcomeScreen } from "@/components/chat/welcome-screen";
 import { MessageSquare } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { useI18n } from "@/components/shared/i18n-provider";
@@ -16,6 +16,7 @@ export default function AppPage() {
     s.chats.find((c) => c.id === s.activeChatId)
   );
   const createChat = useChatStore((s) => s.createChat);
+  const sidebarOpen = useChatStore((s) => s.sidebarOpen);
   const { t } = useI18n();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoScrollRef = useRef(true);
@@ -58,8 +59,8 @@ export default function AppPage() {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <header className="flex h-12 shrink-0 items-center justify-between border-b border-border px-4">
-        <ModelSelector />
+      <header className={cn("flex h-12 shrink-0 items-center justify-between border-b border-border px-4", !sidebarOpen && "pl-14 md:pl-4")}>
+        <span className="text-[13px] font-medium">Tomaris 27B</span>
         <div className="flex items-center gap-1">
           <LanguageSwitcher />
           <ThemeToggle />

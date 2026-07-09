@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Chat, Message, ModelType } from "@/types";
+import type { Chat, Message } from "@/types";
 import { generateId } from "@/lib/utils";
 
 function now(): string {
@@ -27,7 +27,6 @@ interface ChatState {
   chats: Chat[];
   activeChatId: string | null;
   sidebarOpen: boolean;
-  model: ModelType;
 
   createChat: () => string;
   deleteChat: (id: string) => void;
@@ -42,17 +41,15 @@ interface ChatState {
   ) => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
-  setModel: (model: ModelType) => void;
   clearAllChats: () => void;
 }
 
 export const useChatStore = create<ChatState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       chats: [],
       activeChatId: null,
       sidebarOpen: true,
-      model: "tomaris-27b",
 
       createChat: () => {
         const id = generateId();
@@ -62,7 +59,7 @@ export const useChatStore = create<ChatState>()(
           messages: [],
           createdAt: now(),
           updatedAt: now(),
-          model: get().model,
+          model: "tomaris-27b",
         };
         set((state) => ({
           chats: [newChat, ...state.chats],
@@ -134,7 +131,6 @@ export const useChatStore = create<ChatState>()(
 
       setSidebarOpen: (open: boolean) => set({ sidebarOpen: open }),
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-      setModel: (model: ModelType) => set({ model }),
 
       clearAllChats: () => set({ chats: [], activeChatId: null }),
     }),
@@ -143,13 +139,19 @@ export const useChatStore = create<ChatState>()(
       version: 1,
       migrate: (persisted) => persisted as ChatState,
       merge: (persisted, current) => {
+        // Pick known keys only — older persisted versions carry extra fields
+        // (e.g. a removed `model` selection) that must not leak into state.
         const p = (persisted ?? {}) as Partial<ChatState>;
-        return { ...current, ...p, chats: sanitizeChats(p.chats ?? []) };
+        return {
+          ...current,
+          chats: sanitizeChats(p.chats ?? []),
+          activeChatId: p.activeChatId ?? current.activeChatId,
+          sidebarOpen: p.sidebarOpen ?? current.sidebarOpen,
+        };
       },
       partialize: (state) => ({
         chats: state.chats,
         activeChatId: state.activeChatId,
-        model: state.model,
         sidebarOpen: state.sidebarOpen,
       }),
     }
