@@ -44,15 +44,26 @@ export function ChatSidebar() {
 
   return (
     <>
+      {/* Collapsed state — mobile: floating chip over the page; desktop: slim in-flow rail */}
       {!sidebarOpen && (
-        <button onClick={toggleSidebar} aria-label="Open sidebar" className="fixed left-3 top-3 z-50 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+        <button onClick={toggleSidebar} aria-label="Open sidebar" className="fixed left-3 top-2 z-50 flex h-8 w-8 items-center justify-center rounded-md border border-border bg-canvas text-muted-foreground shadow-sm hover:text-ink hover:bg-surface-2 transition-colors duration-150 md:hidden">
           <PanelLeft className="h-4 w-4" />
         </button>
+      )}
+      {!sidebarOpen && (
+        <div className="hidden h-full w-12 shrink-0 flex-col items-center gap-1 border-r border-border bg-canvas-soft py-2 md:flex">
+          <button onClick={toggleSidebar} aria-label="Open sidebar" className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+            <PanelLeft className="h-4 w-4" />
+          </button>
+          <button onClick={() => createChat()} aria-label={t.chat.newChat} title={t.chat.newChat} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
       )}
 
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-black/40 md:hidden" onClick={toggleSidebar} aria-hidden="true" />}
 
-      <aside className={cn("fixed inset-y-0 left-0 z-40 flex w-[260px] max-w-[85vw] flex-col border-r border-border bg-canvas-soft transition-transform duration-200", sidebarOpen ? "translate-x-0" : "-translate-x-full")}>
+      <aside className={cn("fixed inset-y-0 left-0 z-40 flex w-[260px] max-w-[85vw] flex-col border-r border-border bg-canvas-soft transition-transform duration-200 md:static md:z-auto md:h-full md:max-w-none md:transition-none", sidebarOpen ? "translate-x-0" : "-translate-x-full md:hidden")}>
         <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-3">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo.png" alt="Tomaris" width={20} height={20} className="rounded-sm" />

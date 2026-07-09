@@ -17,7 +17,7 @@ export interface Chat {
   model: ModelType;
 }
 
-export type ModelType = "tomaris-27b" | "tomaris-fast" | "tomaris-code";
+export type ModelType = "tomaris-27b";
 
 export type Language = "uz" | "en" | "ru";
 
