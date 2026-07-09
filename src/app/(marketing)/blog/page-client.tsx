@@ -2,66 +2,10 @@
 
 import { fadeUp } from "@/lib/motion";
 import { motion } from "framer-motion";
-import { Clock } from "lucide-react";
+import { Clock, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { useI18n } from "@/components/shared/i18n-provider";
-
-
-const posts = [
-  {
-    title: "Introducing Tomaris: The First Uzbek-Native AI",
-    excerpt:
-      "Today we're announcing Tomaris, a 27B parameter language model built from the ground up for Uzbek.",
-    date: "June 15, 2025",
-    category: "Announcement",
-    readTime: "5",
-    slug: "introducing-tomaris",
-  },
-  {
-    title: "Why Low-Resource Languages Need Dedicated AI",
-    excerpt:
-      "Generic AI models fail at Uzbek. Here's why dedicated models are the future of language technology.",
-    date: "June 10, 2025",
-    category: "Research",
-    readTime: "8",
-    slug: "low-resource-languages",
-  },
-  {
-    title: "Building the Uzbek Training Corpus",
-    excerpt:
-      "How we curated 227 million words of high-quality Uzbek text data for training Tomaris.",
-    date: "June 5, 2025",
-    category: "Engineering",
-    readTime: "12",
-    slug: "training-corpus",
-  },
-  {
-    title: "Tomaris vs GPT-4: Uzbek Language Benchmark",
-    excerpt:
-      "We benchmarked Tomaris against leading AI models on Uzbek language tasks. The results speak for themselves.",
-    date: "May 28, 2025",
-    category: "Research",
-    readTime: "6",
-    slug: "benchmark-results",
-  },
-  {
-    title: "Agentic AI in Uzbek: A New Paradigm",
-    excerpt:
-      "How Tomaris enables autonomous AI agents that can plan and execute tasks in Uzbek.",
-    date: "May 20, 2025",
-    category: "Product",
-    readTime: "7",
-    slug: "agentic-ai",
-  },
-  {
-    title: "Data Sovereignty and AI in Central Asia",
-    excerpt:
-      "Why data residency matters and how Tomaris ensures compliance with local regulations.",
-    date: "May 15, 2025",
-    category: "Policy",
-    readTime: "5",
-    slug: "data-sovereignty",
-  },
-];
+import { posts } from "@/lib/blog";
 
 export default function BlogPage() {
   const { t } = useI18n();
@@ -103,30 +47,35 @@ export default function BlogPage() {
                   custom={i}
                   className="card-lift group rounded-2xl border border-border bg-card"
                 >
-                  {/* Image placeholder */}
-                  <div className="h-48 rounded-t-2xl bg-gradient-to-br from-primary/20 via-muted to-gold/20" />
-                  <div className="p-6">
-                    <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-                        {post.category}
-                      </span>
-                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3" />
-                        {post.readTime} {t.blog.readTime}
-                      </span>
+                  <Link href={`/blog/${post.slug}`} className="block">
+                    <div className="h-48 rounded-t-2xl bg-gradient-to-br from-primary/20 via-muted to-gold/20" />
+                    <div className="p-6">
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                          {post.category}
+                        </span>
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          {post.readTime} {t.blog.readTime}
+                        </span>
+                      </div>
+                      <h2 className="mt-3 text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
+                        {post.title}
+                      </h2>
+                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
+                        {post.excerpt}
+                      </p>
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">
+                          {post.date}
+                        </span>
+                        <span className="flex items-center gap-1 text-xs font-medium text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                          {t.blog.readMore}
+                          <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+                        </span>
+                      </div>
                     </div>
-                    <h2 className="mt-3 text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
-                      {post.title}
-                    </h2>
-                    <p className="mt-2 text-sm text-muted-foreground line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xs text-muted-foreground">
-                        {post.date}
-                      </span>
-                    </div>
-                  </div>
+                  </Link>
                 </motion.article>
               ))}
             </div>
