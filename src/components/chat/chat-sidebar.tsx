@@ -3,7 +3,7 @@
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Plus, Bot, FolderOpen, Settings, Trash2, PanelLeftClose, PanelLeft } from "lucide-react";
+import { MessageSquare, Plus, Settings, Trash2, PanelLeftClose, PanelLeft } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -21,8 +21,6 @@ export function ChatSidebar() {
   const renameRef = useRef<HTMLInputElement>(null);
 
   const navItems = [
-    { href: "/agents", icon: Bot, label: t.chat.agents },
-    { href: "/workspace", icon: FolderOpen, label: t.chat.workspace },
     { href: "/settings", icon: Settings, label: t.chat.settings },
   ];
 
