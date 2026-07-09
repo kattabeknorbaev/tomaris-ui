@@ -47,10 +47,8 @@ export const metadata: Metadata = {
     description:
       "The first world-class AI built natively for Uzbek language, culture, and context.",
   },
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/logo.png",
-  },
+  // Browser-tab and Apple touch icons come from src/app/icon.png and
+  // src/app/apple-icon.png (Next.js convention files, generated from the logo).
 };
 
 export default function RootLayout({
