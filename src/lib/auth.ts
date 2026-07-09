@@ -11,6 +11,10 @@ import { db } from "@/lib/db";
 const EMAIL_FROM = process.env.EMAIL_FROM ?? "Tomaris <onboarding@resend.dev>";
 
 export const auth = betterAuth({
+  // Accept requests from both the apex and www domains — the site serves on
+  // www.tomaris.ai (apex redirects there), so browser logins come from www.
+  trustedOrigins: ["https://tomaris.ai", "https://www.tomaris.ai"],
+
   // Better Auth stores users/sessions in our Neon database via Drizzle.
   database: drizzleAdapter(db, { provider: "pg" }),
 
