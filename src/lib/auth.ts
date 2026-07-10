@@ -25,12 +25,18 @@ export const auth = betterAuth({
         // Built here (not at module load) so a missing key doesn't crash the
         // whole app — it only matters at the moment we actually send.
         const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
+        const { error } = await resend.emails.send({
           from: EMAIL_FROM,
           to: email,
           subject: "Your Tomaris verification code",
           text: `Your Tomaris verification code is ${otp}\n\nIt expires in 5 minutes. If you didn't request this, you can ignore this email.`,
         });
+        // Surface delivery failures — otherwise the user is told "code sent"
+        // while nothing ever arrives.
+        if (error) {
+          console.error("OTP email failed:", error);
+          throw new Error("Could not send the verification email. Please try again.");
+        }
       },
     }),
     // Must be last — lets Better Auth set session cookies in Next.js.
