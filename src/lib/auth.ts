@@ -18,6 +18,19 @@ export const auth = betterAuth({
   // Better Auth stores users/sessions in our Neon database via Drizzle.
   database: drizzleAdapter(db, { provider: "pg" }),
 
+  // Google OAuth — active only once GOOGLE_CLIENT_ID/SECRET are configured.
+  // A Google login with the same (verified) email as an existing OTP account
+  // links to that account instead of creating a duplicate.
+  socialProviders:
+    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? {
+          google: {
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          },
+        }
+      : {},
+
   plugins: [
     // Passwordless login: user gets a 6-digit code by email, types it in.
     emailOTP({
