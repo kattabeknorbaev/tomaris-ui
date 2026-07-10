@@ -30,6 +30,7 @@ export const apiSaveMessage = (chatId: string, m: Message) =>
     role: m.role,
     content: m.content,
     reasoning: m.reasoning ?? null,
+    fileContext: m.fileText ?? null,
   });
 
 export const apiImportChats = (chats: Chat[]) =>
@@ -40,6 +41,7 @@ type ServerMsg = {
   role: string;
   content: string;
   reasoning: string | null;
+  fileContext: string | null;
   createdAt: string;
 };
 type ServerChat = {
@@ -69,6 +71,7 @@ export async function apiLoadChats(): Promise<Chat[]> {
           role: m.role as Message["role"],
           content: m.content,
           reasoning: m.reasoning ?? undefined,
+          fileText: m.fileContext ?? undefined,
           timestamp: m.createdAt,
           isStreaming: false,
         })),

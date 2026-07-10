@@ -8,6 +8,7 @@ type IncomingMessage = {
   role: string;
   content: string;
   reasoning?: string | null;
+  fileText?: string | null;
   timestamp?: string;
 };
 type IncomingChat = {
@@ -54,6 +55,7 @@ export async function POST(req: Request) {
           role: m.role,
           content: m.content ?? "",
           reasoning: m.reasoning ?? null,
+          fileContext: m.fileText ?? null,
           createdAt: m.timestamp ? new Date(m.timestamp) : new Date(),
         })
         .onConflictDoNothing();

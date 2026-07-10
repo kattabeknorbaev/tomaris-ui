@@ -24,7 +24,7 @@ export async function PUT(
     .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)));
   if (!chat) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const { role, content, reasoning } = await req.json();
+  const { role, content, reasoning, fileContext } = await req.json();
 
   await db
     .insert(messages)
@@ -34,10 +34,11 @@ export async function PUT(
       role,
       content: content ?? "",
       reasoning: reasoning ?? null,
+      fileContext: fileContext ?? null,
     })
     .onConflictDoUpdate({
       target: messages.id,
-      set: { content: content ?? "", reasoning: reasoning ?? null },
+      set: { content: content ?? "", reasoning: reasoning ?? null, fileContext: fileContext ?? null },
     });
 
   await db.update(chats).set({ updatedAt: new Date() }).where(eq(chats.id, chatId));

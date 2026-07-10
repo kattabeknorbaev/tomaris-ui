@@ -35,5 +35,6 @@ export const messages = pgTable("messages", {
   role: text("role").notNull(), // "user" | "assistant"
   content: text("content").notNull().default(""),
   reasoning: text("reasoning"), // optional — the model's <think> trace
+  fileContext: text("file_context"), // extracted text of attached files
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
