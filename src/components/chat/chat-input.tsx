@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Paperclip, Square, X, FileText, Image as ImageIcon, File } from "lucide-react";
+import { Send, Paperclip, Square, X, FileText, Loader2, File } from "lucide-react";
 import { cn, generateId } from "@/lib/utils";
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
+import { extractFileText, fileKind, MAX_CHARS_TOTAL } from "@/lib/file-extract";
+import { toast } from "sonner";
 
 interface Attachment {
   id: string;
@@ -12,6 +14,8 @@ interface Attachment {
   type: string;
   size: number;
   file: File;
+  /** Extracted text — null while reading. */
+  text: string | null;
 }
 
 const MOCK_RESPONSES = [
@@ -23,7 +27,6 @@ const MOCK_RESPONSES = [
 const TEXTAREA_MAX_HEIGHT = 200;
 
 function getFileIcon(type: string) {
-  if (type.startsWith("image/")) return ImageIcon;
   if (type.includes("pdf") || type.includes("doc") || type.includes("text")) return FileText;
   return File;
 }
@@ -68,14 +71,34 @@ export function ChatInput() {
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
-    const newAttachments: Attachment[] = Array.from(files).map((file) => ({
-      id: generateId(),
-      name: file.name,
-      type: file.type,
-      size: file.size,
-      file,
-    }));
-    setAttachments((prev) => [...prev, ...newAttachments]);
+    for (const file of Array.from(files)) {
+      const kind = fileKind(file);
+      if (kind === "image") {
+        // Honest: the current model is text-only and cannot see images.
+        toast.info("Image understanding isn't available yet — Tomaris currently reads text and documents.");
+        continue;
+      }
+      if (kind === "unsupported") {
+        toast.info(`Can't read ${file.name} yet — try text, code, CSV, JSON, or PDF files.`);
+        continue;
+      }
+      const id = generateId();
+      // Show the chip immediately; fill in the text when extraction finishes.
+      setAttachments((prev) => [
+        ...prev,
+        { id, name: file.name, type: file.type, size: file.size, file, text: null },
+      ]);
+      extractFileText(file)
+        .then((text) => {
+          setAttachments((prev) =>
+            prev.map((a) => (a.id === id ? { ...a, text } : a))
+          );
+        })
+        .catch(() => {
+          toast.error(`Couldn't read ${file.name} — it may be scanned or corrupted.`);
+          setAttachments((prev) => prev.filter((a) => a.id !== id));
+        });
+    }
     if (fileInputRef.current) fileInputRef.current.value = "";
   }, []);
 
@@ -89,7 +112,13 @@ export function ChatInput() {
       const chat = state.chats.find((c) => c.id === chatId);
       const apiMessages = (chat?.messages || [])
         .filter((m) => m.id !== assistantMsgId && !m.isStreaming)
-        .map((m) => ({ role: m.role, content: m.content }));
+        .map((m) => ({
+          role: m.role,
+          // Attached-file text rides along invisibly so the model can read it.
+          content: m.fileText
+            ? `${m.content}\n\n[Attached file content]\n${m.fileText}`
+            : m.content,
+        }));
 
       // Try real API first
       stoppedRef.current = false;
@@ -182,17 +211,26 @@ export function ChatInput() {
   const handleSend = useCallback(() => {
     const hasContent = input.trim() || attachments.length > 0;
     if (!hasContent || isStreaming) return;
+    if (attachments.some((a) => a.text === null)) {
+      toast.info("Still reading your file — one moment…");
+      return;
+    }
 
     let chatId = activeChatId;
     if (!chatId) chatId = createChat();
 
     let messageContent = input.trim();
+    let fileText: string | undefined;
     if (attachments.length > 0) {
       const fileList = attachments.map((a) => `📎 ${a.name} (${formatSize(a.size)})`).join("\n");
       messageContent = messageContent ? `${messageContent}\n\n${fileList}` : fileList;
+      fileText = attachments
+        .map((a) => `--- ${a.name} ---\n${a.text}`)
+        .join("\n\n")
+        .slice(0, MAX_CHARS_TOTAL);
     }
 
-    addMessage(chatId, { role: "user", content: messageContent });
+    addMessage(chatId, { role: "user", content: messageContent, fileText });
     const assistantMsgId = addMessage(chatId, {
       role: "assistant",
       content: "",
@@ -251,7 +289,11 @@ export function ChatInput() {
                   key={att.id}
                   className="flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-2.5 py-1.5 text-body-sm transition-colors duration-150 hover:border-hairline-soft"
                 >
-                  <Icon className="h-3.5 w-3.5 text-primary shrink-0" />
+                  {att.text === null ? (
+                    <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-mute" />
+                  ) : (
+                    <Icon className="h-3.5 w-3.5 text-primary shrink-0" />
+                  )}
                   <span className="truncate max-w-[160px] text-ink">{att.name}</span>
                   <span className="text-caption">{formatSize(att.size)}</span>
                   <button
@@ -274,7 +316,7 @@ export function ChatInput() {
             multiple
             className="hidden"
             onChange={handleFileSelect}
-            accept=".pdf,.doc,.docx,.txt,.csv,.json,.md,.png,.jpg,.jpeg,.gif,.webp,.pptx,.xlsx"
+            accept=".pdf,.txt,.md,.csv,.tsv,.json,.jsonl,.xml,.yaml,.yml,.html,.css,.js,.jsx,.ts,.tsx,.py,.java,.c,.h,.cpp,.cs,.go,.rs,.rb,.php,.sql,.sh,.log,text/*,application/pdf"
           />
           <button
             onClick={() => fileInputRef.current?.click()}

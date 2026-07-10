@@ -3,6 +3,8 @@ export interface Message {
   role: "user" | "assistant";
   content: string;
   reasoning?: string;
+  /** Extracted text of attached files — sent to the model, not rendered. */
+  fileText?: string;
   /** ISO 8601 — stored as string so it survives localStorage persistence. */
   timestamp: string;
   isStreaming?: boolean;
