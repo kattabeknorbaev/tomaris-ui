@@ -172,6 +172,8 @@ export function ChatInput() {
       } finally {
         setIsStreaming(false);
         patchMessage(chatId, assistantMsgId, { isStreaming: false });
+        // Persist the completed reply (content + reasoning) to the account.
+        useChatStore.getState().saveMessage(chatId, assistantMsgId);
       }
     },
     [patchMessage]
