@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mail, Loader2, ArrowLeft, KeyRound } from "lucide-react";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { authClient } from "@/lib/auth-client";
+import { useI18n } from "@/components/shared/i18n-provider";
 import { toast } from "sonner";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -24,8 +26,14 @@ function GoogleIcon() {
   );
 }
 
-export default function LoginClient() {
+/**
+ * The shared login/signup form. With email-OTP the two flows are the same
+ * engine (an account is created on first verification) — only the copy and
+ * the cross-links differ by mode.
+ */
+export function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const router = useRouter();
+  const { t } = useI18n();
   const [step, setStep] = useState<"email" | "otp">("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -33,7 +41,8 @@ export default function LoginClient() {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  // Redirects to Google, then back into /app with a session.
+  const isSignup = mode === "signup";
+
   const signInWithGoogle = async () => {
     setGoogleLoading(true);
     const { error } = await authClient.signIn.social({
@@ -42,7 +51,7 @@ export default function LoginClient() {
     });
     if (error) {
       setGoogleLoading(false);
-      setError(error.message || "Google sign-in failed. Please try again.");
+      setError(error.message || t.auth.googleFailed);
     }
   };
 
@@ -51,7 +60,7 @@ export default function LoginClient() {
     e.preventDefault();
     setError(null);
     if (!EMAIL_RE.test(email)) {
-      setError("Please enter a valid email address.");
+      setError(t.auth.emailInvalid);
       return;
     }
     setLoading(true);
@@ -61,27 +70,27 @@ export default function LoginClient() {
     });
     setLoading(false);
     if (error) {
-      setError(error.message || "Couldn't send the code. Please try again.");
+      setError(error.message || t.auth.sendFailed);
       return;
     }
-    toast.success("Code sent — check your email.");
+    toast.success(t.auth.codeSent);
     setStep("otp");
   };
 
-  // Step 2 — verify the code. Creates the account if it's a new email,
-  // logs in if it already exists. Either way, a real session is set.
+  // Step 2 — verify the code. Creates the account if the email is new,
+  // signs in if it exists. Either way a real session is set.
   const verifyCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (otp.trim().length !== 6) {
-      setError("Enter the 6-digit code from your email.");
+      setError(t.auth.codeIncomplete);
       return;
     }
     setLoading(true);
     const { error } = await authClient.signIn.emailOtp({ email, otp: otp.trim() });
     setLoading(false);
     if (error) {
-      setError(error.message || "That code is invalid or expired.");
+      setError(error.message || t.auth.codeInvalid);
       return;
     }
     router.push("/app");
@@ -89,25 +98,29 @@ export default function LoginClient() {
 
   const inputClass =
     "w-full rounded-lg border border-border bg-card py-2.5 pl-10 pr-4 text-body-sm outline-none transition-colors focus:border-ring aria-invalid:border-error";
+  const primaryBtnClass =
+    "btn-lift flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-on-primary shadow-[0_4px_16px_-6px_rgba(15,143,111,0.5)] hover:bg-primary-deep disabled:opacity-60 disabled:pointer-events-none";
 
   return (
     <AuthLayout>
       {step === "email" ? (
         <>
-          <h1 className="mt-10 text-heading-2">Welcome to Tomaris</h1>
+          <h1 className="mt-10 text-heading-2">
+            {isSignup ? t.auth.createAccount : t.auth.welcomeBack}
+          </h1>
           <p className="mt-2 text-body-sm text-muted-foreground">
-            Enter your email and we&apos;ll send you a sign-in code.
+            {isSignup ? t.auth.signupOtpSubtitle : t.auth.loginOtpSubtitle}
           </p>
 
           <form className="mt-8 space-y-4" onSubmit={sendCode} noValidate>
             <div>
-              <label htmlFor="login-email" className="text-body-sm font-medium">
-                Email
+              <label htmlFor="auth-email" className="text-body-sm font-medium">
+                {t.common.email}
               </label>
               <div className="relative mt-1.5">
                 <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
                 <input
-                  id="login-email"
+                  id="auth-email"
                   type="email"
                   autoComplete="email"
                   value={email}
@@ -120,17 +133,11 @@ export default function LoginClient() {
               </div>
             </div>
 
-            {error && (
-              <p className="text-caption text-error normal-case">{error}</p>
-            )}
+            {error && <p className="text-caption text-error normal-case">{error}</p>}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-lift flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-on-primary shadow-[0_4px_16px_-6px_rgba(15,143,111,0.5)] hover:bg-primary-deep disabled:opacity-60 disabled:pointer-events-none"
-            >
+            <button type="submit" disabled={loading} className={primaryBtnClass}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
-              {loading ? "Sending…" : "Send code"}
+              {loading ? t.auth.sending : t.auth.sendCode}
             </button>
 
             {GOOGLE_ENABLED && (
@@ -140,7 +147,7 @@ export default function LoginClient() {
                     <div className="w-full border-t border-border" />
                   </div>
                   <div className="relative flex justify-center text-caption text-muted-foreground normal-case">
-                    <span className="bg-background px-3">or</span>
+                    <span className="bg-background px-3">{t.auth.or}</span>
                   </div>
                 </div>
 
@@ -155,28 +162,42 @@ export default function LoginClient() {
                   ) : (
                     <GoogleIcon />
                   )}
-                  {googleLoading ? "Redirecting…" : "Continue with Google"}
+                  {googleLoading
+                    ? t.auth.redirecting
+                    : isSignup
+                      ? t.auth.signUpWithGoogle
+                      : t.auth.continueWithGoogle}
                 </button>
               </>
             )}
           </form>
+
+          <p className="mt-6 text-center text-body-sm text-muted-foreground">
+            {isSignup ? t.auth.haveAccount : t.auth.noAccount}{" "}
+            <Link
+              href={isSignup ? "/login" : "/signup"}
+              className="font-medium text-foreground underline underline-offset-2"
+            >
+              {isSignup ? t.auth.signIn : t.auth.signUp}
+            </Link>
+          </p>
         </>
       ) : (
         <>
-          <h1 className="mt-10 text-heading-2">Check your email</h1>
+          <h1 className="mt-10 text-heading-2">{t.auth.checkEmail}</h1>
           <p className="mt-2 text-body-sm text-muted-foreground">
-            We sent a 6-digit code to <span className="text-ink">{email}</span>.
+            {t.auth.codeSentTo} <span className="text-ink">{email}</span>
           </p>
 
           <form className="mt-8 space-y-4" onSubmit={verifyCode} noValidate>
             <div>
-              <label htmlFor="login-otp" className="text-body-sm font-medium">
-                Verification code
+              <label htmlFor="auth-otp" className="text-body-sm font-medium">
+                {t.auth.verificationCode}
               </label>
               <div className="relative mt-1.5">
                 <KeyRound className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
                 <input
-                  id="login-otp"
+                  id="auth-otp"
                   inputMode="numeric"
                   autoComplete="one-time-code"
                   maxLength={6}
@@ -190,17 +211,11 @@ export default function LoginClient() {
               </div>
             </div>
 
-            {error && (
-              <p className="text-caption text-error normal-case">{error}</p>
-            )}
+            {error && <p className="text-caption text-error normal-case">{error}</p>}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn-lift flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-on-primary shadow-[0_4px_16px_-6px_rgba(15,143,111,0.5)] hover:bg-primary-deep disabled:opacity-60 disabled:pointer-events-none"
-            >
+            <button type="submit" disabled={loading} className={primaryBtnClass}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
-              {loading ? "Verifying…" : "Verify & continue"}
+              {loading ? t.auth.verifying : t.auth.verifyContinue}
             </button>
 
             <button
@@ -213,7 +228,7 @@ export default function LoginClient() {
               className="flex w-full items-center justify-center gap-1.5 text-caption text-muted-foreground hover:text-ink transition-colors"
             >
               <ArrowLeft className="h-3 w-3" aria-hidden="true" />
-              Use a different email
+              {t.auth.useDifferentEmail}
             </button>
           </form>
         </>
