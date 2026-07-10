@@ -2,6 +2,12 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Chat, Message } from "@/types";
 import { generateId } from "@/lib/utils";
+import {
+  apiCreateChat,
+  apiRenameChat,
+  apiDeleteChat,
+  apiSaveMessage,
+} from "@/lib/chat-api";
 
 function now(): string {
   return new Date().toISOString();
@@ -27,6 +33,12 @@ interface ChatState {
   chats: Chat[];
   activeChatId: string | null;
   sidebarOpen: boolean;
+  /**
+   * The account these chats belong to (null = guest). When set, every change
+   * is mirrored to the server. Guards against showing/uploading one user's
+   * chats under another account on a shared browser.
+   */
+  ownerId: string | null;
 
   createChat: () => string;
   deleteChat: (id: string) => void;
@@ -39,6 +51,10 @@ interface ChatState {
     messageId: string,
     patch: Partial<Omit<Message, "id">>
   ) => void;
+  /** Persist a message's current content to the server (used when a stream ends). */
+  saveMessage: (chatId: string, messageId: string) => void;
+  /** Replace the local chats with the account's server chats. */
+  hydrate: (chats: Chat[], ownerId: string) => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
   clearAllChats: () => void;
@@ -46,10 +62,11 @@ interface ChatState {
 
 export const useChatStore = create<ChatState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       chats: [],
       activeChatId: null,
       sidebarOpen: true,
+      ownerId: null,
 
       createChat: () => {
         const id = generateId();
@@ -65,6 +82,7 @@ export const useChatStore = create<ChatState>()(
           chats: [newChat, ...state.chats],
           activeChatId: id,
         }));
+        if (get().ownerId) apiCreateChat(id, DEFAULT_CHAT_TITLE);
         return id;
       },
 
@@ -79,12 +97,14 @@ export const useChatStore = create<ChatState>()(
                 : state.activeChatId,
           };
         });
+        if (get().ownerId) apiDeleteChat(id);
       },
 
       renameChat: (id: string, title: string) => {
         set((state) => ({
           chats: state.chats.map((c) => (c.id === id ? { ...c, title } : c)),
         }));
+        if (get().ownerId) apiRenameChat(id, title);
       },
 
       setActiveChat: (id: string) => set({ activeChatId: id }),
@@ -92,25 +112,34 @@ export const useChatStore = create<ChatState>()(
       addMessage: (chatId, message) => {
         const id = generateId();
         const msg: Message = { ...message, id, timestamp: now() };
+        let titleChanged = false;
         set((state) => ({
-          chats: state.chats.map((chat) =>
-            chat.id === chatId
-              ? {
-                  ...chat,
-                  messages: [...chat.messages, msg],
-                  updatedAt: now(),
-                  // Derive a title from the first user message, but never
-                  // overwrite an explicit title (rename, agent launch).
-                  title:
-                    chat.messages.length === 0 &&
-                    message.role === "user" &&
-                    chat.title === DEFAULT_CHAT_TITLE
-                      ? message.content.slice(0, CHAT_TITLE_MAX_LENGTH)
-                      : chat.title,
-                }
-              : chat
-          ),
+          chats: state.chats.map((chat) => {
+            if (chat.id !== chatId) return chat;
+            // Derive a title from the first user message, but never overwrite
+            // an explicit title (rename, agent launch).
+            const derivedTitle =
+              chat.messages.length === 0 &&
+              message.role === "user" &&
+              chat.title === DEFAULT_CHAT_TITLE
+                ? message.content.slice(0, CHAT_TITLE_MAX_LENGTH)
+                : chat.title;
+            if (derivedTitle !== chat.title) titleChanged = true;
+            return {
+              ...chat,
+              messages: [...chat.messages, msg],
+              updatedAt: now(),
+              title: derivedTitle,
+            };
+          }),
         }));
+        if (get().ownerId) {
+          apiSaveMessage(chatId, msg);
+          if (titleChanged) {
+            const chat = get().chats.find((c) => c.id === chatId);
+            if (chat) apiRenameChat(chatId, chat.title);
+          }
+        }
         return id;
       },
 
@@ -129,10 +158,27 @@ export const useChatStore = create<ChatState>()(
         }));
       },
 
+      saveMessage: (chatId, messageId) => {
+        if (!get().ownerId) return;
+        const chat = get().chats.find((c) => c.id === chatId);
+        const msg = chat?.messages.find((m) => m.id === messageId);
+        if (msg) apiSaveMessage(chatId, msg);
+      },
+
+      hydrate: (chats, ownerId) =>
+        set((state) => ({
+          chats,
+          ownerId,
+          activeChatId: chats.some((c) => c.id === state.activeChatId)
+            ? state.activeChatId
+            : chats[0]?.id ?? null,
+        })),
+
       setSidebarOpen: (open: boolean) => set({ sidebarOpen: open }),
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 
-      clearAllChats: () => set({ chats: [], activeChatId: null }),
+      clearAllChats: () =>
+        set({ chats: [], activeChatId: null, ownerId: null }),
     }),
     {
       name: "tomaris-chat-storage",
@@ -147,12 +193,14 @@ export const useChatStore = create<ChatState>()(
           chats: sanitizeChats(p.chats ?? []),
           activeChatId: p.activeChatId ?? current.activeChatId,
           sidebarOpen: p.sidebarOpen ?? current.sidebarOpen,
+          ownerId: p.ownerId ?? null,
         };
       },
       partialize: (state) => ({
         chats: state.chats,
         activeChatId: state.activeChatId,
         sidebarOpen: state.sidebarOpen,
+        ownerId: state.ownerId,
       }),
     }
   )

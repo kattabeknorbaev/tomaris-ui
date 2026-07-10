@@ -13,7 +13,7 @@ import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { authClient } from "@/lib/auth-client";
 
 export function ChatSidebar() {
-  const { chats, activeChatId, setActiveChat, createChat, deleteChat, renameChat, sidebarOpen, toggleSidebar } = useChatStore();
+  const { chats, activeChatId, setActiveChat, createChat, deleteChat, renameChat, sidebarOpen, toggleSidebar, clearAllChats } = useChatStore();
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useI18n();
@@ -59,6 +59,7 @@ export function ChatSidebar() {
   const handleSignOut = async () => {
     setSigningOut(true);
     await authClient.signOut();
+    clearAllChats(); // drop this account's chats from the browser
     router.push("/login");
   };
 
