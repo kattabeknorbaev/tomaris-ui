@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LoginClient from "./page-client";
+import { AuthForm } from "@/components/auth/auth-form";
 
 export const metadata: Metadata = {
   title: "Log In",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  return <LoginClient />;
+  return <AuthForm mode="login" />;
 }
