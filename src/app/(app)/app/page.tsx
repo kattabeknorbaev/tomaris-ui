@@ -4,6 +4,7 @@ import { useChatStore } from "@/stores/chat-store";
 import { ChatMessage } from "@/components/chat/chat-message";
 import { ChatInput } from "@/components/chat/chat-input";
 import { WelcomeScreen } from "@/components/chat/welcome-screen";
+import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
@@ -14,6 +15,10 @@ export default function AppPage() {
     s.chats.find((c) => c.id === s.activeChatId)
   );
   const sidebarOpen = useChatStore((s) => s.sidebarOpen);
+  const { data: session } = authClient.useSession();
+  const userInitial = (
+    session?.user?.name?.[0] ?? session?.user?.email?.[0] ?? "U"
+  ).toUpperCase();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const autoScrollRef = useRef(true);
   const scrollRafRef = useRef<number | null>(null);
@@ -93,7 +98,7 @@ export default function AppPage() {
         <div ref={setScrollContainer} className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-2xl py-4">
             {activeChat.messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
+              <ChatMessage key={message.id} message={message} userInitial={userInitial} />
             ))}
           </div>
         </div>

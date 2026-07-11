@@ -80,6 +80,7 @@
   --radius: var(--radius);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-lora), ui-serif, Georgia, "Times New Roman", serif;
   --color-emerald: var(--primary);
   --color-navy: #0B1120;
   --color-gold: var(--accent);
