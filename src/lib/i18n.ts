@@ -226,6 +226,8 @@ const translations = {
       subtitle: "Insights, research, and updates from the Tomaris team.",
       readMore: "Read",
       readTime: "min read",
+      byline: "Tomaris Team",
+      liveCta: "Tomaris is live — chat with the first Uzbek-native AI model.",
     },
     contact: {
       title: "Get in Touch",
@@ -727,6 +729,8 @@ const translations = {
       subtitle: "Tomaris jamoasidan tushunchalar, tadqiqotlar va yangiliklar.",
       readMore: "O'qish",
       readTime: "daqiqada o'qiladi",
+      byline: "Tomaris jamoasi",
+      liveCta: "Tomaris jonli efirda — birinchi o'zbek tilidagi AI model bilan suhbatlashing.",
     },
     contact: {
       title: "Biz bilan bog'laning",
@@ -1228,6 +1232,8 @@ const translations = {
       subtitle: "Идеи, исследования и обновления от команды Tomaris.",
       readMore: "Читать",
       readTime: "мин чтения",
+      byline: "Команда Tomaris",
+      liveCta: "Tomaris уже работает — пообщайтесь с первой узбекоязычной AI-моделью.",
     },
     contact: {
       title: "Свяжитесь с нами",
