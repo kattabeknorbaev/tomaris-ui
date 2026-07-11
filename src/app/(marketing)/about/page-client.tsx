@@ -4,9 +4,17 @@ import { Target, Eye, CheckCircle } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
 
 const team = [
-  { name: "Kattabek Norbayev", initial: "K" },
-  { name: "Javohir Matniyazov", initial: "J" },
+  { name: "Kattabek Norbayev", initial: "K", telegram: "https://t.me/NorbayevKattabek", handle: "@NorbayevKattabek" },
+  { name: "Javohir Matniyazov", initial: "J", telegram: "https://t.me/javohir_matniyazov", handle: "@javohir_matniyazov" },
 ];
+
+function TelegramIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" />
+    </svg>
+  );
+}
 
 // Structure only; titles + items come from i18n (t.about.roadmapPhases), zipped by index.
 const roadmapMeta = [
@@ -71,14 +79,26 @@ export default function AboutPage() {
               <h2 className="text-heading-1 text-ink-strong">{t.about.team}</h2>
               <p className="mt-3 text-body text-muted-foreground max-w-lg mx-auto">{t.about.teamSubtitle}</p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 max-w-xl mx-auto">
-              {team.map((member) => (
-                <div key={member.name} className="card-lift flex items-center gap-3 rounded-xl border border-border bg-card p-5">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary">{member.initial}</div>
-                  <div>
-                    <div className="text-body font-semibold text-ink">{member.name}</div>
-                    <div className="text-caption text-primary">{t.about.coFounder}</div>
+            <div className="grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
+              {team.map((member, i) => (
+                <div key={member.name} className="card-lift flex flex-col rounded-2xl border border-border bg-card p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary">{member.initial}</div>
+                    <div>
+                      <div className="text-body font-semibold text-ink">{member.name}</div>
+                      <div className="text-caption text-primary">{t.about.coFounder}</div>
+                    </div>
                   </div>
+                  <p className="mt-4 flex-1 text-body-sm text-muted-foreground leading-relaxed">{t.about.founderBios[i]}</p>
+                  <a
+                    href={member.telegram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-caption font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
+                  >
+                    <TelegramIcon className="h-3.5 w-3.5" />
+                    {member.handle}
+                  </a>
                 </div>
               ))}
             </div>
