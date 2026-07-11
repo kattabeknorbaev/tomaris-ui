@@ -21,6 +21,7 @@ function extractText(node: ReactNode): string {
 // Fenced code block with a language label and a copy button.
 function CodeBlock({ children }: { children?: ReactNode }) {
   const [copied, setCopied] = useState(false);
+  const { t } = useI18n();
   const codeEl = Array.isArray(children) ? children[0] : children;
   const className = isValidElement(codeEl)
     ? (codeEl.props as { className?: string }).className ?? ""
@@ -45,15 +46,15 @@ function CodeBlock({ children }: { children?: ReactNode }) {
         <button
           onClick={handleCopyCode}
           className="flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] text-mute transition-all duration-150 hover:bg-surface-2 hover:text-ink active:scale-90"
-          aria-label="Copy code"
+          aria-label={t.chat.copyCode}
         >
           {copied ? (
             <>
-              <Check className="h-3 w-3 text-primary" /> Copied
+              <Check className="h-3 w-3 text-primary" /> {t.chat.copied}
             </>
           ) : (
             <>
-              <Copy className="h-3 w-3" /> Copy
+              <Copy className="h-3 w-3" /> {t.chat.copy}
             </>
           )}
         </button>
@@ -139,7 +140,7 @@ export const ChatMessage = memo(function ChatMessage({
             </div>
             {!isUser && !message.isStreaming && message.content && (
               <div className="mt-1.5 flex items-center gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-150">
-                <button onClick={handleCopy} className="flex h-7 w-7 items-center justify-center rounded-lg text-mute hover:text-ink hover:bg-surface-2 active:scale-90 transition-all duration-150" title="Copy" aria-label="Copy">
+                <button onClick={handleCopy} className="flex h-7 w-7 items-center justify-center rounded-lg text-mute hover:text-ink hover:bg-surface-2 active:scale-90 transition-all duration-150" title={t.chat.copy} aria-label={t.chat.copy}>
                   {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
                 </button>
               </div>

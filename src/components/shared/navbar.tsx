@@ -27,7 +27,7 @@ export function Navbar() {
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-primary focus:px-3 focus:py-1.5 focus:text-body-sm focus:font-semibold focus:text-on-primary"
       >
-        Skip to content
+        {t.common.skipToContent}
       </a>
       <div className="border-b border-border bg-canvas/80 backdrop-blur-xl">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-5 sm:px-8">
@@ -59,7 +59,7 @@ export function Navbar() {
           <button
             className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label={t.common.toggleMenu}
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
           >
