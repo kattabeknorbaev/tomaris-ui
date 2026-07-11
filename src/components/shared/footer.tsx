@@ -21,7 +21,7 @@ export function Footer() {
           <div>
             <h4 className="text-caption font-semibold text-muted-foreground uppercase tracking-wider mb-3">{t.footer.product}</h4>
             <ul className="space-y-2">
-              <li><Link href="/#features" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.features}</Link></li>
+              <li><Link href="/home#features" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.features}</Link></li>
               <li><Link href="/pricing" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.pricing}</Link></li>
               <li><Link href="/waitlist" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.hero.cta2}</Link></li>
             </ul>

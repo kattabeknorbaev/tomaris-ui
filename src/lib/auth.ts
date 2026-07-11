@@ -18,6 +18,12 @@ export const auth = betterAuth({
   // Better Auth stores users/sessions in our Neon database via Drizzle.
   database: drizzleAdapter(db, { provider: "pg" }),
 
+  // Lets a signed-in user permanently delete their own account (Settings →
+  // Delete Account). Their chats cascade-delete via the userId foreign key.
+  user: {
+    deleteUser: { enabled: true },
+  },
+
   // Google OAuth — active only once GOOGLE_CLIENT_ID/SECRET are configured.
   // A Google login with the same (verified) email as an existing OTP account
   // links to that account instead of creating a duplicate.

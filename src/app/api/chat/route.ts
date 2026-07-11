@@ -1,7 +1,12 @@
 import { NextRequest } from "next/server";
+import { auth } from "@/lib/auth";
 
 const VAST_API_URL = process.env.VAST_API_URL || "http://localhost:8000";
 const MODEL_NAME = process.env.SERVED_MODEL_NAME || "tomaris";
+
+// Guardrails: this endpoint burns GPU time, so cap what one request can ask.
+const MAX_MESSAGES = 40;
+const MAX_MESSAGE_CHARS = 40_000;
 
 export const maxDuration = 60;
 
@@ -20,11 +25,32 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    // GPU inference is for signed-in users only — the app gates the UI, and
+    // this gates the API itself against direct anonymous calls.
+    const session = await auth.api.getSession({ headers: req.headers });
+    if (!session) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: "Messages array is required" }), {
         status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    if (
+      messages.length > MAX_MESSAGES ||
+      messages.some(
+        (m) => typeof m?.content !== "string" || m.content.length > MAX_MESSAGE_CHARS
+      )
+    ) {
+      return new Response(JSON.stringify({ error: "Request too large" }), {
+        status: 413,
         headers: { "Content-Type": "application/json" },
       });
     }

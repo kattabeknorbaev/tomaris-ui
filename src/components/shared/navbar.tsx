@@ -14,7 +14,7 @@ export function Navbar() {
   const { t } = useI18n();
 
   const navLinks = [
-    { href: "/#features", label: t.nav.features },
+    { href: "/home#features", label: t.nav.features },
     { href: "/pricing", label: t.nav.pricing },
     { href: "/about", label: t.nav.about },
     { href: "/blog", label: t.nav.blog },

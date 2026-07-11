@@ -60,6 +60,15 @@ interface ChatState {
   hydrate: (chats: Chat[], ownerId: string, resetActive?: boolean) => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
+  /**
+   * A prompt queued from the welcome screen; ChatInput picks it up and sends
+   * it through the normal streaming pipeline. Not persisted.
+   */
+  pendingPrompt: string | null;
+  setPendingPrompt: (prompt: string | null) => void;
+  /** Empty the chats but KEEP ownership — for "clear all chats" while logged in. */
+  clearChats: () => void;
+  /** Full reset including ownership — for sign-out / account switch only. */
   clearAllChats: () => void;
 }
 
@@ -182,6 +191,11 @@ export const useChatStore = create<ChatState>()(
 
       setSidebarOpen: (open: boolean) => set({ sidebarOpen: open }),
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+
+      pendingPrompt: null,
+      setPendingPrompt: (prompt) => set({ pendingPrompt: prompt }),
+
+      clearChats: () => set({ chats: [], activeChatId: null }),
 
       clearAllChats: () =>
         set({ chats: [], activeChatId: null, ownerId: null }),

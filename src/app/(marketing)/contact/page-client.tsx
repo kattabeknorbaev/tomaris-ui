@@ -18,7 +18,7 @@ export default function ContactPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => setForm((f) => ({ ...f, [field]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: Partial<typeof form> = {};
     if (!form.name.trim()) next.name = t.common.required;
@@ -28,9 +28,25 @@ export default function ContactPage() {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    // Demo: no backend yet — show honest sending + confirmation states.
+    // Real delivery: the API route emails the submission to the team.
     setStatus("sending");
-    setTimeout(() => setStatus("sent"), 800);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          kind: "contact",
+          email: form.email,
+          name: form.name,
+          message: `${form.subject}\n\n${form.message}`,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("sent");
+    } catch {
+      setStatus("idle");
+      setErrors({ message: t.auth.sendFailed });
+    }
   };
 
   return (
