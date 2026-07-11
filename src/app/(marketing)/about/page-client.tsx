@@ -4,18 +4,8 @@ import { Target, Eye, CheckCircle } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
 
 const team = [
-  {
-    name: "Kattabek Norbayev",
-    role: "Co-Founder & CTO",
-    initial: "K",
-    bio: "Graduate of Samarkand Presidential School and incoming computer-science student at Yonsei University. Trained and deployed the Tomaris 27B model and built the platform end-to-end.",
-  },
-  {
-    name: "Javohir Matniyazov",
-    role: "Co-Founder & Lead Engineer",
-    initial: "J",
-    bio: "Left Westminster International University in Tashkent to build Tomaris full-time. Co-built the model, the 75,000-line dataset, and the alignment pipeline.",
-  },
+  { name: "Kattabek Norbayev", role: "Co-Founder", initial: "K" },
+  { name: "Javohir Matniyazov", role: "Co-Founder", initial: "J" },
 ];
 
 const roadmap = [
@@ -80,17 +70,14 @@ export default function AboutPage() {
               <h2 className="text-heading-1 text-ink-strong">{t.about.team}</h2>
               <p className="mt-3 text-body text-muted-foreground max-w-lg mx-auto">{t.about.teamSubtitle}</p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
+            <div className="grid gap-4 sm:grid-cols-2 max-w-xl mx-auto">
               {team.map((member) => (
-                <div key={member.name} className="card-lift rounded-2xl border border-border bg-card p-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary">{member.initial}</div>
-                    <div>
-                      <div className="text-body font-semibold text-ink">{member.name}</div>
-                      <div className="text-caption text-primary">{member.role}</div>
-                    </div>
+                <div key={member.name} className="card-lift flex items-center gap-3 rounded-xl border border-border bg-card p-5">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary">{member.initial}</div>
+                  <div>
+                    <div className="text-body font-semibold text-ink">{member.name}</div>
+                    <div className="text-caption text-primary">{member.role}</div>
                   </div>
-                  <p className="mt-4 text-body-sm text-muted-foreground leading-relaxed">{member.bio}</p>
                 </div>
               ))}
             </div>
