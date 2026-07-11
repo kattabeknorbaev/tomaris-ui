@@ -23,6 +23,9 @@ export function ChatSync() {
 
     (async () => {
       const state = useChatStore.getState();
+      // A change of owner (guest -> user, or user A -> user B) is a fresh
+      // login: land on the welcome screen, not in the middle of an old chat.
+      const freshLogin = state.ownerId !== userId;
       if (state.ownerId && state.ownerId !== userId) {
         state.clearAllChats();
       }
@@ -35,7 +38,7 @@ export function ChatSync() {
       if (guestChats.length > 0) await apiImportChats(guestChats);
 
       const serverChats = await apiLoadChats();
-      if (!cancelled) useChatStore.getState().hydrate(serverChats, userId);
+      if (!cancelled) useChatStore.getState().hydrate(serverChats, userId, freshLogin);
     })();
 
     return () => {

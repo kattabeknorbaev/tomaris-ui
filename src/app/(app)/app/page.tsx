@@ -4,20 +4,16 @@ import { useChatStore } from "@/stores/chat-store";
 import { ChatMessage } from "@/components/chat/chat-message";
 import { ChatInput } from "@/components/chat/chat-input";
 import { WelcomeScreen } from "@/components/chat/welcome-screen";
-import { MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { useI18n } from "@/components/shared/i18n-provider";
 import { useCallback, useEffect, useRef } from "react";
 
 export default function AppPage() {
   const activeChat = useChatStore((s) =>
     s.chats.find((c) => c.id === s.activeChatId)
   );
-  const createChat = useChatStore((s) => s.createChat);
   const sidebarOpen = useChatStore((s) => s.sidebarOpen);
-  const { t } = useI18n();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const autoScrollRef = useRef(true);
   const scrollRafRef = useRef<number | null>(null);
@@ -101,22 +97,10 @@ export default function AppPage() {
             ))}
           </div>
         </div>
-      ) : activeChat ? (
-        <WelcomeScreen />
       ) : (
-        <div className="flex flex-1 flex-col items-center justify-center px-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-2 text-mute mb-4">
-            <MessageSquare className="h-5 w-5" />
-          </div>
-          <h2 className="text-body-sm font-medium mb-1">{t.chat.noChatSelected}</h2>
-          <p className="text-caption mb-4">{t.chat.noChatDesc}</p>
-          <button
-            onClick={() => createChat()}
-            className="btn-lift rounded-xl bg-primary px-4 py-2 text-body-sm font-medium text-on-primary hover:bg-primary-deep shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)]"
-          >
-            {t.chat.newChat}
-          </button>
-        </div>
+        // No chat selected or an empty chat — either way, the welcome surface
+        // (greeting + suggested prompts). Sending a message creates the chat.
+        <WelcomeScreen />
       )}
 
       <ChatInput />
