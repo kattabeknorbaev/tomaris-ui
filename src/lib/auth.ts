@@ -15,6 +15,19 @@ export const auth = betterAuth({
   // www.tomaris.ai (apex redirects there), so browser logins come from www.
   trustedOrigins: ["https://tomaris.ai", "https://www.tomaris.ai"],
 
+  // DB-backed rate limiting on the auth endpoints. Tight caps on the two
+  // abuse-prone ones: sending codes (email-bomb / cost) and verifying (brute).
+  rateLimit: {
+    enabled: true,
+    storage: "database",
+    window: 60,
+    max: 100,
+    customRules: {
+      "/email-otp/send-verification-otp": { window: 60, max: 3 },
+      "/sign-in/email-otp": { window: 60, max: 10 },
+    },
+  },
+
   // Better Auth stores users/sessions in our Neon database via Drizzle.
   database: drizzleAdapter(db, { provider: "pg" }),
 

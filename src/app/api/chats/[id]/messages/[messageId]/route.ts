@@ -24,21 +24,22 @@ export async function PUT(
     .where(and(eq(chats.id, chatId), eq(chats.userId, user.id)));
   if (!chat) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const { role, content, reasoning, fileContext } = await req.json();
+  const body = await req.json();
+  const role = body.role === "assistant" ? "assistant" : "user";
+  const content = typeof body.content === "string" ? body.content.slice(0, 200_000) : "";
+  const reasoning = typeof body.reasoning === "string" ? body.reasoning.slice(0, 200_000) : null;
+  const fileContext =
+    typeof body.fileContext === "string" ? body.fileContext.slice(0, 200_000) : null;
 
   await db
     .insert(messages)
-    .values({
-      id: messageId,
-      chatId,
-      role,
-      content: content ?? "",
-      reasoning: reasoning ?? null,
-      fileContext: fileContext ?? null,
-    })
+    .values({ id: messageId, chatId, role, content, reasoning, fileContext })
     .onConflictDoUpdate({
       target: messages.id,
-      set: { content: content ?? "", reasoning: reasoning ?? null, fileContext: fileContext ?? null },
+      set: { content, reasoning, fileContext },
+      // Scope the update to THIS (already-owned) chat. Prevents overwriting a
+      // message that belongs to another chat/user via a colliding message id.
+      setWhere: eq(messages.chatId, chatId),
     });
 
   await db.update(chats).set({ updatedAt: new Date() }).where(eq(chats.id, chatId));
