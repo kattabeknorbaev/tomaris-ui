@@ -202,7 +202,7 @@ export default function AdminPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-border text-xs text-muted-foreground">
-                      <th scope="col" className="px-4 py-3 text-left font-medium">Email</th>
+                      <th scope="col" className="px-4 py-3 text-left font-medium">{t.common.email}</th>
                       <th scope="col" className="px-4 py-3 text-left font-medium">{t.adminPage.chats}</th>
                       <th scope="col" className="px-4 py-3 text-left font-medium">{t.adminPage.messages}</th>
                       <th scope="col" className="px-4 py-3 text-left font-medium">{t.adminPage.joined}</th>

@@ -45,11 +45,8 @@ export default function HomePage() {
     { label: t.useCases.healthcare, title: t.useCases.healthcareTitle, desc: t.useCases.healthcareDesc, icon: "🏥" },
   ];
 
-  const testimonials = [
-    { name: "Sardor Karimov", role: "CEO, TechUz", content: "Tomaris has transformed how our team handles Uzbek-language customer support. The accuracy is unprecedented." },
-    { name: "Nilufar Rashidova", role: "Professor, Tashkent University", content: "Finally, an AI that understands academic Uzbek. My students use it for research and the results are remarkable." },
-    { name: "Jamshid Alimov", role: "Legal Counsel, UzLaw", content: "Drafting legal documents in Uzbek used to take hours. With Tomaris, it takes minutes with better accuracy." },
-  ];
+  // Names only; role + quote come from i18n (t.testimonials.items) so they translate.
+  const testimonialNames = ["Sardor Karimov", "Nilufar Rashidova", "Jamshid Alimov"];
 
   // Single source of truth with /pricing: names, descriptions, and features
   // all come from t.pricing. The landing shows the first 5 features per plan.
@@ -352,19 +349,19 @@ export default function HomePage() {
               <h2 className="text-heading-1 text-ink-strong">{t.testimonials.title}</h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {testimonials.map((t) => (
-                <div key={t.name} className="card-lift rounded-xl border border-border bg-card p-5">
+              {testimonialNames.map((name, i) => (
+                <div key={name} className="card-lift rounded-xl border border-border bg-card p-5">
                   <div className="flex gap-0.5 mb-3">
                     {Array.from({ length: 5 }).map((_, j) => (
                       <Star key={j} className="h-3 w-3 fill-gold text-gold" aria-hidden="true" />
                     ))}
                   </div>
-                  <p className="text-body-sm text-muted-foreground leading-relaxed">&ldquo;{t.content}&rdquo;</p>
+                  <p className="text-body-sm text-muted-foreground leading-relaxed">&ldquo;{t.testimonials.items[i].content}&rdquo;</p>
                   <div className="mt-4 pt-3 border-t border-border flex items-center gap-2.5">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-primary/10 text-xs font-semibold text-primary">{t.name[0]}</div>
+                    <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-primary/10 text-xs font-semibold text-primary">{name[0]}</div>
                     <div>
-                      <div className="text-body-sm font-semibold text-ink">{t.name}</div>
-                      <div className="text-caption">{t.role}</div>
+                      <div className="text-body-sm font-semibold text-ink">{name}</div>
+                      <div className="text-caption">{t.testimonials.items[i].role}</div>
                     </div>
                   </div>
                 </div>

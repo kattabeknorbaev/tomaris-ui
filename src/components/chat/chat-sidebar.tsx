@@ -71,13 +71,13 @@ export function ChatSidebar() {
     <>
       {/* Collapsed state — mobile: floating chip over the page; desktop: slim in-flow rail */}
       {!sidebarOpen && (
-        <button onClick={toggleSidebar} aria-label="Open sidebar" className="fixed left-3 top-2 z-50 flex h-8 w-8 items-center justify-center rounded-md border border-border bg-canvas text-muted-foreground shadow-sm hover:text-ink hover:bg-surface-2 transition-colors duration-150 md:hidden">
+        <button onClick={toggleSidebar} aria-label={t.chat.openSidebar} className="fixed left-3 top-2 z-50 flex h-8 w-8 items-center justify-center rounded-md border border-border bg-canvas text-muted-foreground shadow-sm hover:text-ink hover:bg-surface-2 transition-colors duration-150 md:hidden">
           <PanelLeft className="h-4 w-4" />
         </button>
       )}
       {!sidebarOpen && (
         <div className="hidden h-full w-12 shrink-0 flex-col items-center gap-1 border-r border-border bg-canvas-soft py-2 md:flex">
-          <button onClick={toggleSidebar} aria-label="Open sidebar" className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+          <button onClick={toggleSidebar} aria-label={t.chat.openSidebar} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
             <PanelLeft className="h-4 w-4" />
           </button>
           <button onClick={handleNewChat} aria-label={t.chat.newChat} title={t.chat.newChat} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
@@ -94,7 +94,7 @@ export function ChatSidebar() {
             <Image src="/logo.png" alt="Tomaris" width={20} height={20} className="rounded-sm" />
             <span className="text-sm font-semibold text-ink">Tomaris</span>
           </Link>
-          <button onClick={toggleSidebar} aria-label="Close sidebar" className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+          <button onClick={toggleSidebar} aria-label={t.chat.closeSidebar} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
             <PanelLeftClose className="h-3.5 w-3.5" />
           </button>
         </div>
@@ -119,10 +119,10 @@ export function ChatSidebar() {
                 ) : (
                   <span className="flex-1 truncate text-[13px]">{chat.title}</span>
                 )}
-                <button onClick={(e) => { e.stopPropagation(); handleRenameStart(chat); }} aria-label="Rename chat" title="Rename" className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-ink group-hover:flex transition-colors duration-150">
+                <button onClick={(e) => { e.stopPropagation(); handleRenameStart(chat); }} aria-label={t.chat.rename} title={t.chat.rename} className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-ink group-hover:flex transition-colors duration-150">
                   <Pencil className="h-3 w-3" />
                 </button>
-                <button onClick={(e) => { e.stopPropagation(); if (window.confirm(t.chat.deleteChatConfirm)) deleteChat(chat.id); }} aria-label="Delete chat" title="Delete" className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-error group-hover:flex transition-colors duration-150">
+                <button onClick={(e) => { e.stopPropagation(); if (window.confirm(t.chat.deleteChatConfirm)) deleteChat(chat.id); }} aria-label={t.chat.deleteChat} title={t.chat.deleteChat} className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-error group-hover:flex transition-colors duration-150">
                   <Trash2 className="h-3 w-3" />
                 </button>
               </div>
@@ -144,7 +144,7 @@ export function ChatSidebar() {
           </Link>
           <button onClick={handleSignOut} disabled={signingOut} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink disabled:opacity-60">
             <LogOut className="h-3.5 w-3.5 opacity-50" />
-            {signingOut ? "Signing out…" : "Sign out"}
+            {signingOut ? t.chat.signingOut : t.chat.signOut}
           </button>
           <div className="flex items-center gap-2 px-2.5 pt-2 mt-1 border-t border-border">
             <LanguageSwitcher />

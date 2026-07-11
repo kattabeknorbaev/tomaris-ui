@@ -82,11 +82,11 @@ export function ChatInput() {
       const kind = fileKind(file);
       if (kind === "image") {
         // Honest: the current model is text-only and cannot see images.
-        toast.info("Image understanding isn't available yet — Tomaris currently reads text and documents.");
+        toast.info(t.chat.imageNotYet);
         continue;
       }
       if (kind === "unsupported") {
-        toast.info(`Can't read ${file.name} yet — try text, code, CSV, JSON, or PDF files.`);
+        toast.info(t.chat.fileUnsupported);
         continue;
       }
       const id = generateId();
@@ -103,12 +103,12 @@ export function ChatInput() {
           );
         })
         .catch(() => {
-          toast.error(`Couldn't read ${file.name} — it may be scanned or corrupted.`);
+          toast.error(t.chat.fileReadError);
           setAttachments((prev) => prev.filter((a) => a.id !== id));
         });
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
-  }, []);
+  }, [t]);
 
   const removeAttachment = useCallback((id: string) => {
     setAttachments((prev) => prev.filter((a) => a.id !== id));
@@ -240,7 +240,7 @@ export function ChatInput() {
       const hasContent = trimmed || attachments.length > 0;
       if (!hasContent || isStreaming) return;
       if (attachments.some((a) => a.text === null)) {
-        toast.info("Still reading your file — one moment…");
+        toast.info(t.chat.fileReading);
         return;
       }
 
@@ -269,7 +269,7 @@ export function ChatInput() {
       setIsStreaming(true);
       streamResponse(chatId, assistantMsgId);
     },
-    [attachments, isStreaming, activeChatId, addMessage, createChat, streamResponse]
+    [attachments, isStreaming, activeChatId, addMessage, createChat, streamResponse, t]
   );
 
   const handleSend = useCallback(() => sendText(input), [sendText, input]);
@@ -341,7 +341,7 @@ export function ChatInput() {
                   <button
                     onClick={() => removeAttachment(att.id)}
                     className="flex h-5 w-5 items-center justify-center rounded-full text-mute hover:text-error hover:bg-error/10 active:scale-90 transition-all duration-150 ml-0.5"
-                    aria-label="Remove"
+                    aria-label={t.chat.remove}
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -363,8 +363,8 @@ export function ChatInput() {
           <button
             onClick={() => fileInputRef.current?.click()}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-mute hover:text-ink hover:bg-surface-2 active:scale-90 transition-all duration-150"
-            title="Attach file"
-            aria-label="Attach file"
+            title={t.chat.attachFile}
+            aria-label={t.chat.attachFile}
           >
             <Paperclip className="h-4 w-4" />
           </button>
@@ -383,8 +383,8 @@ export function ChatInput() {
               <button
                 onClick={handleStop}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-error hover:bg-error/10 active:scale-90 transition-all duration-150"
-                title="Stop"
-                aria-label="Stop"
+                title={t.chat.stop}
+                aria-label={t.chat.stop}
               >
                 <Square className="h-4 w-4" />
               </button>
@@ -398,8 +398,8 @@ export function ChatInput() {
                     ? "bg-primary text-on-primary hover:bg-primary-deep hover:-translate-y-0.5 active:translate-y-0 active:scale-95 shadow-[0_4px_14px_-4px_rgba(15,143,111,0.6)]"
                     : "text-hairline-soft"
                 )}
-                title="Send"
-                aria-label="Send"
+                title={t.chat.send}
+                aria-label={t.chat.send}
               >
                 <Send className="h-4 w-4" />
               </button>
