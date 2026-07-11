@@ -185,6 +185,10 @@ const translations = {
       teamEyebrow: "Team",
       roadmapEyebrow: "Roadmap",
       coFounder: "Co-Founder",
+      founderBios: [
+        "Graduate of Samarkand Presidential School and incoming freshman at Yonsei University.",
+        "Left Westminster International University in Tashkent to build Tomaris full-time.",
+      ],
       roadmapPhases: [
         { title: "Foundation", items: ["Core model architecture", "Initial training data collection", "Team assembly"] },
         { title: "Training", items: ["227M word corpus curation", "Model training begins", "Alpha testing"] },
@@ -682,6 +686,10 @@ const translations = {
       teamEyebrow: "Jamoa",
       roadmapEyebrow: "Yo'l xaritasi",
       coFounder: "Hammuassis",
+      founderBios: [
+        "Samarqand Prezident maktabi bitiruvchisi va Yonsei universitetining bo'lajak talabasi.",
+        "Tomarisni to'liq vaqt qurish uchun Toshkentdagi Westminster xalqaro universitetini tark etdi.",
+      ],
       roadmapPhases: [
         { title: "Poydevor", items: ["Asosiy model arxitekturasi", "Dastlabki o'quv ma'lumotlarini yig'ish", "Jamoani shakllantirish"] },
         { title: "O'qitish", items: ["227M so'zli korpusni tayyorlash", "Model o'qitish boshlandi", "Alfa sinov"] },
@@ -1179,6 +1187,10 @@ const translations = {
       teamEyebrow: "Команда",
       roadmapEyebrow: "Дорожная карта",
       coFounder: "Сооснователь",
+      founderBios: [
+        "Выпускник Президентской школы Самарканда и будущий первокурсник Университета Ёнсе.",
+        "Оставил Вестминстерский международный университет в Ташкенте, чтобы строить Tomaris на полную занятость.",
+      ],
       roadmapPhases: [
         { title: "Основа", items: ["Базовая архитектура модели", "Сбор первичных данных", "Формирование команды"] },
         { title: "Обучение", items: ["Курирование корпуса на 227M слов", "Начало обучения модели", "Альфа-тестирование"] },
