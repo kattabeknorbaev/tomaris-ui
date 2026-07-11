@@ -53,8 +53,11 @@ interface ChatState {
   ) => void;
   /** Persist a message's current content to the server (used when a stream ends). */
   saveMessage: (chatId: string, messageId: string) => void;
-  /** Replace the local chats with the account's server chats. */
-  hydrate: (chats: Chat[], ownerId: string) => void;
+  /**
+   * Replace the local chats with the account's server chats.
+   * resetActive lands the user on the welcome screen (fresh login).
+   */
+  hydrate: (chats: Chat[], ownerId: string, resetActive?: boolean) => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
   clearAllChats: () => void;
@@ -165,13 +168,16 @@ export const useChatStore = create<ChatState>()(
         if (msg) apiSaveMessage(chatId, msg);
       },
 
-      hydrate: (chats, ownerId) =>
+      hydrate: (chats, ownerId, resetActive = false) =>
         set((state) => ({
           chats,
           ownerId,
-          activeChatId: chats.some((c) => c.id === state.activeChatId)
-            ? state.activeChatId
-            : chats[0]?.id ?? null,
+          // Keep the open chat across refreshes; otherwise start fresh
+          // (no auto-jumping into the newest conversation).
+          activeChatId:
+            !resetActive && chats.some((c) => c.id === state.activeChatId)
+              ? state.activeChatId
+              : null,
         })),
 
       setSidebarOpen: (open: boolean) => set({ sidebarOpen: open }),
