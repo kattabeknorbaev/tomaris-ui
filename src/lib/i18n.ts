@@ -42,6 +42,10 @@ const translations = {
     },
     chat: {
       greeting: "Assalomu alaykum. I'm Tomaris. How can I help you today?",
+      goodMorning: "Good morning",
+      goodAfternoon: "Good afternoon",
+      goodEvening: "Good evening",
+      helpSubline: "Assalomu alaykum — how can I help today?",
       placeholder: "Ask Tomaris anything...",
       send: "Send",
       newChat: "New Chat",
@@ -492,6 +496,10 @@ const translations = {
     },
     chat: {
       greeting: "Assalomu alaykum. Men Tomarisman. Sizga qanday yordam bera olaman?",
+      goodMorning: "Xayrli tong",
+      goodAfternoon: "Xayrli kun",
+      goodEvening: "Xayrli kech",
+      helpSubline: "Assalomu alaykum — bugun sizga qanday yordam beray?",
       placeholder: "Tomarisga istalgan savol bering...",
       send: "Yuborish",
       newChat: "Yangi suhbat",
@@ -942,6 +950,10 @@ const translations = {
     },
     chat: {
       greeting: "Ассалому алайкум. Я Томарис. Чем могу помочь?",
+      goodMorning: "Доброе утро",
+      goodAfternoon: "Добрый день",
+      goodEvening: "Добрый вечер",
+      helpSubline: "Ассалому алайкум — чем помочь сегодня?",
       placeholder: "Спросите что угодно у Tomaris...",
       send: "Отправить",
       newChat: "Новый чат",

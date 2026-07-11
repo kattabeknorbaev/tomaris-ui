@@ -2,29 +2,41 @@
 
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
+import { authClient } from "@/lib/auth-client";
 import { motion } from "framer-motion";
-import { Atom, FileText, Code2, FileScan, ArrowUpRight } from "lucide-react";
+import { Atom, FileText, Code2, Briefcase, ArrowUpRight } from "lucide-react";
 import { EASE } from "@/lib/motion";
 
-const promptIcons = [Atom, FileText, Code2, FileScan];
+const promptIcons = [Atom, FileText, Code2, Briefcase];
 
 const container = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.04 } },
+  visible: { transition: { staggerChildren: 0.05, delayChildren: 0.03 } },
 };
 const item = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: EASE } },
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.35, ease: EASE } },
 };
 
 export function WelcomeScreen() {
   const setPendingPrompt = useChatStore((s) => s.setPendingPrompt);
   const { t } = useI18n();
+  const { data: session } = authClient.useSession();
+
+  // First name from the account (Google name, else the email's local part).
+  const rawName = session?.user?.name || session?.user?.email?.split("@")[0] || "";
+  const firstName = rawName
+    ? rawName.split(/[\s.]+/)[0].replace(/^\w/, (c) => c.toUpperCase())
+    : "";
+
+  // Time-of-day greeting — computed on the client, so it's the user's local time.
+  const hour = new Date().getHours();
+  const timeGreeting =
+    hour < 12 ? t.chat.goodMorning : hour < 18 ? t.chat.goodAfternoon : t.chat.goodEvening;
+  const greeting = firstName ? `${timeGreeting}, ${firstName}` : timeGreeting;
 
   const prompts = t.chat.suggestedPrompts;
 
-  // Queue the prompt — ChatInput picks it up and sends it through the real
-  // streaming pipeline (creating the chat if needed), same as typing it.
   const handlePromptClick = (text: string) => {
     setPendingPrompt(text);
   };
@@ -35,20 +47,22 @@ export function WelcomeScreen() {
         variants={container}
         initial="hidden"
         animate="visible"
-        className="mx-auto w-full max-w-xl text-center"
+        className="mx-auto w-full max-w-xl"
       >
-        {/* Logo */}
-        <motion.div
+        {/* Personal, time-aware greeting — the warm editorial serif is the
+            focal point, not a glowing logo. */}
+        <motion.h1
           variants={item}
-          className="mx-auto mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-on-primary shadow-[0_8px_24px_-6px_rgba(15,143,111,0.6)]"
+          className="text-center font-serif text-3xl font-medium tracking-tight text-ink-strong sm:text-[2.5rem] sm:leading-[1.1]"
         >
-          <span className="text-xl font-bold">T</span>
-        </motion.div>
-
-        {/* Greeting */}
-        <motion.h1 variants={item} className="text-heading-2 text-ink-strong">
-          {t.chat.greeting}
+          {greeting}
         </motion.h1>
+        <motion.p
+          variants={item}
+          className="mt-3 text-center text-body text-muted-foreground"
+        >
+          {t.chat.helpSubline}
+        </motion.p>
 
         {/* Suggested prompts */}
         <div className="mt-10 grid gap-2.5 sm:grid-cols-2">

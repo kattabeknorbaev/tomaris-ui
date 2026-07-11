@@ -81,7 +81,13 @@ const MarkdownContent = memo(function MarkdownContent({ content }: { content: st
   );
 });
 
-export const ChatMessage = memo(function ChatMessage({ message }: { message: Message }) {
+export const ChatMessage = memo(function ChatMessage({
+  message,
+  userInitial = "U",
+}: {
+  message: Message;
+  userInitial?: string;
+}) {
   const [copied, setCopied] = useState(false);
   const [reasoningOpen, setReasoningOpen] = useState(false);
   const { t } = useI18n();
@@ -140,7 +146,7 @@ export const ChatMessage = memo(function ChatMessage({ message }: { message: Mes
             )}
           </div>
           {isUser && (
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-surface-2 text-[10px] font-semibold text-ink order-2 mt-0.5">U</div>
+            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-surface-2 text-[10px] font-semibold uppercase text-ink order-2 mt-0.5">{userInitial}</div>
           )}
         </div>
       </div>
