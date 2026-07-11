@@ -18,22 +18,15 @@ const item = {
 };
 
 export function WelcomeScreen() {
-  const { addMessage, activeChatId, createChat } = useChatStore();
+  const setPendingPrompt = useChatStore((s) => s.setPendingPrompt);
   const { t } = useI18n();
 
-  const prompts = [
-    t.features.items[0]?.desc || "Explain quantum physics in Uzbek",
-    t.features.items[1]?.desc || "Translate this contract to English",
-    t.features.items[2]?.desc || "Write Python code for a web scraper",
-    t.features.items[3]?.desc || "Summarize this document",
-  ];
+  const prompts = t.chat.suggestedPrompts;
 
+  // Queue the prompt — ChatInput picks it up and sends it through the real
+  // streaming pipeline (creating the chat if needed), same as typing it.
   const handlePromptClick = (text: string) => {
-    let chatId = activeChatId;
-    if (!chatId || chatId === "welcome") {
-      chatId = createChat();
-    }
-    addMessage(chatId, { role: "user", content: text });
+    setPendingPrompt(text);
   };
 
   return (

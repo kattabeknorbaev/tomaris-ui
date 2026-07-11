@@ -51,3 +51,13 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ ok: true });
 }
+
+// DELETE /api/chats — wipe ALL of the logged-in user's chats (messages
+// cascade). Used by Settings → "Clear all chats".
+export async function DELETE() {
+  const user = await requireUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  await db.delete(chats).where(eq(chats.userId, user.id));
+  return NextResponse.json({ ok: true });
+}

@@ -13,10 +13,12 @@ export default function WaitlistPage() {
   const { t } = useI18n();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [useCase, setUseCase] = useState("");
   const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const next: typeof errors = {};
     if (!name.trim()) next.name = t.common.required;
@@ -24,9 +26,20 @@ export default function WaitlistPage() {
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
-    // Demo: no backend yet — show honest sending + confirmation states.
+    // Real delivery: the API route emails the signup to the team.
     setStatus("sending");
-    setTimeout(() => setStatus("sent"), 800);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: "waitlist", email, name, organization, useCase }),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("sent");
+    } catch {
+      setStatus("idle");
+      setErrors({ email: t.auth.sendFailed });
+    }
   };
 
   return (
@@ -113,6 +126,8 @@ export default function WaitlistPage() {
                     id="waitlist-organization"
                     type="text"
                     autoComplete="organization"
+                    value={organization}
+                    onChange={(e) => setOrganization(e.target.value)}
                     placeholder={t.waitlist.organization}
                     className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                   />
@@ -123,7 +138,8 @@ export default function WaitlistPage() {
                   </label>
                   <select
                     id="waitlist-usecase"
-                    defaultValue=""
+                    value={useCase}
+                    onChange={(e) => setUseCase(e.target.value)}
                     className="mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-1 focus:ring-primary"
                   >
                     <option value="" disabled>

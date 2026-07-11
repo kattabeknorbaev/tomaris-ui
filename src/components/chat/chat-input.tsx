@@ -13,7 +13,6 @@ interface Attachment {
   name: string;
   type: string;
   size: number;
-  file: File;
   /** Extracted text — null while reading. */
   text: string | null;
 }
@@ -42,6 +41,8 @@ export function ChatInput() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [apiStatus, setApiStatus] = useState<"idle" | "loading" | "error" | "ok">("idle");
+  // Ref mirror so streamResponse (a stable callback) sees the current status.
+  const apiStatusRef = useRef<typeof apiStatus>("idle");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -64,8 +65,14 @@ export function ChatInput() {
   // Check API health on mount (GET hits /v1/models upstream — no generation cost)
   useEffect(() => {
     fetch("/api/chat")
-      .then((r) => setApiStatus(r.ok ? "ok" : "error"))
-      .catch(() => setApiStatus("error"));
+      .then((r) => {
+        apiStatusRef.current = r.ok ? "ok" : "error";
+        setApiStatus(apiStatusRef.current);
+      })
+      .catch(() => {
+        apiStatusRef.current = "error";
+        setApiStatus("error");
+      });
   }, []);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,10 +93,11 @@ export function ChatInput() {
       // Show the chip immediately; fill in the text when extraction finishes.
       setAttachments((prev) => [
         ...prev,
-        { id, name: file.name, type: file.type, size: file.size, file, text: null },
+        { id, name: file.name, type: file.type, size: file.size, text: null },
       ]);
       extractFileText(file)
         .then((text) => {
+          if (!text) throw new Error("empty");
           setAttachments((prev) =>
             prev.map((a) => (a.id === id ? { ...a, text } : a))
           );
@@ -120,7 +128,9 @@ export function ChatInput() {
             : m.content,
         }));
 
-      // Try real API first
+      // "real" (incl. user-stopped partials) gets persisted to the account;
+      // demo mocks and error placeholders never do.
+      let outcome: "real" | "mock" | "error" = "real";
       stoppedRef.current = false;
       try {
         abortRef.current = new AbortController();
@@ -140,8 +150,9 @@ export function ChatInput() {
         let buffer = "";
         let fullContent = "";
         let fullReasoning = "";
+        let sseDone = false;
 
-        while (true) {
+        while (!sseDone) {
           const { done, value } = await reader.read();
           if (done) break;
 
@@ -152,7 +163,10 @@ export function ChatInput() {
           for (const line of lines) {
             if (!line.startsWith("data: ")) continue;
             const data = line.slice(6).trim();
-            if (data === "[DONE]") break;
+            if (data === "[DONE]") {
+              sseDone = true;
+              break;
+            }
 
             try {
               const parsed = JSON.parse(data);
@@ -172,75 +186,103 @@ export function ChatInput() {
           }
         }
       } catch (err: unknown) {
-        // Fallback to mock response if API unavailable
-        if (err instanceof Error && err.name === "AbortError") return;
-
-        console.warn("API unavailable, using mock response");
-        const mock =
-          MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)];
-        // Type the mock out char-by-char, resolving exactly when it finishes
-        // (or when the user hits Stop, which flips stoppedRef).
-        await new Promise<void>((resolve) => {
-          let charIndex = 0;
-          mockTimerRef.current = setInterval(() => {
-            if (stoppedRef.current) {
-              if (mockTimerRef.current) clearInterval(mockTimerRef.current);
-              mockTimerRef.current = null;
-              resolve();
-              return;
-            }
-            charIndex += Math.floor(Math.random() * 4) + 2;
-            patchMessage(chatId, assistantMsgId, { content: mock.slice(0, charIndex) });
-            if (charIndex >= mock.length) {
-              if (mockTimerRef.current) clearInterval(mockTimerRef.current);
-              mockTimerRef.current = null;
-              resolve();
-            }
-          }, 30);
-        });
+        // User pressed Stop — keep whatever streamed as a real partial reply.
+        if (err instanceof Error && err.name === "AbortError") {
+          // outcome stays "real"
+        } else if (apiStatusRef.current === "error") {
+          // Known demo mode (model server not configured/reachable at load):
+          // play a canned demo reply. The demo banner is already visible.
+          outcome = "mock";
+          const mock =
+            MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)];
+          await new Promise<void>((resolve) => {
+            let charIndex = 0;
+            mockTimerRef.current = setInterval(() => {
+              if (stoppedRef.current) {
+                if (mockTimerRef.current) clearInterval(mockTimerRef.current);
+                mockTimerRef.current = null;
+                resolve();
+                return;
+              }
+              charIndex += Math.floor(Math.random() * 4) + 2;
+              patchMessage(chatId, assistantMsgId, { content: mock.slice(0, charIndex) });
+              if (charIndex >= mock.length) {
+                if (mockTimerRef.current) clearInterval(mockTimerRef.current);
+                mockTimerRef.current = null;
+                resolve();
+              }
+            }, 30);
+          });
+        } else {
+          // The server was healthy at load but this request failed — show a
+          // real error instead of silently faking an answer.
+          console.error("chat request failed:", err);
+          outcome = "error";
+          patchMessage(chatId, assistantMsgId, { content: t.chat.sendError });
+        }
       } finally {
         setIsStreaming(false);
         patchMessage(chatId, assistantMsgId, { isStreaming: false });
-        // Persist the completed reply (content + reasoning) to the account.
-        useChatStore.getState().saveMessage(chatId, assistantMsgId);
+        // Persist only genuine model output to the account.
+        if (outcome === "real") {
+          useChatStore.getState().saveMessage(chatId, assistantMsgId);
+        }
       }
     },
-    [patchMessage]
+    [patchMessage, t]
   );
 
-  const handleSend = useCallback(() => {
-    const hasContent = input.trim() || attachments.length > 0;
-    if (!hasContent || isStreaming) return;
-    if (attachments.some((a) => a.text === null)) {
-      toast.info("Still reading your file — one moment…");
-      return;
-    }
+  // The one true send path — used by the composer, and by welcome-screen
+  // prompt cards via the store's pendingPrompt.
+  const sendText = useCallback(
+    (text: string) => {
+      const trimmed = text.trim();
+      const hasContent = trimmed || attachments.length > 0;
+      if (!hasContent || isStreaming) return;
+      if (attachments.some((a) => a.text === null)) {
+        toast.info("Still reading your file — one moment…");
+        return;
+      }
 
-    let chatId = activeChatId;
-    if (!chatId) chatId = createChat();
+      let chatId = activeChatId;
+      if (!chatId) chatId = createChat();
 
-    let messageContent = input.trim();
-    let fileText: string | undefined;
-    if (attachments.length > 0) {
-      const fileList = attachments.map((a) => `📎 ${a.name} (${formatSize(a.size)})`).join("\n");
-      messageContent = messageContent ? `${messageContent}\n\n${fileList}` : fileList;
-      fileText = attachments
-        .map((a) => `--- ${a.name} ---\n${a.text}`)
-        .join("\n\n")
-        .slice(0, MAX_CHARS_TOTAL);
-    }
+      let messageContent = trimmed;
+      let fileText: string | undefined;
+      if (attachments.length > 0) {
+        const fileList = attachments.map((a) => `📎 ${a.name} (${formatSize(a.size)})`).join("\n");
+        messageContent = messageContent ? `${messageContent}\n\n${fileList}` : fileList;
+        fileText = attachments
+          .map((a) => `--- ${a.name} ---\n${a.text}`)
+          .join("\n\n")
+          .slice(0, MAX_CHARS_TOTAL);
+      }
 
-    addMessage(chatId, { role: "user", content: messageContent, fileText });
-    const assistantMsgId = addMessage(chatId, {
-      role: "assistant",
-      content: "",
-      isStreaming: true,
-    });
-    setInput("");
-    setAttachments([]);
-    setIsStreaming(true);
-    streamResponse(chatId, assistantMsgId);
-  }, [input, attachments, isStreaming, activeChatId, addMessage, createChat, streamResponse]);
+      addMessage(chatId, { role: "user", content: messageContent, fileText });
+      const assistantMsgId = addMessage(chatId, {
+        role: "assistant",
+        content: "",
+        isStreaming: true,
+      });
+      setInput("");
+      setAttachments([]);
+      setIsStreaming(true);
+      streamResponse(chatId, assistantMsgId);
+    },
+    [attachments, isStreaming, activeChatId, addMessage, createChat, streamResponse]
+  );
+
+  const handleSend = useCallback(() => sendText(input), [sendText, input]);
+
+  // A prompt card was clicked on the welcome screen — send it for real,
+  // through the same pipeline as a typed message.
+  const pendingPrompt = useChatStore((s) => s.pendingPrompt);
+  useEffect(() => {
+    if (!pendingPrompt || isStreaming) return;
+    useChatStore.getState().setPendingPrompt(null);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reacting to a cross-component send request is exactly this effect's job
+    sendText(pendingPrompt);
+  }, [pendingPrompt, isStreaming, sendText]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

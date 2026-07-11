@@ -3,7 +3,7 @@
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Plus, Settings, Trash2, PanelLeftClose, PanelLeft, LogOut } from "lucide-react";
+import { MessageSquare, Plus, Settings, Trash2, Pencil, PanelLeftClose, PanelLeft, LogOut } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -44,7 +44,7 @@ export function ChatSidebar() {
     setRenamingId(null);
   };
 
-  // Selecting or creating a chat from another page (settings, agents, …)
+  // Selecting or creating a chat from another page (settings, profile)
   // must also bring the user back to the chat surface.
   const openChat = (id: string) => {
     setActiveChat(id);
@@ -58,9 +58,13 @@ export function ChatSidebar() {
 
   const handleSignOut = async () => {
     setSigningOut(true);
-    await authClient.signOut();
-    clearAllChats(); // drop this account's chats from the browser
-    router.push("/login");
+    try {
+      await authClient.signOut();
+      clearAllChats(); // drop this account's chats from the browser
+      router.push("/login");
+    } finally {
+      setSigningOut(false);
+    }
   };
 
   return (
@@ -115,7 +119,10 @@ export function ChatSidebar() {
                 ) : (
                   <span className="flex-1 truncate text-[13px]">{chat.title}</span>
                 )}
-                <button onClick={(e) => { e.stopPropagation(); deleteChat(chat.id); }} aria-label="Delete chat" className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-error group-hover:flex transition-colors duration-150">
+                <button onClick={(e) => { e.stopPropagation(); handleRenameStart(chat); }} aria-label="Rename chat" title="Rename" className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-ink group-hover:flex transition-colors duration-150">
+                  <Pencil className="h-3 w-3" />
+                </button>
+                <button onClick={(e) => { e.stopPropagation(); if (window.confirm(t.chat.deleteChatConfirm)) deleteChat(chat.id); }} aria-label="Delete chat" title="Delete" className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-error group-hover:flex transition-colors duration-150">
                   <Trash2 className="h-3 w-3" />
                 </button>
               </div>
