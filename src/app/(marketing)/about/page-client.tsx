@@ -4,12 +4,18 @@ import { Target, Eye, CheckCircle } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
 
 const team = [
-  { name: "Aziz Tursunov", role: "CEO & Co-Founder", initial: "A" },
-  { name: "Dilnoza Karimova", role: "CTO & Co-Founder", initial: "D" },
-  { name: "Bobur Alimov", role: "Head of AI", initial: "B" },
-  { name: "Nilufar Saidova", role: "Head of Product", initial: "N" },
-  { name: "Sardor Rakhimov", role: "Lead Engineer", initial: "S" },
-  { name: "Madina Umarova", role: "Head of Data", initial: "M" },
+  {
+    name: "Kattabek Norbayev",
+    role: "Co-Founder & CTO",
+    initial: "K",
+    bio: "Graduate of Samarkand Presidential School and incoming computer-science student at Yonsei University. Trained and deployed the Tomaris 27B model and built the platform end-to-end.",
+  },
+  {
+    name: "Javohir Matniyazov",
+    role: "Co-Founder & Lead Engineer",
+    initial: "J",
+    bio: "Left Westminster International University in Tashkent to build Tomaris full-time. Co-built the model, the 75,000-line dataset, and the alignment pipeline.",
+  },
 ];
 
 const roadmap = [
@@ -74,14 +80,17 @@ export default function AboutPage() {
               <h2 className="text-heading-1 text-ink-strong">{t.about.team}</h2>
               <p className="mt-3 text-body text-muted-foreground max-w-lg mx-auto">{t.about.teamSubtitle}</p>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2 max-w-3xl mx-auto">
               {team.map((member) => (
-                <div key={member.name} className="card-lift flex items-center gap-3 rounded-xl border border-border bg-card p-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-primary/10 text-sm font-semibold text-primary">{member.initial}</div>
-                  <div>
-                    <div className="text-body-sm font-semibold text-ink">{member.name}</div>
-                    <div className="text-caption">{member.role}</div>
+                <div key={member.name} className="card-lift rounded-2xl border border-border bg-card p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-base font-semibold text-primary">{member.initial}</div>
+                    <div>
+                      <div className="text-body font-semibold text-ink">{member.name}</div>
+                      <div className="text-caption text-primary">{member.role}</div>
+                    </div>
                   </div>
+                  <p className="mt-4 text-body-sm text-muted-foreground leading-relaxed">{member.bio}</p>
                 </div>
               ))}
             </div>
