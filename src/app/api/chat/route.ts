@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
+import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
 
 const VAST_API_URL = process.env.VAST_API_URL || "http://localhost:8000";
 const MODEL_NAME = process.env.SERVED_MODEL_NAME || "tomaris";
@@ -35,17 +36,22 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    const { messages } = await req.json();
+    // Cap GPU usage per account: 30 generations/minute is generous for a human,
+    // stops a script from hammering the model server.
+    const limit = rateLimit(`chat:${session.user.id}`, 30, 60_000);
+    if (!limit.ok) return tooManyRequests(limit.retryAfter);
 
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    const { messages: rawMessages } = await req.json();
+
+    if (!rawMessages || !Array.isArray(rawMessages) || rawMessages.length === 0) {
       return new Response(JSON.stringify({ error: "Messages array is required" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
     }
     if (
-      messages.length > MAX_MESSAGES ||
-      messages.some(
+      rawMessages.length > MAX_MESSAGES ||
+      rawMessages.some(
         (m) => typeof m?.content !== "string" || m.content.length > MAX_MESSAGE_CHARS
       )
     ) {
@@ -54,6 +60,13 @@ export async function POST(req: NextRequest) {
         headers: { "Content-Type": "application/json" },
       });
     }
+
+    // Whitelist to {role, content} and only user/assistant roles — never trust
+    // the client to inject extra `system` turns or arbitrary fields upstream.
+    const messages = rawMessages.map((m) => ({
+      role: m.role === "assistant" ? "assistant" : "user",
+      content: m.content as string,
+    }));
 
     const systemPrompt: Record<string, string> = {
       role: "system",

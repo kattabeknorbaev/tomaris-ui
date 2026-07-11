@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { rateLimit, clientIp, tooManyRequests } from "@/lib/rate-limit";
 
 // Where contact/waitlist submissions land. Defaults to the founder inbox;
 // override with CONTACT_EMAIL once a team mailbox exists.
@@ -12,6 +13,10 @@ const MAX_FIELD = 2000;
 // the submission is emailed to the team via Resend.
 export async function POST(req: Request) {
   try {
+    // Public endpoint that sends real email — cap to 5 per IP per 10 minutes.
+    const limit = rateLimit(`contact:${clientIp(req)}`, 5, 600_000);
+    if (!limit.ok) return tooManyRequests(limit.retryAfter);
+
     const body = await req.json();
     const kind = body.kind === "waitlist" ? "waitlist" : "contact";
     const email = String(body.email ?? "").slice(0, 320);
