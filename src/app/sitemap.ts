@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/seo";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
-    "/home",
+    "/",
     "/about",
     "/blog",
     "/contact",
@@ -15,10 +15,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...routes.map((route) => ({
-      url: `${SITE_URL}${route}`,
+      url: route === "/" ? SITE_URL : `${SITE_URL}${route}`,
       lastModified: new Date(),
-      changeFrequency: (route === "/home" ? "weekly" : "monthly") as "weekly" | "monthly",
-      priority: route === "/home" ? 1 : 0.7,
+      changeFrequency: (route === "/" ? "weekly" : "monthly") as "weekly" | "monthly",
+      priority: route === "/" ? 1 : 0.7,
     })),
     ...posts.map((post) => ({
       url: `${SITE_URL}/blog/${post.slug}`,

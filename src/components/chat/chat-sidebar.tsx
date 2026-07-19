@@ -90,7 +90,7 @@ export function ChatSidebar() {
 
       <aside className={cn("fixed inset-y-0 left-0 z-40 flex w-[260px] max-w-[85vw] flex-col border-r border-border bg-canvas-soft transition-transform duration-200 md:static md:z-auto md:h-full md:max-w-none md:transition-none", sidebarOpen ? "translate-x-0" : "-translate-x-full md:hidden")}>
         <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-3">
-          <Link href="/home" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Image src="/logo.png" alt="Tomaris" width={20} height={20} className="rounded-sm" />
             <span className="text-sm font-semibold text-ink">Tomaris</span>
           </Link>

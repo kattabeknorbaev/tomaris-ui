@@ -20,14 +20,15 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
-      // Typing the bare domain opens the live app. The marketing landing
-      // page stays reachable at /home (logo + footer links point there).
-      // Temporary (307) so it isn't hard-cached by browsers and can be
-      // reverted cleanly.
+      // The marketing landing now serves at the root so tomaris.ai is the
+      // indexable homepage. Logged-in visitors are forwarded to /app
+      // client-side (see LoggedInRedirect). Consolidate the old /home URL
+      // into the root with a permanent (308) redirect so any previously
+      // indexed /home links pass their authority to /.
       {
-        source: "/",
-        destination: "/app",
-        permanent: false,
+        source: "/home",
+        destination: "/",
+        permanent: true,
       },
     ];
   },

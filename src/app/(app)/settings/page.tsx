@@ -85,7 +85,7 @@ export default function SettingsPage() {
     useChatStore.getState().clearAllChats();
     localStorage.removeItem("tomaris-notifications");
     toast.success(t.settingsPage.accountDeleted);
-    router.push("/home");
+    router.push("/");
   };
 
   return (

@@ -12,7 +12,7 @@ export function Footer() {
       <div className="mx-auto max-w-5xl px-5 py-12 sm:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/home" className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
               <Image src="/logo.png" alt="Tomaris" width={22} height={22} className="rounded-sm" />
               <span className="text-sm font-semibold text-ink">Tomaris</span>
             </Link>
@@ -21,7 +21,7 @@ export function Footer() {
           <div>
             <h4 className="text-caption font-semibold text-muted-foreground uppercase tracking-wider mb-3">{t.footer.product}</h4>
             <ul className="space-y-2">
-              <li><Link href="/home#features" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.features}</Link></li>
+              <li><Link href="/#features" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.features}</Link></li>
               <li><Link href="/pricing" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.pricing}</Link></li>
               <li><Link href="/waitlist" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.hero.cta2}</Link></li>
             </ul>
