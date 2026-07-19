@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { posts, getPost } from "@/lib/blog";
+import { articleJsonLd } from "@/lib/seo";
 import { BlogArticle } from "./article";
 
 export function generateStaticParams() {
@@ -19,7 +20,20 @@ export async function generateMetadata({
     title: post.title,
     description: post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: { title: post.title, description: post.excerpt, type: "article" },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      url: `/blog/${post.slug}`,
+      publishedTime: new Date(post.date).toISOString(),
+      authors: ["Tomaris AI"],
+      section: post.category,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+    },
   };
 }
 
@@ -32,5 +46,13 @@ export default async function BlogPostPage({
   const post = getPost(slug);
   if (!post) notFound();
 
-  return <BlogArticle post={post} />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(post)) }}
+      />
+      <BlogArticle post={post} />
+    </>
+  );
 }
