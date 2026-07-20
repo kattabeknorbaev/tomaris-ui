@@ -27,17 +27,22 @@ contracts, passports, homework, receipts. Those don't need a vision model;
 they need OCR (text recognition), and the extracted text flows into the
 existing pipeline exactly like a PDF does.
 
-**Plan (2–4 days of work):**
-1. Add [tesseract.js](https://github.com/naptha/tesseract.js) client-side with
-   the `uzb`, `uzb_cyrl`, `rus`, `eng` trained data (loaded lazily, like pdf.js).
-2. In `file-extract.ts`, route images → OCR → extracted text (same caps).
-3. Also route **scanned PDFs** (pages with no text layer) through OCR.
-4. UI copy: chip says "reading text from image…" — honest about what it does.
+**Status: SHIPPED** (steps 1, 2, 4). Scanned-PDF OCR (step 3) is still open.
+1. ✅ [tesseract.js](https://github.com/naptha/tesseract.js) client-side with
+   `uzb`, `uzb_cyrl`, `rus`, `eng` trained data, lazy-loaded like pdf.js.
+2. ✅ `file-extract.ts` routes images → OCR → extracted text (same caps); an
+   image with no readable text is a distinct honest outcome, not an error.
+3. ☐ Also route **scanned PDFs** (pages with no text layer) through OCR —
+   `extractPdf` currently returns empty for image-only pages; detect that and
+   fall back to rasterize-then-OCR.
+4. ✅ UI copy: chip says "Reading text from image…" and reports "No readable
+   text found" honestly.
 
 **Limits to disclose:** OCR reads printed text well, handwriting poorly; it
 describes nothing visual (no "what's in this photo"). It's document
 intelligence, not vision — but it covers the most valuable enterprise use
-case (Uzbek document processing) at zero infra cost.
+case (Uzbek document processing) at zero infra cost. First OCR downloads the
+trained-data (~tens of MB, then browser-cached), so it's slower once per device.
 
 ---
 
