@@ -12,7 +12,6 @@ import {
   Eye,
   Code2,
   ChevronDown,
-  Star,
   Check,
   X,
   Send,
@@ -44,9 +43,6 @@ export default function HomePage() {
     { label: t.useCases.government, title: t.useCases.governmentTitle, desc: t.useCases.governmentDesc, icon: "🏛️" },
     { label: t.useCases.healthcare, title: t.useCases.healthcareTitle, desc: t.useCases.healthcareDesc, icon: "🏥" },
   ];
-
-  // Names only; role + quote come from i18n (t.testimonials.items) so they translate.
-  const testimonialNames = ["Sardor Karimov", "Nilufar Rashidova", "Jamshid Alimov"];
 
   // Single source of truth with /pricing: names, descriptions, and features
   // all come from t.pricing. The landing shows the first 5 features per plan.
@@ -196,31 +192,17 @@ export default function HomePage() {
                   ))}
                 </ul>
               </div>
+              {/* Honest capability snapshot — factual, verifiable features of
+                  the live product (no fabricated competitor benchmarks). */}
               <div className="rounded-xl border border-border bg-card overflow-hidden shadow-[var(--shadow-md)]">
                 <div className="border-b border-border px-4 py-2.5">
-                  <h3 className="text-body-sm font-semibold text-ink">{t.comparison.uzbekQuality}</h3>
+                  <h3 className="text-body-sm font-semibold text-ink">{t.whyTomaris.snapshotTitle}</h3>
                 </div>
-                <div className="p-4 space-y-3.5">
-                  {[
-                    { name: "Tomaris", score: 97, hl: true },
-                    { name: "GPT-4", score: 62, hl: false },
-                    { name: "Gemini", score: 58, hl: false },
-                    { name: "Claude", score: 55, hl: false },
-                  ].map((m, i) => (
-                    <div key={m.name}>
-                      <div className="flex justify-between text-body-sm mb-1">
-                        <span className={m.hl ? "font-semibold text-ink" : "text-muted-foreground"}>{m.name}</span>
-                        <span className={`font-mono ${m.hl ? "text-primary font-semibold" : "text-muted-foreground"}`}>{m.score}%</span>
-                      </div>
-                      <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden">
-                        <motion.div
-                          className={`h-full rounded-full ${m.hl ? "bg-primary" : "bg-hairline-soft"}`}
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${m.score}%` }}
-                          viewport={{ once: true, margin: "-40px" }}
-                          transition={{ duration: 0.7, delay: i * 0.08, ease: EASE }}
-                        />
-                      </div>
+                <div className="divide-y divide-border">
+                  {t.whyTomaris.snapshot.map((row) => (
+                    <div key={row.label} className="flex items-center justify-between px-4 py-3.5">
+                      <span className="text-body-sm text-muted-foreground">{row.label}</span>
+                      <span className="text-body-sm font-medium text-ink">{row.value}</span>
                     </div>
                   ))}
                 </div>
@@ -293,7 +275,6 @@ export default function HomePage() {
                     { f: t.comparison.culturalContext, t: true, g: false, ge: false, c: false, isText: false },
                     { f: t.comparison.dataSovereignty, t: true, g: false, ge: false, c: false, isText: false },
                     { f: t.comparison.agenticWorkflows, t: true, g: true, ge: true, c: true, isText: false },
-                    { f: t.comparison.voiceUzbek, t: true, g: false, ge: false, c: false, isText: false },
                     { f: t.comparison.pricingLabel, t: t.comparison.freeTier, g: "$20/mo", ge: "$20/mo", c: "$20/mo", isText: true },
                   ].map((row) => (
                     <tr key={row.f} className="border-b border-border">
@@ -341,31 +322,26 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== TESTIMONIALS ===== */}
+        {/* ===== PRINCIPLES ===== */}
         <section className="border-t border-border py-20 sm:py-24">
           <div className="mx-auto max-w-5xl px-5 sm:px-8">
             <div className="text-center mb-10">
-              <p className="text-eyebrow mb-3">{t.testimonials.eyebrow}</p>
-              <h2 className="text-heading-1 text-ink-strong">{t.testimonials.title}</h2>
+              <p className="text-eyebrow mb-3">{t.principles.eyebrow}</p>
+              <h2 className="text-heading-1 text-ink-strong">{t.principles.title}</h2>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {testimonialNames.map((name, i) => (
-                <div key={name} className="card-lift rounded-xl border border-border bg-card p-5">
-                  <div className="flex gap-0.5 mb-3">
-                    {Array.from({ length: 5 }).map((_, j) => (
-                      <Star key={j} className="h-3 w-3 fill-gold text-gold" aria-hidden="true" />
-                    ))}
-                  </div>
-                  <p className="text-body-sm text-muted-foreground leading-relaxed">&ldquo;{t.testimonials.items[i].content}&rdquo;</p>
-                  <div className="mt-4 pt-3 border-t border-border flex items-center gap-2.5">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-sm bg-primary/10 text-xs font-semibold text-primary">{name[0]}</div>
-                    <div>
-                      <div className="text-body-sm font-semibold text-ink">{name}</div>
-                      <div className="text-caption">{t.testimonials.items[i].role}</div>
+              {t.principles.items.map((item, i) => {
+                const Icon = [Languages, Shield, Eye][i] || Check;
+                return (
+                  <div key={item.title} className="card-lift rounded-xl border border-border bg-card p-5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <Icon className="h-4 w-4" aria-hidden="true" />
                     </div>
+                    <h3 className="mt-4 text-body-sm font-semibold text-ink">{item.title}</h3>
+                    <p className="mt-1.5 text-body-sm text-muted-foreground leading-relaxed">{item.content}</p>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>

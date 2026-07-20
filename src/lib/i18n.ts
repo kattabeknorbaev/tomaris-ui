@@ -424,6 +424,13 @@ const translations = {
         "Optimized for low-resource language processing",
         "Agentic capabilities designed for Uzbek enterprise workflows",
       ],
+      snapshotTitle: "What you get today",
+      snapshot: [
+        { label: "Languages", value: "Uzbek · Russian · English" },
+        { label: "Reasoning", value: "Visible, step by step" },
+        { label: "Documents", value: "Reads PDFs & text files" },
+        { label: "Access", value: "Free to start" },
+      ],
     },
     useCases: {
       eyebrow: "Use Cases",
@@ -453,7 +460,6 @@ const translations = {
       culturalContext: "Cultural Context",
       dataSovereignty: "Data Sovereignty (UZ)",
       agenticWorkflows: "Agentic Workflows",
-      voiceUzbek: "Voice in Uzbek",
       pricingLabel: "Pricing",
       excellent: "Excellent",
       good: "Good",
@@ -462,13 +468,13 @@ const translations = {
       yes: "Yes",
       no: "No",
     },
-    testimonials: {
-      eyebrow: "Testimonials",
-      title: "Trusted by innovators",
+    principles: {
+      eyebrow: "Our commitment",
+      title: "Built honestly, for Uzbek",
       items: [
-        { role: "CEO, TechUz", content: "Tomaris has transformed how our team handles Uzbek-language customer support. The accuracy is unprecedented." },
-        { role: "Professor, Tashkent University", content: "Finally, an AI that understands academic Uzbek. My students use it for research and the results are remarkable." },
-        { role: "Legal Counsel, UzLaw", content: "Drafting legal documents in Uzbek used to take hours. With Tomaris, it takes minutes with better accuracy." },
+        { title: "Uzbek-first, not bolted on", content: "Tomaris is aligned specifically for Uzbek — not a global model with Uzbek added as an afterthought." },
+        { title: "Your data stays in the region", content: "Conversations live on infrastructure we control, built around Uzbekistan's data-sovereignty expectations." },
+        { title: "Early, and honest about it", content: "We're at the very beginning. You're using the first Uzbek-native AI, and we ship and improve it in the open." },
       ],
     },
     faq: {
@@ -927,6 +933,13 @@ const translations = {
         "Kam resursli tilni qayta ishlash uchun optimallashtirilgan",
         "O'zbek korxona ish jarayonlari uchun mo'ljallangan agent imkoniyatlari",
       ],
+      snapshotTitle: "Bugun nima olasiz",
+      snapshot: [
+        { label: "Tillar", value: "O'zbek · Rus · Ingliz" },
+        { label: "Fikrlash", value: "Bosqichma-bosqich ko'rinadi" },
+        { label: "Hujjatlar", value: "PDF va matn fayllarni o'qiydi" },
+        { label: "Kirish", value: "Bepul boshlash" },
+      ],
     },
     useCases: {
       eyebrow: "Foydalanish sohalari",
@@ -956,7 +969,6 @@ const translations = {
       culturalContext: "Madaniy kontekst",
       dataSovereignty: "Ma'lumotlar suvereniteti (O'Z)",
       agenticWorkflows: "Agent ish jarayonlari",
-      voiceUzbek: "O'zbek tilida ovoz",
       pricingLabel: "Narx",
       excellent: "A'lo",
       good: "Yaxshi",
@@ -965,13 +977,13 @@ const translations = {
       yes: "Ha",
       no: "Yo'q",
     },
-    testimonials: {
-      eyebrow: "Fikrlar",
-      title: "Innovatorlar tomonidan ishoniladi",
+    principles: {
+      eyebrow: "Bizning majburiyatimiz",
+      title: "O'zbek tili uchun halol yaratilgan",
       items: [
-        { role: "Bosh direktor, TechUz", content: "Tomaris jamoamiz o'zbek tilidagi mijozlarni qo'llab-quvvatlashini butunlay o'zgartirdi. Aniqlik misli ko'rilmagan." },
-        { role: "Professor, Toshkent universiteti", content: "Nihoyat, akademik o'zbek tilini tushunadigan AI. Talabalarim uni tadqiqot uchun ishlatishadi va natijalar ajoyib." },
-        { role: "Yuridik maslahatchi, UzLaw", content: "O'zbek tilida hujjatlar tayyorlash soatlab vaqt olardi. Tomaris bilan bu daqiqalarda va aniqroq bo'ladi." },
+        { title: "Avvalo o'zbekcha, qo'shimcha emas", content: "Tomaris maxsus o'zbek tili uchun moslashtirilgan — o'zbekcha keyin qo'shilgan global model emas." },
+        { title: "Ma'lumotlaringiz mintaqada qoladi", content: "Suhbatlar biz nazorat qiladigan infratuzilmada, O'zbekiston ma'lumotlar suvereniteti talablariga muvofiq saqlanadi." },
+        { title: "Boshlanishida, va buni halol aytamiz", content: "Biz endigina boshlayapmiz. Siz birinchi o'zbek-native AI dan foydalanyapsiz va biz uni ochiq tarzda yaxshilaymiz." },
       ],
     },
     faq: {
@@ -1430,6 +1442,13 @@ const translations = {
         "Оптимизирован для обработки языков с ограниченными ресурсами",
         "Агентные возможности для узбекских корпоративных процессов",
       ],
+      snapshotTitle: "Что вы получаете сегодня",
+      snapshot: [
+        { label: "Языки", value: "Узбекский · Русский · Английский" },
+        { label: "Рассуждение", value: "Пошагово и наглядно" },
+        { label: "Документы", value: "Читает PDF и текстовые файлы" },
+        { label: "Доступ", value: "Бесплатный старт" },
+      ],
     },
     useCases: {
       eyebrow: "Сценарии использования",
@@ -1459,7 +1478,6 @@ const translations = {
       culturalContext: "Культурный контекст",
       dataSovereignty: "Суверенитет данных (УЗ)",
       agenticWorkflows: "Агентные процессы",
-      voiceUzbek: "Голос на узбекском",
       pricingLabel: "Цена",
       excellent: "Отлично",
       good: "Хорошо",
@@ -1468,13 +1486,13 @@ const translations = {
       yes: "Да",
       no: "Нет",
     },
-    testimonials: {
-      eyebrow: "Отзывы",
-      title: "Доверие инноваторов",
+    principles: {
+      eyebrow: "Наши принципы",
+      title: "Создано честно, для узбекского",
       items: [
-        { role: "CEO, TechUz", content: "Tomaris полностью изменил то, как наша команда обрабатывает поддержку на узбекском. Точность беспрецедентна." },
-        { role: "Профессор, Ташкентский университет", content: "Наконец-то ИИ, понимающий академический узбекский. Мои студенты используют его для исследований, и результаты впечатляют." },
-        { role: "Юрисконсульт, UzLaw", content: "Составление документов на узбекском занимало часы. С Tomaris — минуты и точнее." },
+        { title: "Сначала узбекский, а не надстройка", content: "Tomaris настроен специально для узбекского — это не глобальная модель, к которой узбекский добавлен позже." },
+        { title: "Ваши данные остаются в регионе", content: "Диалоги хранятся на контролируемой нами инфраструктуре с учётом требований суверенитета данных Узбекистана." },
+        { title: "В начале пути — и мы честны в этом", content: "Мы в самом начале. Вы используете первый узбекско-нативный ИИ, и мы улучшаем его открыто." },
       ],
     },
     faq: {
