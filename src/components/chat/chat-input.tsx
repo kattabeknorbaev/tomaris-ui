@@ -284,6 +284,18 @@ export function ChatInput() {
     sendText(pendingPrompt);
   }, [pendingPrompt, isStreaming, sendText]);
 
+  // A regenerate/edit was triggered from a message — stream into the assistant
+  // message the store already prepared, through the same pipeline as a send.
+  const pendingStream = useChatStore((s) => s.pendingStream);
+  useEffect(() => {
+    if (!pendingStream || isStreaming) return;
+    const { chatId, assistantMsgId } = pendingStream;
+    useChatStore.getState().setPendingStream(null);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reacting to a cross-component regenerate/edit request is exactly this effect's job
+    setIsStreaming(true);
+    streamResponse(chatId, assistantMsgId);
+  }, [pendingStream, isStreaming, streamResponse]);
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "Enter" && !e.shiftKey) {

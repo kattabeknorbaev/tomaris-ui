@@ -7,6 +7,7 @@ import {
   apiRenameChat,
   apiDeleteChat,
   apiSaveMessage,
+  apiDeleteMessages,
 } from "@/lib/chat-api";
 
 function now(): string {
@@ -53,6 +54,18 @@ interface ChatState {
   ) => void;
   /** Persist a message's current content to the server (used when a stream ends). */
   saveMessage: (chatId: string, messageId: string) => void;
+  /**
+   * Reset an assistant reply to empty and request a fresh stream into it,
+   * dropping anything after it. ChatInput picks up pendingStream and streams.
+   */
+  regenerate: (chatId: string, assistantMsgId: string) => void;
+  /**
+   * Edit a user message, drop every message after it, and stream a new reply.
+   */
+  editMessage: (chatId: string, messageId: string, newContent: string) => void;
+  /** A request for ChatInput to stream into an existing assistant message. */
+  pendingStream: { chatId: string; assistantMsgId: string } | null;
+  setPendingStream: (v: { chatId: string; assistantMsgId: string } | null) => void;
   /**
    * Replace the local chats with the account's server chats.
    * resetActive lands the user on the welcome screen (fresh login).
@@ -175,6 +188,62 @@ export const useChatStore = create<ChatState>()(
         const chat = get().chats.find((c) => c.id === chatId);
         const msg = chat?.messages.find((m) => m.id === messageId);
         if (msg) apiSaveMessage(chatId, msg);
+      },
+
+      pendingStream: null,
+      setPendingStream: (v) => set({ pendingStream: v }),
+
+      regenerate: (chatId, assistantMsgId) => {
+        let removedIds: string[] = [];
+        set((state) => ({
+          chats: state.chats.map((chat) => {
+            if (chat.id !== chatId) return chat;
+            const idx = chat.messages.findIndex((m) => m.id === assistantMsgId);
+            if (idx === -1) return chat;
+            removedIds = chat.messages.slice(idx + 1).map((m) => m.id);
+            const messages = chat.messages.slice(0, idx + 1).map((m, i) =>
+              i === idx
+                ? { ...m, content: "", reasoning: undefined, isStreaming: true }
+                : m
+            );
+            return { ...chat, messages, updatedAt: now() };
+          }),
+        }));
+        if (get().ownerId && removedIds.length) apiDeleteMessages(chatId, removedIds);
+        set({ pendingStream: { chatId, assistantMsgId } });
+      },
+
+      editMessage: (chatId, messageId, newContent) => {
+        const trimmed = newContent.trim();
+        if (!trimmed) return;
+        const assistantId = generateId();
+        let removedIds: string[] = [];
+        let editedMsg: Message | undefined;
+        set((state) => ({
+          chats: state.chats.map((chat) => {
+            if (chat.id !== chatId) return chat;
+            const idx = chat.messages.findIndex((m) => m.id === messageId);
+            if (idx === -1) return chat;
+            removedIds = chat.messages.slice(idx + 1).map((m) => m.id);
+            const head = chat.messages.slice(0, idx + 1).map((m, i) =>
+              i === idx ? { ...m, content: trimmed } : m
+            );
+            editedMsg = head[idx];
+            const assistant: Message = {
+              id: assistantId,
+              role: "assistant",
+              content: "",
+              isStreaming: true,
+              timestamp: now(),
+            };
+            return { ...chat, messages: [...head, assistant], updatedAt: now() };
+          }),
+        }));
+        if (get().ownerId) {
+          if (editedMsg) apiSaveMessage(chatId, editedMsg);
+          if (removedIds.length) apiDeleteMessages(chatId, removedIds);
+        }
+        set({ pendingStream: { chatId, assistantMsgId: assistantId } });
       },
 
       hydrate: (chats, ownerId, resetActive = false) =>

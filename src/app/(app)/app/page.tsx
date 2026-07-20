@@ -83,6 +83,7 @@ export default function AppPage() {
   }, []);
 
   const hasMessages = activeChat && activeChat.messages.length > 0;
+  const streaming = !!activeChat?.messages.some((m) => m.isStreaming);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -97,8 +98,14 @@ export default function AppPage() {
       {hasMessages ? (
         <div ref={setScrollContainer} className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-2xl py-4">
-            {activeChat.messages.map((message) => (
-              <ChatMessage key={message.id} message={message} userInitial={userInitial} />
+            {activeChat.messages.map((message, i) => (
+              <ChatMessage
+                key={message.id}
+                message={message}
+                userInitial={userInitial}
+                isLast={i === activeChat.messages.length - 1}
+                busy={streaming}
+              />
             ))}
           </div>
         </div>
