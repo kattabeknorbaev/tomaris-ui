@@ -6,7 +6,8 @@
  * Supported today (text-only model on the backend):
  *   - plain text family: .txt .md .csv .json code files, etc.
  *   - PDF (digital, text-based) via pdf.js
- * Images are rejected honestly — the current model can't see.
+ *   - images (photos/scans of documents) via OCR (tesseract.js). This is
+ *     document intelligence, not vision: it reads printed text, not scenes.
  */
 
 // Per-file and per-message caps keep us safely inside the model's context.
@@ -49,16 +50,34 @@ async function extractPdf(file: File): Promise<string> {
   return out;
 }
 
+// OCR a document photo/scan. Languages cover Uzbek (Latin + Cyrillic),
+// Russian, and English — the scripts our market's documents use. tesseract.js
+// and its trained-data are loaded on demand (like pdf.js) and cached by the
+// browser after the first run, so text-only users never pay the download.
+async function extractImageOcr(file: File): Promise<string> {
+  const { createWorker } = await import("tesseract.js");
+  const worker = await createWorker(["uzb", "uzb_cyrl", "rus", "eng"]);
+  try {
+    const { data } = await worker.recognize(file);
+    return data.text ?? "";
+  } finally {
+    await worker.terminate();
+  }
+}
+
 /** Extract readable text from a file, truncated to MAX_CHARS_PER_FILE. */
 export async function extractFileText(file: File): Promise<string> {
   const kind = fileKind(file);
   let text: string;
   if (kind === "pdf") text = await extractPdf(file);
   else if (kind === "text") text = await file.text();
+  else if (kind === "image") text = await extractImageOcr(file);
   else throw new Error(`Unsupported file type: ${file.name}`);
 
   // Strip null bytes (Postgres text rejects them) and normalize NBSP to space.
   text = text.replace(/\u0000/g, "").replace(/\u00a0/g, " ").trim();
+  // An image that yielded nothing is a distinct, honest outcome — not a failure.
+  if (kind === "image" && !text) throw new Error("no-text");
   if (text.length > MAX_CHARS_PER_FILE) {
     text = text.slice(0, MAX_CHARS_PER_FILE) + "\n…[file truncated]";
   }
