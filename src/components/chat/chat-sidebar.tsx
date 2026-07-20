@@ -3,7 +3,8 @@
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Plus, Settings, Trash2, Pencil, PanelLeftClose, PanelLeft, LogOut } from "lucide-react";
+import type { Chat } from "@/types";
+import { MessageSquare, Plus, Settings, Trash2, Pencil, PanelLeftClose, PanelLeft, LogOut, Search, Download } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -11,6 +12,25 @@ import { useState, useRef, useEffect } from "react";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { authClient } from "@/lib/auth-client";
+
+// Download a conversation as a portable Markdown file.
+function downloadChatMarkdown(chat: Chat, assistantLabel: string) {
+  const lines = [`# ${chat.title}`, ""];
+  for (const m of chat.messages) {
+    if (!m.content) continue;
+    lines.push(`**${m.role === "user" ? "You" : assistantLabel}:**`, "", m.content, "");
+  }
+  const safeName = chat.title.replace(/[^\w\s-]/g, "").trim().slice(0, 40) || "chat";
+  const blob = new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${safeName}.md`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
 
 export function ChatSidebar() {
   const { chats, activeChatId, setActiveChat, createChat, deleteChat, renameChat, sidebarOpen, toggleSidebar, clearAllChats } = useChatStore();
@@ -21,7 +41,17 @@ export function ChatSidebar() {
   const [signingOut, setSigningOut] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
+  const [query, setQuery] = useState("");
   const renameRef = useRef<HTMLInputElement>(null);
+
+  const q = query.trim().toLowerCase();
+  const filteredChats = q
+    ? chats.filter(
+        (c) =>
+          c.title.toLowerCase().includes(q) ||
+          c.messages.some((m) => m.content.toLowerCase().includes(q))
+      )
+    : chats;
 
   const navItems = [
     { href: "/settings", icon: Settings, label: t.chat.settings },
@@ -99,11 +129,26 @@ export function ChatSidebar() {
           </button>
         </div>
 
-        <div className="shrink-0 p-2.5">
+        <div className="shrink-0 p-2.5 pb-1.5">
           <button onClick={handleNewChat} className="flex w-full items-center gap-2 rounded-xl border border-border bg-canvas px-3 py-2 text-body-sm text-ink hover:bg-surface-2 hover:border-hairline-soft active:scale-[0.98] transition-all duration-150">
             <Plus className="h-4 w-4" />{t.chat.newChat}
           </button>
         </div>
+
+        {chats.length > 0 && (
+          <div className="shrink-0 px-2.5 pb-1">
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-canvas px-2.5 py-1.5 focus-within:border-primary/40 transition-colors duration-150">
+              <Search className="h-3.5 w-3.5 shrink-0 text-mute" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={t.chat.searchPlaceholder}
+                className="min-w-0 flex-1 bg-transparent text-[13px] text-ink outline-none placeholder:text-mute"
+                aria-label={t.chat.searchPlaceholder}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="flex-1 overflow-y-auto px-2.5">
           <div className="mb-1.5 px-2 pt-1">
@@ -111,7 +156,8 @@ export function ChatSidebar() {
           </div>
           <div className="space-y-px">
             {chats.length === 0 && <p className="px-2.5 py-4 text-caption text-mute text-center">{t.chat.noChats}</p>}
-            {chats.map((chat) => (
+            {chats.length > 0 && filteredChats.length === 0 && <p className="px-2.5 py-4 text-caption text-mute text-center">{t.chat.noChatsFound}</p>}
+            {filteredChats.map((chat) => (
               <div key={chat.id} className={cn("group flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")} onClick={() => openChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
                 <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-40" />
                 {renamingId === chat.id ? (
@@ -121,6 +167,9 @@ export function ChatSidebar() {
                 )}
                 <button onClick={(e) => { e.stopPropagation(); handleRenameStart(chat); }} aria-label={t.chat.rename} title={t.chat.rename} className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-ink group-hover:flex transition-colors duration-150">
                   <Pencil className="h-3 w-3" />
+                </button>
+                <button onClick={(e) => { e.stopPropagation(); downloadChatMarkdown(chat, "Tomaris"); }} aria-label={t.chat.exportChat} title={t.chat.exportChat} className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-ink group-hover:flex transition-colors duration-150">
+                  <Download className="h-3 w-3" />
                 </button>
                 <button onClick={(e) => { e.stopPropagation(); if (window.confirm(t.chat.deleteChatConfirm)) deleteChat(chat.id); }} aria-label={t.chat.deleteChat} title={t.chat.deleteChat} className="hidden h-5 w-5 items-center justify-center rounded text-mute hover:text-error group-hover:flex transition-colors duration-150">
                   <Trash2 className="h-3 w-3" />

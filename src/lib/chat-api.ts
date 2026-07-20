@@ -36,6 +36,10 @@ export const apiSaveMessage = (chatId: string, m: Message) =>
 export const apiImportChats = (chats: Chat[]) =>
   send("/api/chats/import", "POST", { chats });
 
+// Remove messages server-side after an edit/regenerate truncates the tail.
+export const apiDeleteMessages = (chatId: string, ids: string[]) =>
+  send(`/api/chats/${chatId}/messages`, "DELETE", { ids });
+
 type ServerMsg = {
   id: string;
   role: string;
