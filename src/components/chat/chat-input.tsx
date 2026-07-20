@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Paperclip, Square, X, FileText, Loader2, File } from "lucide-react";
+import { Send, Paperclip, Square, X, FileText, Loader2, File, Image as ImageIcon } from "lucide-react";
 import { cn, generateId } from "@/lib/utils";
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
@@ -13,6 +13,8 @@ interface Attachment {
   name: string;
   type: string;
   size: number;
+  /** How the text is pulled out — drives the chip's icon and status copy. */
+  kind: "text" | "pdf" | "image";
   /** Extracted text — null while reading. */
   text: string | null;
 }
@@ -80,20 +82,16 @@ export function ChatInput() {
     if (!files) return;
     for (const file of Array.from(files)) {
       const kind = fileKind(file);
-      if (kind === "image") {
-        // Honest: the current model is text-only and cannot see images.
-        toast.info(t.chat.imageNotYet);
-        continue;
-      }
       if (kind === "unsupported") {
         toast.info(t.chat.fileUnsupported);
         continue;
       }
       const id = generateId();
       // Show the chip immediately; fill in the text when extraction finishes.
+      // Images run through OCR, which is slower — the chip's spinner covers it.
       setAttachments((prev) => [
         ...prev,
-        { id, name: file.name, type: file.type, size: file.size, text: null },
+        { id, name: file.name, type: file.type, size: file.size, kind, text: null },
       ]);
       extractFileText(file)
         .then((text) => {
@@ -102,8 +100,9 @@ export function ChatInput() {
             prev.map((a) => (a.id === id ? { ...a, text } : a))
           );
         })
-        .catch(() => {
-          toast.error(t.chat.fileReadError);
+        .catch((err: unknown) => {
+          const noText = err instanceof Error && err.message === "no-text";
+          toast.error(kind === "image" && noText ? t.chat.imageNoText : t.chat.fileReadError);
           setAttachments((prev) => prev.filter((a) => a.id !== id));
         });
     }
@@ -337,19 +336,22 @@ export function ChatInput() {
         {attachments.length > 0 && (
           <div className="mb-2 flex flex-wrap gap-2">
             {attachments.map((att) => {
-              const Icon = getFileIcon(att.type);
+              const Icon = att.kind === "image" ? ImageIcon : getFileIcon(att.type);
+              const reading = att.text === null;
               return (
                 <div
                   key={att.id}
                   className="flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-2.5 py-1.5 text-body-sm transition-colors duration-150 hover:border-hairline-soft"
                 >
-                  {att.text === null ? (
+                  {reading ? (
                     <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-mute" />
                   ) : (
                     <Icon className="h-3.5 w-3.5 text-primary shrink-0" />
                   )}
                   <span className="truncate max-w-[160px] text-ink">{att.name}</span>
-                  <span className="text-caption">{formatSize(att.size)}</span>
+                  <span className="text-caption">
+                    {reading && att.kind === "image" ? t.chat.imageReading : formatSize(att.size)}
+                  </span>
                   <button
                     onClick={() => removeAttachment(att.id)}
                     className="flex h-5 w-5 items-center justify-center rounded-full text-mute hover:text-error hover:bg-error/10 active:scale-90 transition-all duration-150 ml-0.5"
@@ -370,7 +372,7 @@ export function ChatInput() {
             multiple
             className="hidden"
             onChange={handleFileSelect}
-            accept=".pdf,.txt,.md,.csv,.tsv,.json,.jsonl,.xml,.yaml,.yml,.html,.css,.js,.jsx,.ts,.tsx,.py,.java,.c,.h,.cpp,.cs,.go,.rs,.rb,.php,.sql,.sh,.log,text/*,application/pdf"
+            accept=".pdf,.txt,.md,.csv,.tsv,.json,.jsonl,.xml,.yaml,.yml,.html,.css,.js,.jsx,.ts,.tsx,.py,.java,.c,.h,.cpp,.cs,.go,.rs,.rb,.php,.sql,.sh,.log,.png,.jpg,.jpeg,.webp,.bmp,text/*,application/pdf,image/*"
           />
           <button
             onClick={() => fileInputRef.current?.click()}
