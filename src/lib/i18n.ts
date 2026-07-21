@@ -15,6 +15,7 @@ const translations = {
       tryTomaris: "Try Tomaris",
       enterprise: "Enterprise",
       api: "API",
+      openApp: "Open Tomaris",
     },
     hero: {
       headline: "The Future of Uzbek AI Starts Here",
@@ -733,6 +734,7 @@ const translations = {
       tryTomaris: "Tomarisni sinab ko'ring",
       enterprise: "Biznes uchun",
       api: "API",
+      openApp: "Tomarisni ochish",
     },
     hero: {
       headline: "O'zbek AI ning kelajagi shu yerda boshlanadi",
@@ -1449,6 +1451,7 @@ const translations = {
       tryTomaris: "Попробовать Tomaris",
       enterprise: "Для бизнеса",
       api: "API",
+      openApp: "Открыть Tomaris",
     },
     hero: {
       headline: "Будущее узбекского ИИ начинается здесь",
