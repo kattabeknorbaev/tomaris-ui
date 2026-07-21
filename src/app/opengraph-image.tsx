@@ -27,10 +27,20 @@ export default function OGImage() {
             gap: 24,
           }}
         >
-          {/* Interim brand mark: the khatam star (eight-pointed, Timurid). */}
-          <svg width={80} height={80} viewBox="0 0 32 32">
-            <path d="M16 2L30 16L16 30L2 16Z" fill="#0F8F6F" />
-            <rect x="6.1" y="6.1" width="19.8" height="19.8" fill="#0F8F6F" />
+          {/* The woven khatam — on dark grounds: emerald square, gold diamond. */}
+          <svg width={88} height={88} viewBox="0 0 32 32">
+            <g fill="none" stroke="#0F8F6F" strokeWidth={2.6}>
+              <path d="M24.6 22L24.6 24.6L14.88 24.6" />
+              <path d="M10 24.6L7.4 24.6L7.4 14.88" />
+              <path d="M7.4 10L7.4 7.4L17.12 7.4" />
+              <path d="M22 7.4L24.6 7.4L24.6 17.12" />
+            </g>
+            <g fill="none" stroke="#C7A96B" strokeWidth={2.6}>
+              <path d="M26.33 14.17L28.16 16L21.29 22.87" />
+              <path d="M17.83 26.33L16 28.16L9.13 21.29" />
+              <path d="M5.67 17.83L3.84 16L10.71 9.13" />
+              <path d="M14.17 5.67L16 3.84L22.87 10.71" />
+            </g>
           </svg>
           <div style={{ fontSize: 84, fontWeight: 700, letterSpacing: -3 }}>
             Tomaris
