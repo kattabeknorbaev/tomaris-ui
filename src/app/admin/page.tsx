@@ -7,20 +7,35 @@ import {
   Users,
   MessageSquare,
   MessagesSquare,
+  MessageSquarePlus,
   Radio,
   Activity,
+  Smile,
+  Meh,
+  Frown,
 } from "lucide-react";
 import { useI18n } from "@/components/shared/i18n-provider";
 
 // Everything on this page is real: counts come from the database, model
 // status from a live ping. No mock numbers.
 
+interface FeedbackRow {
+  email: string | null;
+  sentiment: "positive" | "neutral" | "negative" | null;
+  message: string;
+  page: string | null;
+  created_at: string;
+}
+
 interface Stats {
-  totals: { users: number; chats: number; messages: number; active_sessions: number };
+  totals: { users: number; chats: number; messages: number; feedback: number; active_sessions: number };
   daily: { day: string; new_users: number; messages: number }[];
   recentUsers: { email: string; created_at: string; chats: number; messages: number }[];
+  recentFeedback: FeedbackRow[];
   model: { ok: boolean; latencyMs: number | null };
 }
+
+const sentimentIcon = { positive: Smile, neutral: Meh, negative: Frown } as const;
 
 export default function AdminPage() {
   const { t } = useI18n();
@@ -39,6 +54,7 @@ export default function AdminPage() {
         { label: t.adminPage.registeredUsers, value: stats.totals.users, icon: Users },
         { label: t.adminPage.totalChats, value: stats.totals.chats, icon: MessageSquare },
         { label: t.adminPage.totalMessages, value: stats.totals.messages, icon: MessagesSquare },
+        { label: t.adminPage.totalFeedback, value: stats.totals.feedback, icon: MessageSquarePlus },
         { label: t.adminPage.activeSessions, value: stats.totals.active_sessions, icon: Radio },
       ]
     : [];
@@ -86,7 +102,7 @@ export default function AdminPage() {
         {stats && (
           <>
             {/* Stat cards — live DB counts */}
-            <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {cards.map((stat, i) => (
                 <motion.div
                   key={stat.label}
@@ -222,6 +238,51 @@ export default function AdminPage() {
                   </tbody>
                 </table>
               </div>
+            </motion.div>
+
+            {/* Recent feedback — real submissions from the feedback form */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mt-6 rounded-2xl border border-border bg-card"
+            >
+              <div className="flex items-center justify-between border-b border-border p-4">
+                <h2 className="font-semibold">{t.adminPage.recentFeedback}</h2>
+                <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                  {stats.totals.feedback.toLocaleString()}
+                </span>
+              </div>
+              {stats.recentFeedback.length === 0 ? (
+                <p className="p-6 text-center text-sm text-muted-foreground">{t.adminPage.noFeedback}</p>
+              ) : (
+                <ul className="divide-y divide-border">
+                  {stats.recentFeedback.map((f, i) => {
+                    const Icon = f.sentiment ? sentimentIcon[f.sentiment] : null;
+                    return (
+                      <li key={i} className="flex gap-3 p-4">
+                        {Icon && (
+                          <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                        )}
+                        <div className="min-w-0 flex-1">
+                          <p className="whitespace-pre-wrap break-words text-sm text-ink">{f.message}</p>
+                          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+                            <span className="font-mono">{f.email ?? t.adminPage.anonymous}</span>
+                            <span aria-hidden="true">·</span>
+                            <span>{new Date(f.created_at).toLocaleString()}</span>
+                            {f.page && (
+                              <>
+                                <span aria-hidden="true">·</span>
+                                <span className="font-mono">{f.page}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </motion.div>
           </>
         )}

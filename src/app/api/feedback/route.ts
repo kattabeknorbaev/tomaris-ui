@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { rateLimit, clientIp, tooManyRequests } from "@/lib/rate-limit";
+import { requireUser } from "@/lib/auth-server";
+import { db } from "@/lib/db";
+import { feedback } from "@/lib/db/schema";
 
 // Feedback lands in the same inbox as contact/waitlist. Override with
 // CONTACT_EMAIL once a team mailbox exists.
@@ -25,9 +28,26 @@ export async function POST(req: Request) {
     }
 
     const sentiment = SENTIMENTS.has(body.sentiment) ? (body.sentiment as string) : "";
-    const email = typeof body.email === "string" ? body.email.slice(0, 320) : "";
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const page = typeof body.page === "string" ? body.page.trim().slice(0, 300) : "";
+
+    // Trust the session over the client-supplied email when signed in.
+    const user = await requireUser();
+    const email = (user?.email ?? (typeof body.email === "string" ? body.email : "")).slice(0, 320);
+    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    // Persist for the admin dashboard — best effort, never blocks delivery.
+    try {
+      await db.insert(feedback).values({
+        id: crypto.randomUUID(),
+        userId: user?.id ?? null,
+        email: emailValid ? email : null,
+        sentiment: sentiment || null,
+        message,
+        page: page || null,
+      });
+    } catch (e) {
+      console.error("feedback persist failed:", e);
+    }
 
     const header = [
       sentiment ? `Sentiment: ${sentiment}` : null,

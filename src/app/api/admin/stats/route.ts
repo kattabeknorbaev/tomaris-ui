@@ -18,6 +18,7 @@ export async function GET() {
       (SELECT count(*)::int FROM "user")   AS users,
       (SELECT count(*)::int FROM chats)    AS chats,
       (SELECT count(*)::int FROM messages) AS messages,
+      (SELECT count(*)::int FROM feedback) AS feedback,
       (SELECT count(*)::int FROM session WHERE expires_at > now()) AS active_sessions
   `;
 
@@ -42,6 +43,13 @@ export async function GET() {
     LIMIT 8
   `;
 
+  const recentFeedback = await sql`
+    SELECT email, sentiment, message, page, created_at
+    FROM feedback
+    ORDER BY created_at DESC
+    LIMIT 8
+  `;
+
   // Live model-server ping with real measured latency.
   let model: { ok: boolean; latencyMs: number | null } = { ok: false, latencyMs: null };
   try {
@@ -55,5 +63,5 @@ export async function GET() {
     model = { ok: false, latencyMs: null };
   }
 
-  return NextResponse.json({ totals, daily, recentUsers, model });
+  return NextResponse.json({ totals, daily, recentUsers, recentFeedback, model });
 }
