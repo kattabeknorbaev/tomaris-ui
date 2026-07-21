@@ -8,10 +8,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "./theme-toggle";
 import { LanguageSwitcher } from "./language-switcher";
 import { useI18n } from "./i18n-provider";
+import { authClient } from "@/lib/auth-client";
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { t } = useI18n();
+  // Session-aware CTA: logged-in visitors get one "Open Tomaris" button
+  // instead of Log In + Try Tomaris. While the session is still loading we
+  // render the logged-out pair (brief and harmless for signed-in users).
+  const { data: session } = authClient.useSession();
 
   const navLinks = [
     { href: "/#features", label: t.nav.features },
@@ -50,12 +55,20 @@ export function Navbar() {
             <LanguageSwitcher />
             <ThemeToggle />
             <div className="h-5 w-px bg-border mx-1" />
-            <Link href="/login" className="rounded-md px-3 py-1.5 text-body-sm text-muted-foreground transition-colors duration-150 hover:text-ink">
-              {t.nav.login}
-            </Link>
-            <Link href="/app" className="btn-lift rounded-md bg-primary px-3.5 py-1.5 text-body-sm font-semibold text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
-              {t.nav.tryTomaris}
-            </Link>
+            {session ? (
+              <Link href="/app" className="btn-lift rounded-md bg-primary px-3.5 py-1.5 text-body-sm font-semibold text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
+                {t.nav.openApp}
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="rounded-md px-3 py-1.5 text-body-sm text-muted-foreground transition-colors duration-150 hover:text-ink">
+                  {t.nav.login}
+                </Link>
+                <Link href="/app" className="btn-lift rounded-md bg-primary px-3.5 py-1.5 text-body-sm font-semibold text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
+                  {t.nav.tryTomaris}
+                </Link>
+              </>
+            )}
           </div>
 
           <button
@@ -84,8 +97,14 @@ export function Navbar() {
                 <ThemeToggle />
               </div>
               <div className="flex gap-2 pt-3">
-                <Link href="/login" className="flex-1 rounded-md border border-border px-4 py-2 text-center text-body-sm text-ink" onClick={() => setMobileOpen(false)}>{t.nav.login}</Link>
-                <Link href="/app" className="flex-1 rounded-md bg-primary px-4 py-2 text-center text-body-sm font-semibold text-on-primary" onClick={() => setMobileOpen(false)}>{t.nav.tryTomaris}</Link>
+                {session ? (
+                  <Link href="/app" className="flex-1 rounded-md bg-primary px-4 py-2 text-center text-body-sm font-semibold text-on-primary" onClick={() => setMobileOpen(false)}>{t.nav.openApp}</Link>
+                ) : (
+                  <>
+                    <Link href="/login" className="flex-1 rounded-md border border-border px-4 py-2 text-center text-body-sm text-ink" onClick={() => setMobileOpen(false)}>{t.nav.login}</Link>
+                    <Link href="/app" className="flex-1 rounded-md bg-primary px-4 py-2 text-center text-body-sm font-semibold text-on-primary" onClick={() => setMobileOpen(false)}>{t.nav.tryTomaris}</Link>
+                  </>
+                )}
               </div>
             </div>
           </motion.div>
