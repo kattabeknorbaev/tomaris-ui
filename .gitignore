@@ -43,3 +43,7 @@ next-env.d.ts
 
 # Claude Code conversation exports
 2026-*-*.txt
+
+# Confidential — never commit investor material or root-level decks
+/investor/
+/*.pdf

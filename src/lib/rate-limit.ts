@@ -31,11 +31,16 @@ export function rateLimit(
   return { ok: true, retryAfter: 0 };
 }
 
-/** Best-effort client IP from proxy headers (Vercel sets x-forwarded-for). */
+/** Best-effort client IP from proxy headers. x-real-ip is set by the
+ * platform (Vercel) and can't be client-supplied, so it's checked first;
+ * the first x-forwarded-for entry can be influenced by the client on some
+ * proxy setups. */
 export function clientIp(req: Request): string {
+  const real = req.headers.get("x-real-ip");
+  if (real) return real.trim();
   const xff = req.headers.get("x-forwarded-for");
   if (xff) return xff.split(",")[0].trim();
-  return req.headers.get("x-real-ip") ?? "unknown";
+  return "unknown";
 }
 
 export function tooManyRequests(retryAfter: number) {
