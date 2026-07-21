@@ -421,6 +421,10 @@ const translations = {
       joined: "Joined",
       loading: "Loading…",
       loadFailed: "Couldn't load stats — are you signed in as an admin?",
+      totalFeedback: "Feedback",
+      recentFeedback: "Recent Feedback",
+      noFeedback: "No feedback yet",
+      anonymous: "Anonymous",
     },
     whyTomaris: {
       eyebrow: "Why Tomaris",
@@ -1023,6 +1027,10 @@ const translations = {
       joined: "Qo'shilgan",
       loading: "Yuklanmoqda…",
       loadFailed: "Statistika yuklanmadi — admin sifatida kirdingizmi?",
+      totalFeedback: "Fikrlar",
+      recentFeedback: "So'nggi fikrlar",
+      noFeedback: "Hozircha fikr yo'q",
+      anonymous: "Anonim",
     },
     whyTomaris: {
       eyebrow: "Nega Tomaris",
@@ -1625,6 +1633,10 @@ const translations = {
       joined: "Регистрация",
       loading: "Загрузка…",
       loadFailed: "Не удалось загрузить статистику — вы вошли как админ?",
+      totalFeedback: "Отзывы",
+      recentFeedback: "Недавние отзывы",
+      noFeedback: "Отзывов пока нет",
+      anonymous: "Аноним",
     },
     whyTomaris: {
       eyebrow: "Почему Tomaris",

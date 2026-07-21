@@ -38,3 +38,17 @@ export const messages = pgTable("messages", {
   fileContext: text("file_context"), // extracted text of attached files
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+// In-app feedback. Sent to the team by email AND stored here so the admin
+// dashboard can show real counts and recent notes. Feedback can be anonymous
+// (from a public marketing page), so userId/email are nullable; deleting a
+// user keeps their feedback but nulls the link.
+export const feedback = pgTable("feedback", {
+  id: text("id").primaryKey(),
+  userId: text("user_id").references(() => user.id, { onDelete: "set null" }),
+  email: text("email"), // reply-to hint, when known
+  sentiment: text("sentiment"), // "positive" | "neutral" | "negative" | null
+  message: text("message").notNull(),
+  page: text("page"), // where it was sent from, for context
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});

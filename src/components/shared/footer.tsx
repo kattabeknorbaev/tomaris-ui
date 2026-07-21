@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { MessageSquarePlus } from "lucide-react";
 import { useI18n } from "./i18n-provider";
+import { SHOW_FEEDBACK_EVENT } from "@/components/shared/feedback-dialog";
 
 export function Footer() {
   const { t } = useI18n();
@@ -46,7 +48,16 @@ export function Footer() {
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-caption">{t.footer.rights.replace("{year}", new Date().getFullYear().toString())}</p>
-          <p className="text-caption">{t.footer.builtIn}</p>
+          <div className="flex items-center gap-5">
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent(SHOW_FEEDBACK_EVENT))}
+              className="flex items-center gap-1.5 text-caption text-muted-foreground hover:text-ink transition-colors duration-150"
+            >
+              <MessageSquarePlus className="h-3.5 w-3.5" />
+              {t.feedback.button}
+            </button>
+            <p className="text-caption">{t.footer.builtIn}</p>
+          </div>
         </div>
       </div>
     </footer>

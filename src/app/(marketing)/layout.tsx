@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
+import { FeedbackDialog } from "@/components/shared/feedback-dialog";
 
 export default function MarketingLayout({
   children,
@@ -11,6 +12,7 @@ export default function MarketingLayout({
       <Navbar />
       {children}
       <Footer />
+      <FeedbackDialog />
     </>
   );
 }
