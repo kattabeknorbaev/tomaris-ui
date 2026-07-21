@@ -31,6 +31,8 @@ export function Footer() {
             <ul className="space-y-2">
               <li><Link href="/about" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.about}</Link></li>
               <li><Link href="/blog" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.blog}</Link></li>
+              <li><Link href="/help" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.helpCenter}</Link></li>
+              <li><Link href="/changelog" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.changelog}</Link></li>
               <li><Link href="/contact" className="text-body-sm text-muted-foreground hover:text-ink transition-colors duration-150">{t.footer.contact}</Link></li>
             </ul>
           </div>

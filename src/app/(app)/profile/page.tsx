@@ -8,8 +8,11 @@ import {
   CalendarDays,
   CreditCard,
   ArrowUpRight,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { authClient } from "@/lib/auth-client";
 import { useChatStore } from "@/stores/chat-store";
@@ -18,8 +21,24 @@ import { useChatStore } from "@/stores/chat-store";
 // user's actual synced chats. No fabricated usage numbers.
 export default function ProfilePage() {
   const { t } = useI18n();
+  const router = useRouter();
   const { data: session } = authClient.useSession();
   const chats = useChatStore((s) => s.chats);
+  const clearAllChats = useChatStore((s) => s.clearAllChats);
+  const [signingOut, setSigningOut] = useState(false);
+
+  // Sign out lives here now (removed from the sidebar): end the session, drop
+  // this account's chats from the browser, and return to login.
+  const handleSignOut = async () => {
+    setSigningOut(true);
+    try {
+      await authClient.signOut();
+      clearAllChats();
+      router.push("/login");
+    } finally {
+      setSigningOut(false);
+    }
+  };
 
   const email = session?.user?.email ?? "";
   const name = session?.user?.name || email.split("@")[0] || "—";
@@ -106,6 +125,23 @@ export default function ProfilePage() {
               {t.profilePage.viewPlans} →
             </Link>
           </div>
+        </motion.div>
+
+        {/* Sign out */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="mt-6"
+        >
+          <button
+            onClick={handleSignOut}
+            disabled={signingOut}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-60"
+          >
+            <LogOut className="h-4 w-4" />
+            {signingOut ? t.chat.signingOut : t.chat.signOut}
+          </button>
         </motion.div>
       </div>
     </div>

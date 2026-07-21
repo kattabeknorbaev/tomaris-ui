@@ -4,13 +4,14 @@ import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { cn } from "@/lib/utils";
 import type { Chat } from "@/types";
-import { MessageSquare, Plus, Settings, Trash2, Pencil, PanelLeftClose, PanelLeft, LogOut, Search, Download } from "lucide-react";
+import { MessageSquare, Plus, Settings, Trash2, Pencil, PanelLeftClose, PanelLeft, Search, Download, HelpCircle, Sparkles, Keyboard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { SHOW_SHORTCUTS_EVENT, FOCUS_SEARCH_EVENT } from "@/components/shared/keyboard-shortcuts";
 import { authClient } from "@/lib/auth-client";
 
 // Download a conversation as a portable Markdown file.
@@ -33,16 +34,16 @@ function downloadChatMarkdown(chat: Chat, assistantLabel: string) {
 }
 
 export function ChatSidebar() {
-  const { chats, activeChatId, setActiveChat, createChat, deleteChat, renameChat, sidebarOpen, toggleSidebar, clearAllChats } = useChatStore();
+  const { chats, activeChatId, setActiveChat, createChat, deleteChat, renameChat, sidebarOpen, toggleSidebar } = useChatStore();
   const pathname = usePathname();
   const router = useRouter();
   const { t } = useI18n();
   const { data: session } = authClient.useSession();
-  const [signingOut, setSigningOut] = useState(false);
   const [renamingId, setRenamingId] = useState<string | null>(null);
   const [renameValue, setRenameValue] = useState("");
   const [query, setQuery] = useState("");
   const renameRef = useRef<HTMLInputElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const q = query.trim().toLowerCase();
   const filteredChats = q
@@ -86,16 +87,13 @@ export function ChatSidebar() {
     if (pathname !== "/app") router.push("/app");
   };
 
-  const handleSignOut = async () => {
-    setSigningOut(true);
-    try {
-      await authClient.signOut();
-      clearAllChats(); // drop this account's chats from the browser
-      router.push("/login");
-    } finally {
-      setSigningOut(false);
-    }
-  };
+  // The "search chats" keyboard shortcut (⌘/Ctrl+K) opens the sidebar and
+  // focuses this search box.
+  useEffect(() => {
+    const focusSearch = () => searchRef.current?.focus();
+    window.addEventListener(FOCUS_SEARCH_EVENT, focusSearch);
+    return () => window.removeEventListener(FOCUS_SEARCH_EVENT, focusSearch);
+  }, []);
 
   return (
     <>
@@ -140,6 +138,7 @@ export function ChatSidebar() {
             <div className="flex items-center gap-2 rounded-lg border border-border bg-canvas px-2.5 py-1.5 focus-within:border-primary/40 transition-colors duration-150">
               <Search className="h-3.5 w-3.5 shrink-0 text-mute" />
               <input
+                ref={searchRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t.chat.searchPlaceholder}
@@ -191,9 +190,18 @@ export function ChatSidebar() {
             </div>
             <span className="flex-1 truncate">{session?.user?.email ?? t.common.profile}</span>
           </Link>
-          <button onClick={handleSignOut} disabled={signingOut} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink disabled:opacity-60">
-            <LogOut className="h-3.5 w-3.5 opacity-50" />
-            {signingOut ? t.chat.signingOut : t.chat.signOut}
+          {/* Help — support, what's new, and keyboard shortcuts. */}
+          <div className="px-2.5 pt-1.5 pb-0.5">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-mute">{t.help.section}</span>
+          </div>
+          <a href="/help" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+            <HelpCircle className="h-3.5 w-3.5 opacity-50" />{t.help.helpCenter}
+          </a>
+          <a href="/changelog" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+            <Sparkles className="h-3.5 w-3.5 opacity-50" />{t.help.releaseNotes}
+          </a>
+          <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_SHORTCUTS_EVENT))} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+            <Keyboard className="h-3.5 w-3.5 opacity-50" />{t.help.keyboardShortcuts}
           </button>
           <div className="flex items-center gap-2 px-2.5 pt-2 mt-1 border-t border-border">
             <LanguageSwitcher />
