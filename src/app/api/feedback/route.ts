@@ -18,8 +18,16 @@ const SENTIMENTS = new Set(["positive", "neutral", "negative"]);
 // in) and current page are attached as context so replies are possible.
 export async function POST(req: Request) {
   try {
-    const limit = rateLimit(`feedback:${clientIp(req)}`, 5, 600_000);
+    // Layered limits: burst window + daily per-IP cap + a global daily
+    // circuit-breaker so a distributed flood can't turn Resend into a
+    // firehose at the team inbox. (In-memory: per-instance, best-effort.)
+    const ip = clientIp(req);
+    const limit = rateLimit(`feedback:${ip}`, 5, 600_000);
     if (!limit.ok) return tooManyRequests(limit.retryAfter);
+    const daily = rateLimit(`feedback-day:${ip}`, 20, 86_400_000);
+    if (!daily.ok) return tooManyRequests(daily.retryAfter);
+    const global = rateLimit("feedback-global-day", 300, 86_400_000);
+    if (!global.ok) return tooManyRequests(global.retryAfter);
 
     const body = await req.json();
     const message = String(body.message ?? "").trim().slice(0, MAX_MESSAGE);
@@ -28,19 +36,26 @@ export async function POST(req: Request) {
     }
 
     const sentiment = SENTIMENTS.has(body.sentiment) ? (body.sentiment as string) : "";
-    const page = typeof body.page === "string" ? body.page.trim().slice(0, 300) : "";
+    // Only accept an in-app relative path — anything else is dropped.
+    const rawPage = typeof body.page === "string" ? body.page.trim().slice(0, 300) : "";
+    const page = rawPage.startsWith("/") && !rawPage.startsWith("//") ? rawPage : "";
 
-    // Trust the session over the client-supplied email when signed in.
+    // Trust the session over the client-supplied email when signed in. An
+    // anonymous submitter can claim any address, so those are tagged
+    // [unverified] in the email — never trust that identity when replying.
     const user = await requireUser();
     const email = (user?.email ?? (typeof body.email === "string" ? body.email : "")).slice(0, 320);
     const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const verified = !!user?.email;
 
     // Persist for the admin dashboard — best effort, never blocks delivery.
     try {
+      // Only session-verified emails are stored — the dashboard must never
+      // present an unverified claimed address as the sender's identity.
       await db.insert(feedback).values({
         id: crypto.randomUUID(),
         userId: user?.id ?? null,
-        email: emailValid ? email : null,
+        email: verified && emailValid ? email : null,
         sentiment: sentiment || null,
         message,
         page: page || null,
@@ -49,9 +64,12 @@ export async function POST(req: Request) {
       console.error("feedback persist failed:", e);
     }
 
+    const fromLine = emailValid
+      ? `From: ${email}${verified ? "" : " [unverified — claimed by an anonymous submitter]"}`
+      : "From: (anonymous)";
     const header = [
       sentiment ? `Sentiment: ${sentiment}` : null,
-      emailValid ? `From: ${email}` : "From: (anonymous)",
+      fromLine,
       page ? `Page: ${page}` : null,
     ]
       .filter(Boolean)
@@ -62,7 +80,7 @@ export async function POST(req: Request) {
       from: EMAIL_FROM,
       to: FEEDBACK_EMAIL,
       replyTo: emailValid ? email : undefined,
-      subject: `Feedback${sentiment ? ` (${sentiment})` : ""}${emailValid ? `: ${email}` : ""}`,
+      subject: `Feedback${sentiment ? ` (${sentiment})` : ""}${emailValid ? `: ${verified ? email : `[unverified] ${email}`}` : ""}`,
       text: `${header}\n\n${message}`,
     });
     if (error) {

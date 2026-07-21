@@ -13,9 +13,15 @@ const MAX_FIELD = 2000;
 // the submission is emailed to the team via Resend.
 export async function POST(req: Request) {
   try {
-    // Public endpoint that sends real email — cap to 5 per IP per 10 minutes.
-    const limit = rateLimit(`contact:${clientIp(req)}`, 5, 600_000);
+    // Public endpoint that sends real email — layered limits: burst window,
+    // daily per-IP cap, and a global daily circuit-breaker for the inbox.
+    const ip = clientIp(req);
+    const limit = rateLimit(`contact:${ip}`, 5, 600_000);
     if (!limit.ok) return tooManyRequests(limit.retryAfter);
+    const daily = rateLimit(`contact-day:${ip}`, 20, 86_400_000);
+    if (!daily.ok) return tooManyRequests(daily.retryAfter);
+    const global = rateLimit("contact-global-day", 300, 86_400_000);
+    if (!global.ok) return tooManyRequests(global.retryAfter);
 
     const body = await req.json();
     const kind = body.kind === "waitlist" ? "waitlist" : "contact";
