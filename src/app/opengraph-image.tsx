@@ -27,22 +27,13 @@ export default function OGImage() {
             gap: 24,
           }}
         >
-          <div
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 16,
-              background: "#0F8F6F",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#ffffff",
-              fontSize: 44,
-              fontWeight: 700,
-            }}
-          >
-            T
-          </div>
+          {/* The 2b brand mark — emerald with gold apex on dark grounds. */}
+          <svg width={88} height={88} viewBox="0 0 32 32">
+            <path d="M11 6L11 12L8 12L8 9Z" fill="#0F8F6F" />
+            <path d="M21 6L21 12L24 12L24 9Z" fill="#0F8F6F" />
+            <path d="M13 31L13 4L16 1L19 4L19 31Z" fill="#0F8F6F" />
+            <path d="M13 6L13 4L16 1L19 4L19 6Z" fill="#C7A96B" />
+          </svg>
           <div style={{ fontSize: 84, fontWeight: 700, letterSpacing: -3 }}>
             Tomaris
           </div>
