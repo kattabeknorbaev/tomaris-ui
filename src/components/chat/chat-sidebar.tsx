@@ -4,7 +4,7 @@ import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { cn } from "@/lib/utils";
 import type { Chat } from "@/types";
-import { MessageSquare, Plus, Settings, Trash2, Pencil, PanelLeftClose, PanelLeft, Search, Download, HelpCircle, Sparkles, Keyboard } from "lucide-react";
+import { MessageSquare, Plus, Settings, Trash2, Pencil, PanelLeftClose, PanelLeft, Search, Download, HelpCircle, Sparkles, Keyboard, MessageSquarePlus } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import { useState, useRef, useEffect } from "react";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { SHOW_SHORTCUTS_EVENT, FOCUS_SEARCH_EVENT } from "@/components/shared/keyboard-shortcuts";
+import { SHOW_FEEDBACK_EVENT } from "@/components/shared/feedback-dialog";
 import { authClient } from "@/lib/auth-client";
 
 // Download a conversation as a portable Markdown file.
@@ -202,6 +203,9 @@ export function ChatSidebar() {
           </a>
           <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_SHORTCUTS_EVENT))} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
             <Keyboard className="h-3.5 w-3.5 opacity-50" />{t.help.keyboardShortcuts}
+          </button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_FEEDBACK_EVENT))} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+            <MessageSquarePlus className="h-3.5 w-3.5 opacity-50" />{t.feedback.button}
           </button>
           <div className="flex items-center gap-2 px-2.5 pt-2 mt-1 border-t border-border">
             <LanguageSwitcher />
