@@ -27,12 +27,10 @@ export default function OGImage() {
             gap: 24,
           }}
         >
-          {/* The 2b brand mark — emerald with gold apex on dark grounds. */}
-          <svg width={88} height={88} viewBox="0 0 32 32">
-            <path d="M11 6L11 12L8 12L8 9Z" fill="#0F8F6F" />
-            <path d="M21 6L21 12L24 12L24 9Z" fill="#0F8F6F" />
-            <path d="M13 31L13 4L16 1L19 4L19 31Z" fill="#0F8F6F" />
-            <path d="M13 6L13 4L16 1L19 4L19 6Z" fill="#C7A96B" />
+          {/* Interim brand mark: the khatam star (eight-pointed, Timurid). */}
+          <svg width={80} height={80} viewBox="0 0 32 32">
+            <path d="M16 2L30 16L16 30L2 16Z" fill="#0F8F6F" />
+            <rect x="6.1" y="6.1" width="19.8" height="19.8" fill="#0F8F6F" />
           </svg>
           <div style={{ fontSize: 84, fontWeight: 700, letterSpacing: -3 }}>
             Tomaris
