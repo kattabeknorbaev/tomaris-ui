@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 32 32">
-  <!-- Tomaris brand mark (2b): constant 6u strap band, 45° half-chisel ends
-       tangent to the apex cone, 2u weave gap, apex at (16,1). Solid emerald
-       on light and dark; gold apex variant is reserved for dark grounds. -->
-  <path d="M11 6L11 12L8 12L8 9Z" fill="#0F8F6F"/>
-  <path d="M21 6L21 12L24 12L24 9Z" fill="#0F8F6F"/>
-  <path d="M13 31L13 4L16 1L19 4L19 31Z" fill="#0F8F6F"/>
+  <!-- Tomaris interim brand mark: the khatam — two squares on the 8-fold
+       grid, the eight-pointed star of Timurid tilework. Solid emerald on
+       light and dark grounds. (The T-monogram was retired: any vertical
+       stem + horizontal band construction reads as a cross at small sizes.) -->
+  <path d="M16 2L30 16L16 30L2 16Z" fill="#0F8F6F"/>
+  <rect x="6.1" y="6.1" width="19.8" height="19.8" fill="#0F8F6F"/>
 </svg>
