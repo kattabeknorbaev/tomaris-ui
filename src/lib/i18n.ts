@@ -27,7 +27,7 @@ const translations = {
       statParams: "Parameters",
       statWords: "Training words",
       statLanguages: "Languages",
-      statLatency: "Avg latency",
+      statLatency: "Instant answers",
     },
     features: {
       eyebrow: "Capabilities",
@@ -745,7 +745,7 @@ const translations = {
       statParams: "Parametrlar",
       statWords: "O'quv so'zlari",
       statLanguages: "Tillar",
-      statLatency: "O'rtacha kechikish",
+      statLatency: "Darhol javob",
     },
     features: {
       eyebrow: "Imkoniyatlar",
@@ -1462,7 +1462,7 @@ const translations = {
       statParams: "Параметры",
       statWords: "Слов в обучении",
       statLanguages: "Языки",
-      statLatency: "Средняя задержка",
+      statLatency: "Мгновенные ответы",
     },
     features: {
       eyebrow: "Возможности",

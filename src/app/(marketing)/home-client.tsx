@@ -97,7 +97,7 @@ export default function HomePage() {
                 { value: "27B", label: t.hero.statParams },
                 { value: "227M", label: t.hero.statWords },
                 { value: "3", label: t.hero.statLanguages },
-                { value: "<200ms", label: t.hero.statLatency },
+                { value: "0.0s", label: t.hero.statLatency },
               ].map((s) => (
                 <div key={s.label} className="group bg-card px-4 py-5 text-center transition-colors duration-200 hover:bg-surface-2">
                   <div className="font-mono text-xl font-semibold text-ink-strong transition-colors group-hover:text-primary">{s.value}</div>
