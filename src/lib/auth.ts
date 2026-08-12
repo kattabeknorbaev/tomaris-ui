@@ -13,7 +13,7 @@ const EMAIL_FROM = process.env.EMAIL_FROM ?? "Tomaris <onboarding@resend.dev>";
 export const auth = betterAuth({
   // Accept requests from both the apex and www domains — the site serves on
   // www.tomaris.ai (apex redirects there), so browser logins come from www.
-  trustedOrigins: ["https://tomaris.ai", "https://www.tomaris.ai"],
+  trustedOrigins: ["https://tomaris.ai", "https://www.tomaris.ai", "https://chat.tomaris.ai"],
 
   // DB-backed rate limiting on the auth endpoints. Tight caps on the two
   // abuse-prone ones: sending codes (email-bomb / cost) and verifying (brute).
