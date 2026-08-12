@@ -7,6 +7,7 @@ import { emailOTPClient } from "better-auth/client/plugins";
 //   authClient.signIn.emailOtp({ email, otp })
 //   authClient.useSession()
 export const authClient = createAuthClient({
+  baseURL: process.env.NODE_ENV === "development" ? undefined : "https://www.tomaris.ai",
   plugins: [emailOTPClient()],
 });
 
