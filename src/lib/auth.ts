@@ -18,6 +18,10 @@ export const auth = betterAuth({
     crossSubDomainCookies: {
       enabled: true,
     },
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+    },
   },
 
   // DB-backed rate limiting on the auth endpoints. Tight caps on the two
