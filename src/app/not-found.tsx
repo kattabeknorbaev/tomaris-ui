@@ -22,7 +22,7 @@ export default function NotFound() {
           {t.common.backToHome}
         </Link>
         <Link
-          href="/app"
+          href={process.env.NODE_ENV === "development" ? "/app" : "https://chat.tomaris.ai"}
           className="rounded-md border border-border px-5 py-2.5 text-body-sm font-semibold text-ink hover:bg-surface-2 transition-colors duration-150"
         >
           {t.common.openChat}

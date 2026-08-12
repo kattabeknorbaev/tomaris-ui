@@ -80,7 +80,7 @@ export default function HomePage() {
               {t.hero.subheadline}
             </motion.p>
             <motion.div variants={heroItem} className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link href="/app" className="btn-lift inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary shadow-[0_4px_16px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
+              <Link href={process.env.NODE_ENV === "development" ? "/app" : "https://chat.tomaris.ai"} className="btn-lift inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary shadow-[0_4px_16px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
                 {t.hero.cta1} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
               <Link href="/waitlist" className="btn-lift inline-flex h-11 items-center gap-2 rounded-md border border-border bg-card px-5 text-sm font-semibold text-ink hover:border-hairline-soft hover:bg-surface-2">
@@ -425,7 +425,7 @@ export default function HomePage() {
                 <h2 className="text-heading-1 text-canvas">{t.cta.title}</h2>
                 <p className="mt-3 text-body-sm text-mute max-w-md mx-auto">{t.cta.subtitle}</p>
                 <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
-                  <Link href="/app" className="btn-lift inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary shadow-[0_4px_16px_-4px_rgba(15,143,111,0.6)] hover:bg-primary-deep">
+                  <Link href={process.env.NODE_ENV === "development" ? "/app" : "https://chat.tomaris.ai"} className="btn-lift inline-flex h-11 items-center gap-2 rounded-md bg-primary px-5 text-sm font-semibold text-on-primary shadow-[0_4px_16px_-4px_rgba(15,143,111,0.6)] hover:bg-primary-deep">
                     {t.cta.cta1} <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
                   </Link>
                   <Link href="/waitlist" className="btn-lift inline-flex h-11 items-center gap-2 rounded-md border border-hairline-soft px-5 text-sm font-semibold text-canvas hover:bg-surface-3">

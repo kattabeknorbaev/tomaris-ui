@@ -73,7 +73,7 @@ export function BlogArticle({ post }: { post: BlogPost }) {
           <footer className="mt-12 rounded-2xl border border-border bg-card p-6 text-center">
             <p className="text-sm text-muted-foreground">{t.blog.liveCta}</p>
             <Link
-              href="/app"
+              href={process.env.NODE_ENV === "development" ? "/app" : "https://chat.tomaris.ai"}
               className="btn-lift mt-4 inline-flex items-center justify-center rounded-md bg-primary px-5 py-2 text-sm font-medium text-on-primary transition-all duration-150 hover:bg-primary-deep"
             >
               {t.nav.tryTomaris}

@@ -56,7 +56,7 @@ export function Navbar() {
             <ThemeToggle />
             <div className="h-5 w-px bg-border mx-1" />
             {session ? (
-              <Link href="/app" className="btn-lift rounded-md bg-primary px-3.5 py-1.5 text-body-sm font-semibold text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
+              <Link href={process.env.NODE_ENV === "development" ? "/app" : "https://chat.tomaris.ai"} className="btn-lift rounded-md bg-primary px-3.5 py-1.5 text-body-sm font-semibold text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
                 {t.nav.openApp}
               </Link>
             ) : (
@@ -64,7 +64,7 @@ export function Navbar() {
                 <Link href="/login" className="rounded-md px-3 py-1.5 text-body-sm text-muted-foreground transition-colors duration-150 hover:text-ink">
                   {t.nav.login}
                 </Link>
-                <Link href="/app" className="btn-lift rounded-md bg-primary px-3.5 py-1.5 text-body-sm font-semibold text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
+                <Link href={process.env.NODE_ENV === "development" ? "/app" : "https://chat.tomaris.ai"} className="btn-lift rounded-md bg-primary px-3.5 py-1.5 text-body-sm font-semibold text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.5)] hover:bg-primary-deep">
                   {t.nav.tryTomaris}
                 </Link>
               </>
@@ -98,11 +98,11 @@ export function Navbar() {
               </div>
               <div className="flex gap-2 pt-3">
                 {session ? (
-                  <Link href="/app" className="flex-1 rounded-md bg-primary px-4 py-2 text-center text-body-sm font-semibold text-on-primary" onClick={() => setMobileOpen(false)}>{t.nav.openApp}</Link>
+                  <Link href={process.env.NODE_ENV === "development" ? "/app" : "https://chat.tomaris.ai"} className="flex-1 rounded-md bg-primary px-4 py-2 text-center text-body-sm font-semibold text-on-primary" onClick={() => setMobileOpen(false)}>{t.nav.openApp}</Link>
                 ) : (
                   <>
                     <Link href="/login" className="flex-1 rounded-md border border-border px-4 py-2 text-center text-body-sm text-ink" onClick={() => setMobileOpen(false)}>{t.nav.login}</Link>
-                    <Link href="/app" className="flex-1 rounded-md bg-primary px-4 py-2 text-center text-body-sm font-semibold text-on-primary" onClick={() => setMobileOpen(false)}>{t.nav.tryTomaris}</Link>
+                    <Link href={process.env.NODE_ENV === "development" ? "/app" : "https://chat.tomaris.ai"} className="flex-1 rounded-md bg-primary px-4 py-2 text-center text-body-sm font-semibold text-on-primary" onClick={() => setMobileOpen(false)}>{t.nav.tryTomaris}</Link>
                   </>
                 )}
               </div>
