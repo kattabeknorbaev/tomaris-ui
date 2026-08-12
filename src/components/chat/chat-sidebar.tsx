@@ -119,7 +119,7 @@ export function ChatSidebar() {
 
       <aside className={cn("fixed inset-y-0 left-0 z-40 flex w-[260px] max-w-[85vw] flex-col border-r border-border bg-canvas-soft transition-transform duration-200 md:static md:z-auto md:h-full md:max-w-none md:transition-none", sidebarOpen ? "translate-x-0" : "-translate-x-full md:hidden")}>
         <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-3">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={process.env.NODE_ENV === "development" ? "/" : "https://tomaris.ai"} className="flex items-center gap-2">
             <Image src="/logo.png" alt="Tomaris" width={20} height={20} className="rounded-sm" />
             <span className="text-sm font-semibold text-ink">Tomaris</span>
           </Link>
@@ -195,10 +195,10 @@ export function ChatSidebar() {
           <div className="px-2.5 pt-1.5 pb-0.5">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-mute">{t.help.section}</span>
           </div>
-          <a href="/help" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+          <a href={process.env.NODE_ENV === "development" ? "/help" : "https://tomaris.ai/help"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
             <HelpCircle className="h-3.5 w-3.5 opacity-50" />{t.help.helpCenter}
           </a>
-          <a href="/changelog" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+          <a href={process.env.NODE_ENV === "development" ? "/changelog" : "https://tomaris.ai/changelog"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
             <Sparkles className="h-3.5 w-3.5 opacity-50" />{t.help.releaseNotes}
           </a>
           <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_SHORTCUTS_EVENT))} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
