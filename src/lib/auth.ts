@@ -17,6 +17,7 @@ export const auth = betterAuth({
   advanced: {
     crossSubDomainCookies: {
       enabled: true,
+      domain: "tomaris.ai",
     },
     defaultCookieAttributes: {
       sameSite: "none",
