@@ -39,16 +39,39 @@ export function middleware(req: NextRequest) {
   }
 
   const method = req.method;
-  if (method === "GET" || method === "HEAD" || method === "OPTIONS") {
-    return NextResponse.next();
-  }
-
   const origin = req.headers.get("origin");
-  if (origin && !originAllowed(origin, req.headers.get("host"))) {
-    return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  const host = req.headers.get("host");
+
+  // 1. Handle CORS preflight (OPTIONS)
+  if (method === "OPTIONS") {
+    if (origin && originAllowed(origin, host)) {
+      return new NextResponse(null, {
+        status: 204,
+        headers: {
+          "Access-Control-Allow-Origin": origin,
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, Authorization",
+          "Access-Control-Allow-Credentials": "true",
+        },
+      });
+    }
+    return new NextResponse(null, { status: 204 });
   }
 
-  return NextResponse.next();
+  // 2. Reject foreign mutations
+  if (method !== "GET" && method !== "HEAD") {
+    if (origin && !originAllowed(origin, host)) {
+      return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+    }
+  }
+
+  // 3. Attach CORS headers to actual responses
+  const res = NextResponse.next();
+  if (origin && originAllowed(origin, host)) {
+    res.headers.set("Access-Control-Allow-Origin", origin);
+    res.headers.set("Access-Control-Allow-Credentials", "true");
+  }
+  return res;
 }
 
 export const config = {
