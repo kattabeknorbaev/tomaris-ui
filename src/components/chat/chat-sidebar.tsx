@@ -100,16 +100,16 @@ export function ChatSidebar() {
     <>
       {/* Collapsed state — mobile: floating chip over the page; desktop: slim in-flow rail */}
       {!sidebarOpen && (
-        <button onClick={toggleSidebar} aria-label={t.chat.openSidebar} className="fixed left-3 top-2 z-50 flex h-8 w-8 items-center justify-center rounded-md border border-border bg-canvas text-muted-foreground shadow-sm hover:text-ink hover:bg-surface-2 transition-colors duration-150 md:hidden">
+        <button onClick={toggleSidebar} aria-label={t.chat.openSidebar} className="fixed left-3 top-2 z-50 flex h-8 w-8 items-center justify-center rounded-md border border-border/40 bg-canvas/50 backdrop-blur-md text-muted-foreground shadow-sm hover:text-ink hover:bg-surface-2/50 transition-colors duration-150 md:hidden">
           <PanelLeft className="h-4 w-4" />
         </button>
       )}
       {!sidebarOpen && (
-        <div className="hidden h-full w-12 shrink-0 flex-col items-center gap-1 border-r border-border bg-canvas-soft py-2 md:flex">
-          <button onClick={toggleSidebar} aria-label={t.chat.openSidebar} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+        <div className="hidden h-full w-12 shrink-0 flex-col items-center gap-1 border-r border-border/20 bg-canvas-soft/30 backdrop-blur-xl py-2 md:flex">
+          <button onClick={toggleSidebar} aria-label={t.chat.openSidebar} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2/50 transition-colors duration-150">
             <PanelLeft className="h-4 w-4" />
           </button>
-          <button onClick={handleNewChat} aria-label={t.chat.newChat} title={t.chat.newChat} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+          <button onClick={handleNewChat} aria-label={t.chat.newChat} title={t.chat.newChat} className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2/50 transition-colors duration-150">
             <Plus className="h-4 w-4" />
           </button>
         </div>
@@ -117,26 +117,26 @@ export function ChatSidebar() {
 
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-black/40 md:hidden" onClick={toggleSidebar} aria-hidden="true" />}
 
-      <aside className={cn("fixed inset-y-0 left-0 z-40 flex w-[260px] max-w-[85vw] flex-col border-r border-border bg-canvas-soft transition-transform duration-200 md:static md:z-auto md:h-full md:max-w-none md:transition-none", sidebarOpen ? "translate-x-0" : "-translate-x-full md:hidden")}>
-        <div className="flex h-12 shrink-0 items-center justify-between border-b border-border px-3">
+      <aside className={cn("fixed inset-y-0 left-0 z-40 flex w-[260px] max-w-[85vw] flex-col border-r border-border/20 bg-canvas-soft/30 backdrop-blur-xl transition-transform duration-200 md:static md:z-auto md:h-full md:max-w-none md:transition-none", sidebarOpen ? "translate-x-0" : "-translate-x-full md:hidden")}>
+        <div className="flex h-12 shrink-0 items-center justify-between border-b border-border/20 px-3">
           <Link href={process.env.NODE_ENV === "development" ? "/" : "https://tomaris.ai"} className="flex items-center gap-2">
             <Image src="/logo.png" alt="Tomaris" width={20} height={20} className="rounded-sm" />
             <span className="text-sm font-semibold text-ink">Tomaris</span>
           </Link>
-          <button onClick={toggleSidebar} aria-label={t.chat.closeSidebar} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+          <button onClick={toggleSidebar} aria-label={t.chat.closeSidebar} className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:text-ink hover:bg-surface-2/50 transition-colors duration-150">
             <PanelLeftClose className="h-3.5 w-3.5" />
           </button>
         </div>
 
         <div className="shrink-0 p-2.5 pb-1.5">
-          <button onClick={handleNewChat} className="flex w-full items-center gap-2 rounded-xl border border-border bg-canvas px-3 py-2 text-body-sm text-ink hover:bg-surface-2 hover:border-hairline-soft active:scale-[0.98] transition-all duration-150">
+          <button onClick={handleNewChat} className="flex w-full items-center gap-2 rounded-xl border border-border/30 bg-canvas/30 px-3 py-2 text-body-sm text-ink hover:bg-surface-2/50 hover:border-border/60 active:scale-[0.98] transition-all duration-150 shadow-[var(--shadow-sm)]">
             <Plus className="h-4 w-4" />{t.chat.newChat}
           </button>
         </div>
 
         {chats.length > 0 && (
           <div className="shrink-0 px-2.5 pb-1">
-            <div className="flex items-center gap-2 rounded-lg border border-border bg-canvas px-2.5 py-1.5 focus-within:border-primary/40 transition-colors duration-150">
+            <div className="flex items-center gap-2 rounded-lg border border-border/30 bg-canvas/30 px-2.5 py-1.5 focus-within:border-primary/40 focus-within:bg-canvas/50 transition-colors duration-150">
               <Search className="h-3.5 w-3.5 shrink-0 text-mute" />
               <input
                 ref={searchRef}
@@ -158,7 +158,7 @@ export function ChatSidebar() {
             {chats.length === 0 && <p className="px-2.5 py-4 text-caption text-mute text-center">{t.chat.noChats}</p>}
             {chats.length > 0 && filteredChats.length === 0 && <p className="px-2.5 py-4 text-caption text-mute text-center">{t.chat.noChatsFound}</p>}
             {filteredChats.map((chat) => (
-              <div key={chat.id} className={cn("group flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")} onClick={() => openChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
+              <div key={chat.id} className={cn("group flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-body-sm cursor-pointer transition-colors duration-150", activeChatId === chat.id ? "bg-surface-2/60 text-ink shadow-[var(--shadow-sm)]" : "text-muted-foreground hover:text-ink hover:bg-surface-2/40")} onClick={() => openChat(chat.id)} onDoubleClick={() => handleRenameStart(chat)}>
                 <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-40" />
                 {renamingId === chat.id ? (
                   <input ref={renameRef} value={renameValue} onChange={(e) => setRenameValue(e.target.value)} onBlur={handleRenameSubmit} onKeyDown={(e) => { if (e.key === "Enter") handleRenameSubmit(); if (e.key === "Escape") setRenamingId(null); }} className="flex-1 min-w-0 bg-transparent text-[13px] outline-none border-b border-primary" onClick={(e) => e.stopPropagation()} />
@@ -179,13 +179,13 @@ export function ChatSidebar() {
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-border p-2.5 space-y-px">
+        <div className="shrink-0 border-t border-border/20 p-2.5 space-y-px">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className={cn("flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === item.href ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
+            <Link key={item.href} href={item.href} className={cn("flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === item.href ? "bg-surface-2/60 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2/40")}>
               <item.icon className="h-3.5 w-3.5 opacity-50" />{item.label}
             </Link>
           ))}
-          <Link href="/profile" className={cn("flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === "/profile" ? "bg-surface-2 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2")}>
+          <Link href="/profile" className={cn("flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] transition-colors duration-150", pathname === "/profile" ? "bg-surface-2/60 text-ink" : "text-muted-foreground hover:text-ink hover:bg-surface-2/40")}>
             <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-sm bg-primary text-[8px] font-bold uppercase text-on-primary">
               {session?.user?.email?.[0] ?? "U"}
             </div>
@@ -195,19 +195,19 @@ export function ChatSidebar() {
           <div className="px-2.5 pt-1.5 pb-0.5">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-mute">{t.help.section}</span>
           </div>
-          <a href={process.env.NODE_ENV === "development" ? "/help" : "https://tomaris.ai/help"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+          <a href={process.env.NODE_ENV === "development" ? "/help" : "https://tomaris.ai/help"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2/40 hover:text-ink">
             <HelpCircle className="h-3.5 w-3.5 opacity-50" />{t.help.helpCenter}
           </a>
-          <a href={process.env.NODE_ENV === "development" ? "/changelog" : "https://tomaris.ai/changelog"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+          <a href={process.env.NODE_ENV === "development" ? "/changelog" : "https://tomaris.ai/changelog"} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2/40 hover:text-ink">
             <Sparkles className="h-3.5 w-3.5 opacity-50" />{t.help.releaseNotes}
           </a>
-          <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_SHORTCUTS_EVENT))} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+          <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_SHORTCUTS_EVENT))} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2/40 hover:text-ink">
             <Keyboard className="h-3.5 w-3.5 opacity-50" />{t.help.keyboardShortcuts}
           </button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_FEEDBACK_EVENT))} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2 hover:text-ink">
+          <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_FEEDBACK_EVENT))} className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] text-muted-foreground transition-colors duration-150 hover:bg-surface-2/40 hover:text-ink">
             <MessageSquarePlus className="h-3.5 w-3.5 opacity-50" />{t.feedback.button}
           </button>
-          <div className="flex items-center gap-2 px-2.5 pt-2 mt-1 border-t border-border">
+          <div className="flex items-center gap-2 px-2.5 pt-2 mt-1 border-t border-border/20">
             <LanguageSwitcher />
             <ThemeToggle />
           </div>

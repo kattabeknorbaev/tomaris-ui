@@ -322,7 +322,7 @@ export function ChatInput() {
   }, []);
 
   return (
-    <div className="shrink-0 border-t border-border bg-canvas px-4 py-3 sm:px-0">
+    <div className="shrink-0 bg-transparent px-4 py-3 pb-6 sm:px-0">
       <div className="mx-auto max-w-2xl">
         {/* API status indicator */}
         {apiStatus === "error" && (
@@ -341,7 +341,7 @@ export function ChatInput() {
               return (
                 <div
                   key={att.id}
-                  className="flex items-center gap-2 rounded-xl border border-border bg-surface-2 px-2.5 py-1.5 text-body-sm transition-colors duration-150 hover:border-hairline-soft"
+                  className="flex items-center gap-2 rounded-xl border border-border/40 bg-surface-2/40 backdrop-blur-md px-2.5 py-1.5 text-body-sm transition-colors duration-150 hover:border-border/60 shadow-[var(--shadow-sm)]"
                 >
                   {reading ? (
                     <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-mute" />
@@ -365,7 +365,7 @@ export function ChatInput() {
           </div>
         )}
 
-        <div className="flex items-end gap-2 rounded-2xl border border-border bg-canvas-soft px-3 py-2 transition-all duration-200 focus-within:border-primary/40 focus-within:shadow-[0_0_0_3px_rgba(15,143,111,0.08)]">
+        <div className="flex items-end gap-2 rounded-2xl border border-border/40 bg-canvas-soft/70 backdrop-blur-xl shadow-[var(--shadow-lg)] px-3 py-2 transition-all duration-200 focus-within:border-primary/50 focus-within:bg-canvas-soft/90">
           <input
             ref={fileInputRef}
             type="file"
