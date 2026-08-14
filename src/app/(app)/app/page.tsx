@@ -87,7 +87,7 @@ export default function AppPage() {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <header className={cn("flex h-12 shrink-0 items-center justify-between border-b border-border px-4", !sidebarOpen && "pl-14 md:pl-4")}>
+      <header className={cn("flex h-12 shrink-0 items-center justify-between border-b border-border/20 bg-canvas-soft/30 backdrop-blur-md px-4", !sidebarOpen && "pl-14 md:pl-4")}>
         <span className="text-[13px] font-medium">Tomaris 27B</span>
         <div className="flex items-center gap-1">
           <LanguageSwitcher />
