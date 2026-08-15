@@ -4,6 +4,16 @@ import { db } from "@/lib/db";
 import { chats, messages } from "@/lib/db/schema";
 import { requireUser } from "@/lib/auth-server";
 
+/** Prefer the client's message timestamp so a raced assistant insert cannot
+ *  sort above the user prompt that caused it. Reject far-future clocks. */
+function parseClientCreatedAt(v: unknown): Date | undefined {
+  if (typeof v !== "string" || !v) return undefined;
+  const d = new Date(v);
+  if (Number.isNaN(d.getTime())) return undefined;
+  if (d.getTime() > Date.now() + 60 * 60 * 1000) return undefined;
+  return d;
+}
+
 // PUT /api/chats/[id]/messages/[messageId] — save a message (insert if new,
 // update if it already exists). We "upsert" because a streaming assistant
 // reply is saved once when it starts and again with its final text when it
@@ -30,10 +40,19 @@ export async function PUT(
   const reasoning = typeof body.reasoning === "string" ? body.reasoning.slice(0, 200_000) : null;
   const fileContext =
     typeof body.fileContext === "string" ? body.fileContext.slice(0, 200_000) : null;
+  const createdAt = parseClientCreatedAt(body.createdAt ?? body.timestamp);
 
   await db
     .insert(messages)
-    .values({ id: messageId, chatId, role, content, reasoning, fileContext })
+    .values({
+      id: messageId,
+      chatId,
+      role,
+      content,
+      reasoning,
+      fileContext,
+      ...(createdAt ? { createdAt } : {}),
+    })
     .onConflictDoUpdate({
       target: messages.id,
       set: { content, reasoning, fileContext },

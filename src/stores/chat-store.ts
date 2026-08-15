@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Chat, Message } from "@/types";
 import { generateId } from "@/lib/utils";
+import { orderTranscript } from "@/lib/message-order";
 import {
   apiCreateChat,
   apiRenameChat,
@@ -19,14 +20,17 @@ const DEFAULT_CHAT_TITLE = "New Chat";
 
 /**
  * A reload mid-stream persists messages stuck with isStreaming: true.
- * Drop empty ones and clear the flag on the rest when rehydrating.
+ * Drop empty ones, clear the flag on the rest, and restore user→assistant
+ * chronological order (raced server timestamps can invert a turn).
  */
 function sanitizeChats(chats: Chat[]): Chat[] {
   return chats.map((chat) => ({
     ...chat,
-    messages: chat.messages
-      .filter((m) => m.content || m.reasoning || !m.isStreaming)
-      .map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)),
+    messages: orderTranscript(
+      chat.messages
+        .filter((m) => m.content || m.reasoning || !m.isStreaming)
+        .map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m))
+    ),
   }));
 }
 
@@ -248,7 +252,10 @@ export const useChatStore = create<ChatState>()(
 
       hydrate: (chats, ownerId, resetActive = false) =>
         set((state) => ({
-          chats,
+          chats: chats.map((chat) => ({
+            ...chat,
+            messages: orderTranscript(chat.messages),
+          })),
           ownerId,
           // Keep the open chat across refreshes; otherwise start fresh
           // (no auto-jumping into the newest conversation).

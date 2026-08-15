@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { useCallback, useEffect, useRef } from "react";
+import { orderTranscript } from "@/lib/message-order";
 
 export default function AppPage() {
   const activeChat = useChatStore((s) =>
@@ -49,18 +50,19 @@ export default function AppPage() {
     [handleScroll]
   );
 
-  const lastMessage = activeChat?.messages[activeChat.messages.length - 1];
+  const messages = activeChat ? orderTranscript(activeChat.messages) : [];
+  const lastMessage = messages[messages.length - 1];
 
   // A new chat or a new message (a new turn) should snap back to the bottom.
   useEffect(() => {
     const id = activeChat?.id;
-    const len = activeChat?.messages.length ?? 0;
+    const len = messages.length;
     if (id !== prevChatIdRef.current || len > prevLenRef.current) {
       autoScrollRef.current = true;
     }
     prevChatIdRef.current = id;
     prevLenRef.current = len;
-  }, [activeChat?.id, activeChat?.messages.length]);
+  }, [activeChat?.id, messages.length]);
 
   // Follow the stream: throttled to one scroll per frame, instant (not smooth)
   // so per-token updates don't queue competing smooth animations.
@@ -74,7 +76,7 @@ export default function AppPage() {
         container.scrollTop = container.scrollHeight;
       }
     });
-  }, [activeChat?.messages.length, lastMessage?.content, lastMessage?.reasoning]);
+  }, [messages.length, lastMessage?.content, lastMessage?.reasoning]);
 
   useEffect(() => {
     return () => {
@@ -82,8 +84,8 @@ export default function AppPage() {
     };
   }, []);
 
-  const hasMessages = activeChat && activeChat.messages.length > 0;
-  const streaming = !!activeChat?.messages.some((m) => m.isStreaming);
+  const hasMessages = messages.length > 0;
+  const streaming = messages.some((m) => m.isStreaming);
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
@@ -97,13 +99,13 @@ export default function AppPage() {
 
       {hasMessages ? (
         <div ref={setScrollContainer} className="flex-1 overflow-y-auto">
-          <div className="mx-auto max-w-2xl py-4">
-            {activeChat.messages.map((message, i) => (
+          <div className="mx-auto flex max-w-2xl flex-col py-4">
+            {messages.map((message, i) => (
               <ChatMessage
                 key={message.id}
                 message={message}
                 userInitial={userInitial}
-                isLast={i === activeChat.messages.length - 1}
+                isLast={i === messages.length - 1}
                 busy={streaming}
               />
             ))}
