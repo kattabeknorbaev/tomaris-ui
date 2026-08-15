@@ -184,6 +184,12 @@ export function ChatInput() {
             } catch {}
           }
         }
+
+        // Hobby kills the function at 60s. That often closes the pipe
+        // without [DONE] and without throwing — an empty bubble, not an error.
+        if (!sseDone && !fullContent && !fullReasoning) {
+          throw new Error("upstream stream closed before first token");
+        }
       } catch (err: unknown) {
         // User pressed Stop — keep whatever streamed as a real partial reply.
         if (err instanceof Error && err.name === "AbortError") {
