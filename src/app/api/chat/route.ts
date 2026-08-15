@@ -1,26 +1,39 @@
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { rateLimit, tooManyRequests } from "@/lib/rate-limit";
+import { vastApiUrl } from "@/lib/vast";
 
-const VAST_API_URL = process.env.VAST_API_URL || "http://localhost:8000";
 const MODEL_NAME = process.env.SERVED_MODEL_NAME || "tomaris";
 
 // Guardrails: this endpoint burns GPU time, so cap what one request can ask.
 const MAX_MESSAGES = 40;
 const MAX_MESSAGE_CHARS = 40_000;
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+// Hobby hard-caps this at 60s (Pro: 300). Raising the number does nothing on
+// Hobby. Cold vLLM (~155s) and citation-audit retries (~90s) always die here —
+// warm the GPU with a real completion before a demo, and don't open with a
+// long Constitution lookup as the first message.
 export const maxDuration = 60;
 
+const NO_STORE = { "Cache-Control": "no-store" };
+
 // Lightweight health check — hits /v1/models instead of running a generation.
+// This does NOT warm vLLM; a green banner can still be followed by a 60s kill
+// on the first real completion.
 export async function GET() {
   try {
-    const res = await fetch(`${VAST_API_URL}/v1/models`, {
+    const res = await fetch(vastApiUrl("/v1/models"), {
       signal: AbortSignal.timeout(5000),
       cache: "no-store",
     });
-    return Response.json({ ok: res.ok }, { status: res.ok ? 200 : 502 });
+    return Response.json(
+      { ok: res.ok },
+      { status: res.ok ? 200 : 502, headers: NO_STORE }
+    );
   } catch {
-    return Response.json({ ok: false }, { status: 502 });
+    return Response.json({ ok: false }, { status: 502, headers: NO_STORE });
   }
 }
 
@@ -89,12 +102,15 @@ export async function POST(req: NextRequest) {
       chat_template_kwargs: { enable_thinking: true },
     });
 
-    const response = await fetch(`${VAST_API_URL}/v1/chat/completions`, {
+    // No AbortSignal.timeout on completions — a 10s cap is what turns a
+    // working GPU (curl) into "Couldn't reach the model" on this site.
+    const response = await fetch(vastApiUrl("/v1/chat/completions"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body,
+      cache: "no-store",
     });
 
     if (!response.ok) {

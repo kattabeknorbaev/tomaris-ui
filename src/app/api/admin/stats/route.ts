@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { neon } from "@neondatabase/serverless";
 import { requireAdmin } from "@/lib/auth-server";
-
-const VAST_API_URL = process.env.VAST_API_URL || "http://localhost:8000";
+import { vastApiUrl } from "@/lib/vast";
 
 // GET /api/admin/stats — real platform numbers for the admin dashboard.
 // Everything here comes from the database or a live model-server ping;
@@ -54,7 +53,7 @@ export async function GET() {
   let model: { ok: boolean; latencyMs: number | null } = { ok: false, latencyMs: null };
   try {
     const started = Date.now();
-    const res = await fetch(`${VAST_API_URL}/v1/models`, {
+    const res = await fetch(vastApiUrl("/v1/models"), {
       signal: AbortSignal.timeout(5000),
       cache: "no-store",
     });
