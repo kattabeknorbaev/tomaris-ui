@@ -407,10 +407,10 @@ export function ChatInput() {
                 onClick={handleSend}
                 disabled={!input.trim() && attachments.length === 0}
                 className={cn(
-                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-200",
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
                   input.trim() || attachments.length > 0
-                    ? "bg-primary text-on-primary hover:bg-primary-deep hover:-translate-y-0.5 active:translate-y-0 active:scale-95 shadow-[0_4px_14px_-4px_rgba(15,143,111,0.6)]"
-                    : "text-hairline-soft"
+                    ? "btn-lift bg-primary text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.6)] hover:bg-primary-deep"
+                    : "text-hairline-soft transition-colors duration-200"
                 )}
                 title={t.chat.send}
                 aria-label={t.chat.send}
