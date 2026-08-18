@@ -129,7 +129,7 @@ export function ChatSidebar() {
         </div>
 
         <div className="shrink-0 p-2.5 pb-1.5">
-          <button onClick={handleNewChat} className="flex w-full items-center gap-2 rounded-xl border border-border/30 bg-canvas/30 px-3 py-2 text-body-sm text-ink hover:bg-surface-2/50 hover:border-border/60 active:scale-[0.98] transition-all duration-150 shadow-[var(--shadow-sm)]">
+          <button onClick={handleNewChat} className="btn-lift flex w-full items-center gap-2 rounded-xl border border-border/30 bg-canvas/30 px-3 py-2 text-body-sm font-semibold text-ink hover:bg-surface-2/50 hover:border-border/60 shadow-[var(--shadow-sm)]">
             <Plus className="h-4 w-4" />{t.chat.newChat}
           </button>
         </div>
