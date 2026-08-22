@@ -217,7 +217,18 @@ export function ChatInput() {
         setIsStreaming(false);
         patchMessage(chatId, assistantMsgId, { isStreaming: false });
         // Persist only genuine model output to the account.
-        if (outcome === "real") {
+        //
+        // "real" covers a user-stopped partial, which is worth keeping -- but
+        // Stop pressed BEFORE the first token leaves an assistant row with no
+        // content at all. That row is saved to the server, comes back on every
+        // reload, and is replayed into the model as conversation history
+        // forever. Require something to actually be in it.
+        const saved = useChatStore
+          .getState()
+          .chats.find((c) => c.id === chatId)
+          ?.messages.find((m) => m.id === assistantMsgId);
+        const hasSubstance = !!(saved?.content?.trim() || saved?.reasoning?.trim());
+        if (outcome === "real" && hasSubstance) {
           useChatStore.getState().saveMessage(chatId, assistantMsgId);
         }
       }
