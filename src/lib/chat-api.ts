@@ -1,4 +1,5 @@
 import type { Chat, Message } from "@/types";
+import { orderTranscript } from "@/lib/message-order";
 
 // Fire-and-forget helpers that mirror local chat changes to the server. They
 // swallow errors (log only) so a network hiccup never breaks the UI — the local
@@ -31,6 +32,9 @@ export const apiSaveMessage = (chatId: string, m: Message) =>
     content: m.content,
     reasoning: m.reasoning ?? null,
     fileContext: m.fileText ?? null,
+    // Client clock, not server defaultNow — otherwise the empty assistant
+    // insert can race ahead of the user prompt and invert the turn on reload.
+    createdAt: m.timestamp,
   });
 
 export const apiImportChats = (chats: Chat[]) =>
@@ -70,15 +74,17 @@ export async function apiLoadChats(): Promise<Chat[]> {
         createdAt: c.createdAt,
         updatedAt: c.updatedAt,
         model: "tomaris-27b" as const,
-        messages: c.messages.map((m) => ({
-          id: m.id,
-          role: m.role as Message["role"],
-          content: m.content,
-          reasoning: m.reasoning ?? undefined,
-          fileText: m.fileContext ?? undefined,
-          timestamp: m.createdAt,
-          isStreaming: false,
-        })),
+        messages: orderTranscript(
+          c.messages.map((m) => ({
+            id: m.id,
+            role: m.role as Message["role"],
+            content: m.content,
+            reasoning: m.reasoning ?? undefined,
+            fileText: m.fileContext ?? undefined,
+            timestamp: m.createdAt,
+            isStreaming: false,
+          }))
+        ),
       }))
       // Newest chat first, matching how the sidebar shows them.
       .sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1));

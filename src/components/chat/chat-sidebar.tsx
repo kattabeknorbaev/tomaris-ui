@@ -3,6 +3,7 @@
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { cn } from "@/lib/utils";
+import { orderTranscript } from "@/lib/message-order";
 import type { Chat } from "@/types";
 import { MessageSquare, Plus, Settings, Trash2, Pencil, PanelLeftClose, PanelLeft, Search, Download, HelpCircle, Sparkles, Keyboard, MessageSquarePlus } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +19,7 @@ import { authClient } from "@/lib/auth-client";
 // Download a conversation as a portable Markdown file.
 function downloadChatMarkdown(chat: Chat, assistantLabel: string) {
   const lines = [`# ${chat.title}`, ""];
-  for (const m of chat.messages) {
+  for (const m of orderTranscript(chat.messages)) {
     if (!m.content) continue;
     lines.push(`**${m.role === "user" ? "You" : assistantLabel}:**`, "", m.content, "");
   }

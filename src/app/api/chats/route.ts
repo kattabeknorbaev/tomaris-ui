@@ -3,6 +3,7 @@ import { asc, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { chats, messages } from "@/lib/db/schema";
 import { requireUser } from "@/lib/auth-server";
+import { orderTranscript } from "@/lib/message-order";
 
 // GET /api/chats — every chat (with its messages) belonging to the logged-in
 // user. This is what the app loads on startup to restore your conversations.
@@ -30,7 +31,7 @@ export async function GET() {
 
   const result = userChats.map((c) => ({
     ...c,
-    messages: byChat[c.id] ?? [],
+    messages: orderTranscript(byChat[c.id] ?? []),
   }));
 
   return NextResponse.json({ chats: result });

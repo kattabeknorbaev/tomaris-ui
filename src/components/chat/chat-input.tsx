@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Send, Paperclip, Square, X, FileText, Loader2, File, Image as ImageIcon } from "lucide-react";
 import { cn, generateId } from "@/lib/utils";
+import { orderTranscript } from "@/lib/message-order";
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { extractFileText, fileKind, MAX_CHARS_TOTAL } from "@/lib/file-extract";
@@ -117,7 +118,7 @@ export function ChatInput() {
     async (chatId: string, assistantMsgId: string) => {
       const state = useChatStore.getState();
       const chat = state.chats.find((c) => c.id === chatId);
-      const apiMessages = (chat?.messages || [])
+      const apiMessages = orderTranscript(chat?.messages || [])
         .filter((m) => m.id !== assistantMsgId && !m.isStreaming)
         .map((m) => ({
           role: m.role,
