@@ -92,14 +92,21 @@ export async function POST(req: NextRequest) {
         "Respond in the user's language. Be accurate, helpful, and respectful.",
     };
 
+    // The RAG server reads only `messages` and `stream` from this body
+    // (rag/server.py). Sampling, the token cap and thinking mode are its own
+    // config -- MAX_TOKENS, TEMPERATURE / CHAT_TEMPERATURE, and THINKING_MODE,
+    // which rag/pipeline.py turns into chat_template_kwargs before calling
+    // vLLM. Sending them from here looked like it controlled generation and
+    // did nothing; change them on the server instead.
+    //
+    // Not merely cosmetic: if VAST_API_URL is ever pointed at raw vLLM rather
+    // than the RAG server, these stop being inert and start OVERRIDING the
+    // server-side guardrails -- 4096 tokens and temperature 0.7 in place of
+    // 900 and 0.1, on a product that answers legal questions.
     const body = JSON.stringify({
       model: MODEL_NAME,
       messages: [systemPrompt, ...messages],
       stream: true,
-      max_tokens: 4096,
-      temperature: 0.7,
-      top_p: 0.9,
-      chat_template_kwargs: { enable_thinking: true },
     });
 
     // No AbortSignal.timeout on completions — a 10s cap is what turns a
