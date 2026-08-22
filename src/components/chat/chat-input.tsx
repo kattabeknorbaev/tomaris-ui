@@ -20,11 +20,6 @@ interface Attachment {
   text: string | null;
 }
 
-const MOCK_RESPONSES = [
-  "Assalomu alaykum! Men Tomarisman — O'zbekiston uchun yaratilgan sun'iy intellekt yordamchisi.\n\nMen quyidagi sohalarda yordam bera olaman:\n\n- **Tarjima** — O'zbek, ingliz va rus tillari orasida\n- **Kod yozish** — Python, JavaScript va boshqa tillarda\n- **Ma'lumot** — O'zbekiston va dunyo haqida\n- **Ta'lim** — Turli fanlar bo'yicha tushuntirishlar",
-  "Albatta! Keling, bu masalani birga ko'rib chiqaylik.\n\n1. **Tushunish** — avval muammoni yaxshi tushunish kerak\n2. **Rejalashtirish** — eng yaxshi yechimni tanlash\n3. **Amalga oshirish** — qadamlarni bajaratish",
-  "O'zbekiston — Markaziy Osiyoning eng qiziqarli mamlakatlaridan biri. Boy tarixi, go'zal tabiati va mehmondo'st xalqi bilan ajralib turadi.\n\n```python\nmamlakat = {\n    'nomi': \"O'zbekiston\",\n    'poytaxti': 'Toshkent',\n    'aholisi': 36_000_000\n}\n```",
-];
 
 const TEXTAREA_MAX_HEIGHT = 200;
 
@@ -49,7 +44,6 @@ export function ChatInput() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
-  const mockTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const stoppedRef = useRef(false);
   const activeChatId = useChatStore((s) => s.activeChatId);
   const addMessage = useChatStore((s) => s.addMessage);
@@ -129,8 +123,8 @@ export function ChatInput() {
         }));
 
       // "real" (incl. user-stopped partials) gets persisted to the account;
-      // demo mocks and error placeholders never do.
-      let outcome: "real" | "mock" | "error" = "real";
+      // error placeholders never do.
+      let outcome: "real" | "error" = "real";
       stoppedRef.current = false;
       try {
         abortRef.current = new AbortController();
@@ -182,6 +176,18 @@ export function ChatInput() {
                 fullContent += token;
                 patchMessage(chatId, assistantMsgId, { content: fullContent });
               }
+              // The final frame carries the audited statute list and which
+              // path produced the answer. Both were parsed and dropped before,
+              // so the one thing that makes this a legal tool rather than a
+              // chatbot never reached the screen.
+              if (Array.isArray(parsed.citations) && parsed.citations.length) {
+                patchMessage(chatId, assistantMsgId, { citations: parsed.citations });
+              }
+              if (typeof parsed.retrieval_mode === "string") {
+                patchMessage(chatId, assistantMsgId, {
+                  retrievalMode: parsed.retrieval_mode,
+                });
+              }
             } catch {}
           }
         }
@@ -195,33 +201,14 @@ export function ChatInput() {
         // User pressed Stop — keep whatever streamed as a real partial reply.
         if (err instanceof Error && err.name === "AbortError") {
           // outcome stays "real"
-        } else if (apiStatusRef.current === "error") {
-          // Known demo mode (model server not configured/reachable at load):
-          // play a canned demo reply. The demo banner is already visible.
-          outcome = "mock";
-          const mock =
-            MOCK_RESPONSES[Math.floor(Math.random() * MOCK_RESPONSES.length)];
-          await new Promise<void>((resolve) => {
-            let charIndex = 0;
-            mockTimerRef.current = setInterval(() => {
-              if (stoppedRef.current) {
-                if (mockTimerRef.current) clearInterval(mockTimerRef.current);
-                mockTimerRef.current = null;
-                resolve();
-                return;
-              }
-              charIndex += Math.floor(Math.random() * 4) + 2;
-              patchMessage(chatId, assistantMsgId, { content: mock.slice(0, charIndex) });
-              if (charIndex >= mock.length) {
-                if (mockTimerRef.current) clearInterval(mockTimerRef.current);
-                mockTimerRef.current = null;
-                resolve();
-              }
-            }, 30);
-          });
         } else {
-          // The server was healthy at load but this request failed — show a
-          // real error instead of silently faking an answer.
+          // Always a real error. There used to be a branch here that played a
+          // canned MOCK_RESPONSES reply whenever the health check had failed at
+          // mount -- and that check ran once, in a `[]` effect, so a tab opened
+          // while the backend was down stayed latched for its whole life and
+          // faked every later answer, typed out char-by-char so it looked real.
+          // The canned text also advertised "Kod yozish - Python, JavaScript",
+          // which this product does not do. Never fake an answer.
           console.error("chat request failed:", err);
           outcome = "error";
           patchMessage(chatId, assistantMsgId, { content: t.chat.sendError });
@@ -315,17 +302,7 @@ export function ChatInput() {
   const handleStop = useCallback(() => {
     abortRef.current?.abort();
     stoppedRef.current = true;
-    if (mockTimerRef.current) {
-      clearInterval(mockTimerRef.current);
-      mockTimerRef.current = null;
-    }
     setIsStreaming(false);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (mockTimerRef.current) clearInterval(mockTimerRef.current);
-    };
   }, []);
 
   return (
