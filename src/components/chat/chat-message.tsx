@@ -8,6 +8,15 @@ import ReactMarkdown from "react-markdown";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { useChatStore } from "@/stores/chat-store";
 
+/**
+ * "Oʻzbekiston Respublikasining Mehnat kodeksi" -> "Mehnat kodeksi".
+ * The official prefix is on every code title and would blow out the chip.
+ */
+function shortCodeName(codeTitle: string | undefined, slug: string): string {
+  if (!codeTitle) return slug.replace(/_/g, " ");
+  return codeTitle.replace(/^O[\u02bb'’]?zbekiston Respublikasining\s+/i, "").trim() || slug;
+}
+
 // Pull the raw text out of a React node tree (for copying code verbatim).
 function extractText(node: ReactNode): string {
   if (typeof node === "string") return node;
@@ -186,6 +195,37 @@ export const ChatMessage = memo(function ChatMessage({
               <div className={cn("rounded-lg px-3 py-2 text-body-sm leading-relaxed", isUser ? "rounded-br-sm bg-primary/10 text-ink" : "rounded-bl-sm bg-transparent p-0")}>
                 {isEmpty ? <StreamingDots /> : isUser ? <p className="whitespace-pre-wrap">{message.content}</p> : <MarkdownContent content={message.content} />}
                 {message.isStreaming && !!message.content && <span className="streaming-cursor" />}
+              </div>
+            )}
+            {!isUser && !message.isStreaming && !!message.citations?.length && (
+              <div className="mt-2 border-t border-border pt-2">
+                <div className="text-caption mb-1.5 text-mute">{t.chat.sources}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {message.citations.map((c, i) => {
+                    const label = `${shortCodeName(c.code_title, c.code)} ${c.article}`;
+                    const chip = (
+                      <span className="inline-flex items-center rounded-md border border-border bg-surface-2/60 px-2 py-1 font-mono text-caption text-ink">
+                        {label}
+                      </span>
+                    );
+                    return c.lex_uz ? (
+                      <a
+                        key={`${c.code}-${c.article}-${i}`}
+                        href={`https://lex.uz/docs/${encodeURIComponent(c.lex_uz)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="transition-opacity duration-150 hover:opacity-70"
+                        title={c.code_title || c.code}
+                      >
+                        {chip}
+                      </a>
+                    ) : (
+                      <span key={`${c.code}-${c.article}-${i}`} title={c.code_title || c.code}>
+                        {chip}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
             )}
             {isUser && !editing && !message.isStreaming && message.content && (
