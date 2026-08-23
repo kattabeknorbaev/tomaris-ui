@@ -19,6 +19,22 @@ export const maxDuration = 60;
 
 const NO_STORE = { "Cache-Control": "no-store" };
 
+// Is VAST_API_URL actually the RAG server? The RAG /health returns
+// {"ok":true,"articles":7368,...}; plain vLLM has no /health route at all.
+// Checked once per server instance, negative result cached too — a dead box
+// should not turn every request into an extra probe.
+let ragShape: Promise<boolean> | null = null;
+function isRagBackend(): Promise<boolean> {
+  ragShape ??= fetch(vastApiUrl("/health"), {
+    signal: AbortSignal.timeout(4000),
+    cache: "no-store",
+  })
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error("not rag"))))
+    .then((j) => typeof j?.articles === "number")
+    .catch(() => false);
+  return ragShape;
+}
+
 // Lightweight health check — hits /v1/models instead of running a generation.
 // This does NOT warm vLLM; a green banner can still be followed by a 60s kill
 // on the first real completion.
@@ -132,7 +148,29 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return new Response(response.body, {
+    // Belt-and-braces for review #1 §4: raw vLLM answers look identical to RAG
+    // answers until you notice citations never arrive. If /health does not
+    // carry the RAG shape ({"articles": N}), prepend one warning frame the
+    // client renders above the answer. Cached per server instance — Vercel
+    // instances are short-lived, so a mid-life rewiring just waits for the
+    // next deploy.
+    let stream = response.body;
+    const upstream = response.body;
+    if (!(await isRagBackend()) && upstream) {
+      const transformed = new TransformStream<
+        Uint8Array<ArrayBuffer>,
+        Uint8Array<ArrayBuffer>
+      >();
+      void upstream
+        .pipeTo(transformed.writable)
+        .catch(() => transformed.writable.abort(new Error("upstream closed")));
+      await transformed.writable.getWriter().write(
+        new TextEncoder().encode(`data: {"rag_backend":"missing"}\n\n`)
+      );
+      stream = transformed.readable;
+    }
+
+    return new Response(stream, {
       headers: {
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",

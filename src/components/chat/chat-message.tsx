@@ -197,6 +197,11 @@ export const ChatMessage = memo(function ChatMessage({
                 {message.isStreaming && !!message.content && <span className="streaming-cursor" />}
               </div>
             )}
+            {!isUser && !message.isStreaming && message.ragBackendMissing && (
+              <div className="mt-2 rounded-md border border-border bg-surface-2/60 px-3 py-2 text-caption text-mute">
+                {t.chat.ragBackendMissing}
+              </div>
+            )}
             {!isUser && !message.isStreaming && !!message.citations?.length && (
               <div className="mt-2 border-t border-border pt-2">
                 <div className="text-caption mb-1.5 text-mute">{t.chat.sources}</div>
