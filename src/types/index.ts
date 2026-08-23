@@ -34,6 +34,8 @@ export interface Message {
   /** Statutes this answer was grounded in. Empty on chat/identity replies. */
   citations?: Citation[];
   retrievalMode?: RetrievalMode;
+  /** Set when /health behind VAST_API_URL lacked the RAG shape (review #1 §4). */
+  ragBackendMissing?: boolean;
   /** Extracted text of attached files — sent to the model, not rendered. */
   fileText?: string;
   /** ISO 8601 — stored as string so it survives localStorage persistence. */

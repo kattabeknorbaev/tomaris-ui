@@ -33,7 +33,7 @@ const translations = {
       eyebrow: "Capabilities",
       title: "Built for Uzbek. Built for the World.",
       subtitle:
-        "A 27B parameter model trained on 227M words of curated Uzbek data.",
+        "A 27B parameter model built for Uzbek law — grounded in a curated corpus of 7,368 statute articles across 25 codes.",
       items: [
         { title: "Native Uzbek Understanding", desc: "Understands Uzbek syntax, idioms, and cultural context natively." },
         { title: "Lightning Fast", desc: "Optimized inference for real-time conversations and responses." },
@@ -65,6 +65,7 @@ const translations = {
       noChatDesc: "Create a new chat to get started",
       demoBanner: "AI model not reachable — answers are unavailable right now",
       sources: "Sources",
+      ragBackendMissing: "Ungrounded mode: no RAG backend detected behind VAST_API_URL. This answer may ignore the legal corpus.",
       disclaimer: "Tomaris can make mistakes. Check important information.",
       sendError: "⚠️ Couldn't reach the model. Please try again in a moment.",
       deleteChatConfirm: "Delete this chat? This cannot be undone.",
@@ -204,7 +205,7 @@ const translations = {
       ],
       roadmapPhases: [
         { title: "Foundation", items: ["Core model architecture", "Initial training data collection", "Team assembly"] },
-        { title: "Training", items: ["227M word corpus curation", "Model training begins", "Alpha testing"] },
+        { title: "Training", items: ["Curation of the Uzbek legal corpus", "Model training begins", "Alpha testing"] },
         { title: "Platform", items: ["UI/UX development", "API infrastructure", "Beta launch"] },
         { title: "Launch", items: ["Public launch", "Enterprise partnerships", "Mobile apps"] },
         { title: "Scale", items: ["Model fine-tuning marketplace", "Regional expansion", "Agent framework v2"] },
@@ -498,7 +499,7 @@ const translations = {
       eyebrow: "FAQ",
       title: "Frequently asked questions",
       items: [
-        { q: "What makes Tomaris different from ChatGPT?", a: "Tomaris is built from the ground up for Uzbek language. While ChatGPT supports Uzbek as one of many languages, Tomaris was trained specifically on 227 million words of curated Uzbek data, giving it superior understanding of the language's nuances, cultural context, and idioms." },
+        { q: "What makes Tomaris different from ChatGPT?", a: "Tomaris is built from the ground up for Uzbek language. While ChatGPT supports Uzbek as one of many languages, Tomaris is purpose-built for Uzbek law: answers are grounded in a curated corpus of 7,368 legal articles across 25 codes, and every cited article links to lex.uz." },
         { q: "Is my data secure?", a: "Yes. We use bank-grade encryption and comply with Uzbekistan's data sovereignty requirements. Your data never leaves our secure infrastructure without your explicit consent." },
         { q: "Can I use Tomaris for commercial purposes?", a: "Absolutely. Our Pro and Enterprise plans are designed for commercial use, including customer support automation, content creation, and business intelligence." },
         { q: "What languages does Tomaris support?", a: "Tomaris natively supports Uzbek, English, and Russian. Uzbek is our primary language with the highest quality output." },
@@ -707,7 +708,7 @@ const translations = {
       exampleNote: "If your stack already talks to OpenAI-style endpoints, it talks to Tomaris.",
       whyTitle: "Why teams choose the Tomaris API",
       why: [
-        { title: "Native Uzbek quality", desc: "Trained on 227M words of curated Uzbek — not a translation layer over an English model." },
+        { title: "Native Uzbek quality", desc: "Purpose-built for Uzbek — grounded in the national legal corpus, not a translation layer over an English model." },
         { title: "Data stays in the region", desc: "Served from in-region infrastructure, built around data-sovereignty requirements from day one." },
         { title: "Honest economics", desc: "We don't race hyperscalers to zero. We price what they can't offer: sovereignty and native quality." },
       ],
@@ -751,7 +752,7 @@ const translations = {
     features: {
       eyebrow: "Imkoniyatlar",
       title: "O'zbek uchun yaratilgan. Dunyo uchun yaratilgan.",
-      subtitle: "227M so'zlik o'zbek korpusida o'qitilgan 27 milliard parametrli model.",
+      subtitle: "27 milliard parametrli model — 25 kodeksdagi 7 368 moddalik saralangan huquqiy korpusga asoslangan.",
       items: [
         { title: "Ona tili darajasidagi tushuncha", desc: "O'zbek tilining sintaksisi, iboralari va madaniy kontekstini ona tili sifatida tushunadi." },
         { title: "Chaqqonlik", desc: "Real vaqt suhbatlari va javoblar uchun optimallashtirilgan." },
@@ -783,6 +784,7 @@ const translations = {
       noChatDesc: "Boshlash uchun yangi suhbat yarating",
       demoBanner: "AI model ulanmagan — hozircha javob berib boʻlmaydi",
       sources: "Manbalar",
+      ragBackendMissing: "Asoslanmagan rejim: VAST_API_URL orqasida RAG backend topilmadi. Bu javob huquqiy korpusga tayanmasligi mumkin.",
       disclaimer: "Tomaris xato qilishi mumkin. Muhim ma'lumotlarni tekshiring.",
       sendError: "⚠️ Modelga ulanib bo'lmadi. Birozdan so'ng qayta urinib ko'ring.",
       deleteChatConfirm: "Bu suhbat o'chirilsinmi? Buni ortga qaytarib bo'lmaydi.",
@@ -922,7 +924,7 @@ const translations = {
       ],
       roadmapPhases: [
         { title: "Poydevor", items: ["Asosiy model arxitekturasi", "Dastlabki o'quv ma'lumotlarini yig'ish", "Jamoani shakllantirish"] },
-        { title: "O'qitish", items: ["227M so'zli korpusni tayyorlash", "Model o'qitish boshlandi", "Alfa sinov"] },
+        { title: "O'qitish", items: ["O'zbekcha huquqiy korpusni tayyorlash", "Model o'qitish boshlandi", "Alfa sinov"] },
         { title: "Platforma", items: ["UI/UX ishlab chiqish", "API infratuzilma", "Beta ishga tushirish"] },
         { title: "Ishga tushirish", items: ["Ommaviy ishga tushirish", "Korxona hamkorliklari", "Mobil ilovalar"] },
         { title: "Kengaytirish", items: ["Modelni sozlash bozori", "Mintaqaviy kengayish", "Agent freymvork v2"] },
@@ -1216,7 +1218,7 @@ const translations = {
       eyebrow: "Savol-javob",
       title: "Ko'p beriladigan savollar",
       items: [
-        { q: "Tomaris ChatGPT'dan nimasi bilan farq qiladi?", a: "Tomaris butunlay o'zbek tili uchun yaratilgan. ChatGPT o'zbek tilini ko'p tillardan biri sifatida qo'llab-quvvatlasa, Tomaris maxsus 227 million so'zlik o'zbek ma'lumotlari bilan o'qitilgan." },
+        { q: "Tomaris ChatGPT'dan nimasi bilan farq qiladi?", a: "Tomaris butunlay o'zbek tili uchun yaratilgan. ChatGPT o'zbek tilini ko'p tillardan biri sifatida qo'llab-quvvatlasa, Tomaris javoblari 25 kodeksdagi 7 368 moddalik saralangan korpusga asoslanadi va har bir manba lex.uz havolasi bilan beriladi." },
         { q: "Ma'lumotlarim xavfsizmi?", a: "Ha. Biz bank darajasidagi shifrlashdan foydalanamiz va O'zbekistonning ma'lumotlar suvereniteti talablariga rioya qilamiz." },
         { q: "Tomarisni tijorat maqsadlarida ishlatish mumkinmi?", a: "Albatta. Pro va Korxona rejalarimiz tijorat foydalanishi uchun mo'ljallangan." },
         { q: "Tomaris qaysi tillarni qo'llab-quvvatlaydi?", a: "Tomaris o'zbek, ingliz va rus tillarini ona tili sifatida qo'llab-quvvatlaydi." },
@@ -1425,7 +1427,7 @@ const translations = {
       exampleNote: "Agar tizimingiz OpenAI uslubidagi endpointlar bilan ishlasa, Tomaris bilan ham ishlaydi.",
       whyTitle: "Nega jamoalar Tomaris API'ni tanlaydi",
       why: [
-        { title: "Ona tilidagi o'zbekcha sifat", desc: "227 million so'zlik saralangan o'zbek matnida o'qitilgan — inglizcha model ustidagi tarjima qatlami emas." },
+        { title: "Ona tilidagi o'zbekcha sifat", desc: "Milliy huquqiy korpusga asoslangan — inglizcha model ustidagi tarjima qatlami emas." },
         { title: "Ma'lumotlar mintaqada qoladi", desc: "Birinchi kundan ma'lumotlar suverenligi talablariga mos qurilgan mintaqaviy infratuzilmadan xizmat ko'rsatiladi." },
         { title: "Halol iqtisod", desc: "Biz giperskeylerlar bilan narx poygasiga tushmaymiz. Biz ular bera olmaydigan narsani narxlaymiz: suverenlik va ona tilidagi sifat." },
       ],
@@ -1469,7 +1471,7 @@ const translations = {
     features: {
       eyebrow: "Возможности",
       title: "Создан для Узбекистана. Создан для мира.",
-      subtitle: "Модель с 27 млрд параметров, обученная на 227 млн слов узбекского корпуса.",
+      subtitle: "Модель с 27 млрд параметров — с опорой на курируемый корпус из 7 368 узбекских юридических статей.",
       items: [
         { title: "Родное понимание узбекского", desc: "Понимает синтаксис, идиомы и культурный контекст узбекского языка." },
         { title: "Молниеносная скорость", desc: "Оптимизированный вывод для разговоров в реальном времени." },
@@ -1501,6 +1503,7 @@ const translations = {
       noChatDesc: "Создайте новый чат, чтобы начать",
       demoBanner: "ИИ-модель недоступна — ответы сейчас невозможны",
       sources: "Источники",
+      ragBackendMissing: "Режим без опоры: RAG-бэкенд за VAST_API_URL не обнаружен. Ответ может игнорировать юридический корпус.",
       disclaimer: "Tomaris может ошибаться. Проверяйте важную информацию.",
       sendError: "⚠️ Не удалось связаться с моделью. Попробуйте ещё раз через минуту.",
       deleteChatConfirm: "Удалить этот чат? Это действие необратимо.",
@@ -1640,7 +1643,7 @@ const translations = {
       ],
       roadmapPhases: [
         { title: "Основа", items: ["Базовая архитектура модели", "Сбор первичных данных", "Формирование команды"] },
-        { title: "Обучение", items: ["Курирование корпуса на 227M слов", "Начало обучения модели", "Альфа-тестирование"] },
+        { title: "Обучение", items: ["Курирование узбекского юридического корпуса", "Начало обучения модели", "Альфа-тестирование"] },
         { title: "Платформа", items: ["Разработка UI/UX", "API-инфраструктура", "Бета-запуск"] },
         { title: "Запуск", items: ["Публичный запуск", "Корпоративные партнёрства", "Мобильные приложения"] },
         { title: "Масштаб", items: ["Маркетплейс дообучения моделей", "Региональное расширение", "Agent framework v2"] },
@@ -1934,7 +1937,7 @@ const translations = {
       eyebrow: "Вопросы и ответы",
       title: "Часто задаваемые вопросы",
       items: [
-        { q: "Чем Tomaris отличается от ChatGPT?", a: "Tomaris создан с нуля для узбекского языка. ChatGPT поддерживает узбекский как один из многих языков, а Tomaris обучен на 227 миллионах слов узбекских данных." },
+        { q: "Чем Tomaris отличается от ChatGPT?", a: "Tomaris создан с нуля для узбекского языка. ChatGPT поддерживает узбекский как один из многих языков, ответы Tomaris опираются на курируемый корпус из 7 368 статей в 25 кодексах, и каждая ссылка ведёт на lex.uz." },
         { q: "Мои данные в безопасности?", a: "Да. Мы используем банковское шифрование и соблюдаем требования суверенитета данных Узбекистана." },
         { q: "Можно ли использовать Tomaris в коммерческих целях?", a: "Безусловно. Наши планы Pro и Enterprise предназначены для коммерческого использования." },
         { q: "Какие языки поддерживает Tomaris?", a: "Tomaris поддерживает узбекский, английский и русский языки." },
@@ -2143,7 +2146,7 @@ const translations = {
       exampleNote: "Если ваш стек работает с OpenAI-подобными endpoint'ами, он работает и с Tomaris.",
       whyTitle: "Почему команды выбирают Tomaris API",
       why: [
-        { title: "Родное качество узбекского", desc: "Обучена на 227 млн слов отобранного узбекского текста — это не слой перевода поверх английской модели." },
+        { title: "Родное качество узбекского", desc: "Создана специально для узбекского — с опорой на национальный юридический корпус, а не слой перевода поверх английской модели." },
         { title: "Данные остаются в регионе", desc: "Обслуживание с региональной инфраструктуры, построенной вокруг требований суверенитета данных с первого дня." },
         { title: "Честная экономика", desc: "Мы не гонимся за нулевыми ценами гиперскейлеров. Мы берём за то, чего они дать не могут: суверенитет и родное качество." },
       ],

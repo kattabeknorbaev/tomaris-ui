@@ -145,6 +145,7 @@ export function ChatInput() {
         let fullContent = "";
         let fullReasoning = "";
         let sseDone = false;
+        let ragBackendMissing = false;
 
         while (!sseDone) {
           const { done, value } = await reader.read();
@@ -164,6 +165,14 @@ export function ChatInput() {
 
             try {
               const parsed = JSON.parse(data);
+              // Review #1 §4: the route prepends this frame when /health
+              // behind VAST_API_URL lacks the RAG shape — the answer is
+              // streaming from raw vLLM, ungrounded and unaudited.
+              if (parsed.rag_backend === "missing") {
+                ragBackendMissing = true;
+                patchMessage(chatId, assistantMsgId, { ragBackendMissing: true });
+                continue;
+              }
               const delta = parsed.choices?.[0]?.delta || {};
               // Different vLLM builds emit `reasoning` or `reasoning_content` — keep both.
               const reasoningChunk = delta.reasoning_content || delta.reasoning || "";
