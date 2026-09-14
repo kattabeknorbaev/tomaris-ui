@@ -1,7 +1,7 @@
 {
   "name": "tomaris-ui",
   "version": "0.1.0",
-  "description": "The web platform and chat interface for Tomaris AI — a 27B-parameter LLM natively optimized for the Uzbek language.",
+  "description": "Sovereign AI for Uzbekistan: models trained on the language, a support agent that answers only from your approved documents, and a deployment path onto infrastructure inside the country.",
   "homepage": "https://tomaris.ai",
   "private": true,
   "scripts": {

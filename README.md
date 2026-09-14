@@ -11,16 +11,17 @@
 
 ---
 
-**Tomaris** is a 27B-parameter Large Language Model natively optimized for the Uzbek language, culture, and context. This repository contains the source code for our public-facing marketing site and the interactive chat application.
+**Tomaris** is a Sovereign AI platform for Uzbekistan. We provide models trained natively on the Uzbek language, a secure support agent that answers only from your approved documents, and a deployment path directly onto your own infrastructure inside the country.
 
 Live application: **[tomaris.ai](https://tomaris.ai)**
 
 ## ✨ Features
 
-- **Native Uzbek Support:** Built from the ground up to understand and generate high-quality Uzbek text, alongside English and Russian.
-- **Streaming & Reasoning:** Real-time streaming responses with an exposed reasoning pipeline (Chain of Thought), allowing users to see how the model arrives at its answers.
-- **Premium Interface:** A meticulously crafted, dark-first UI built with Tailwind CSS v4 and Framer Motion.
-- **Multilingual UI:** Custom i18n support across the entire platform.
+- **Trained for the language:** Not a translation layer over a model that learned Uzbek by accident.
+- **Answers from your documents:** Your team approves the sources. Nothing else is available to it.
+- **Deployable inside your borders:** From our infrastructure today to yours, on a path you control.
+- **Handoff with context:** When a question needs account access, the agent hands the thread to a named operator and attaches every source it already matched.
+- **Operator console:** Every Telegram, web widget, and in-app conversation in one view.
 
 ## 🏗️ Architecture & Stack
 
