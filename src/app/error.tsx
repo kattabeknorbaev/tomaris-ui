@@ -26,13 +26,13 @@ export default function Error({
       <div className="mt-8 flex items-center gap-3">
         <button
           onClick={reset}
-          className="rounded-md bg-primary px-5 py-2.5 text-body-sm font-semibold text-on-primary hover:bg-primary-deep active:scale-[0.98] transition-all duration-150"
+          className="t-btn-primary h-11 px-5 text-[15px]"
         >
           {t.common.tryAgain}
         </button>
         <Link
           href="/"
-          className="rounded-md border border-border px-5 py-2.5 text-body-sm font-semibold text-ink hover:bg-surface-2 transition-colors duration-150"
+          className="t-btn-secondary h-11 px-5 text-[15px]"
         >
           {t.common.backToHome}
         </Link>

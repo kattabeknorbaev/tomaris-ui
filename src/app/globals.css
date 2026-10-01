@@ -1,63 +1,89 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* ============================================================
    TOMARIS DESIGN SYSTEM
-   Reference: DESIGN.md
+   Mirrors tomaris.ai: near-black ground, monochrome surfaces,
+   white pill CTAs, frosted panels, IBM Plex Mono labels. Green is
+   a state colour (approved / available), never a fill.
    ============================================================ */
 
 :root {
-  --canvas: #fafafa;
+  /* Light (secondary theme) */
+  --canvas: #f6f6f4;
   --canvas-soft: #ffffff;
-  --surface-2: #f4f4f5;
-  --surface-3: #e4e4e7;
-  --hairline: #e4e4e7;
-  --hairline-soft: #d4d4d8;
-  --ink: #09090b;
+  --surface-1: #ffffff;
+  --surface-2: #f1f1ef;
+  --surface-3: #eaeae7;
+  --surface-4: #e2e2df;
+  --ink: #0a0b0c;
   --ink-strong: #000000;
-  --body: #71717a;
-  --mute: #a1a1aa;
-  --primary: #0F8F6F;
-  --primary-soft: #12b88a;
-  --primary-deep: #0a6b52;
-  --on-primary: #ffffff;
-  --accent: #C7A96B;
-  --success: #22c55e;
-  --error: #ef4444;
-  --warning: #f59e0b;
-  --info: #3b82f6;
+  --body: #3d424a;
+  --mute: #6b7079;
+  --primary: #0a0b0c;
+  --primary-soft: #0a0b0c;
+  --primary-deep: #26292c;
+  --on-primary: #f7f8f8;
+  --accent: #9a7436;
+  --success: #1c7a52;
+  --error: #b5534f;
+  --warning: #9a6f2e;
+  --info: #3b6fb5;
+  --specular: rgba(255, 255, 255, 0.7);
+  --lift-shadow: 0 0 0 1px rgba(10, 11, 12, 0.03), 0 14px 36px rgba(10, 11, 12, 0.07);
+
+  --hairline: color-mix(in srgb, var(--ink) 9%, transparent);
+  --hairline-soft: color-mix(in srgb, var(--ink) 15%, transparent);
   --background: var(--canvas);
   --foreground: var(--ink);
-  --card: var(--canvas-soft);
+  --card: var(--surface-1);
   --card-foreground: var(--ink);
+  --popover: var(--surface-1);
+  --popover-foreground: var(--ink);
   --secondary: var(--surface-2);
   --secondary-foreground: var(--ink);
   --muted: var(--surface-2);
-  --muted-foreground: var(--body);
+  --muted-foreground: var(--mute);
   --border: var(--hairline);
-  --ring: var(--primary);
-  --radius: 8px;
+  --ring: var(--ink);
+  --radius: 10px;
+
+  /* Motion + shape, straight from the landing page */
+  --radius-frame: 14px;
+  --radius-panel: 10px;
+  --radius-control: 8px;
+  --ease-enter: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-state: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --state: 0.14s;
+  --track: -0.022em;
 }
 
 .dark {
-  --canvas: #09090b;
-  --canvas-soft: #111113;
-  --surface-2: #1a1a1e;
-  --surface-3: #222228;
-  --hairline: #27272a;
-  --hairline-soft: #3f3f46;
-  --ink: #fafafa;
+  --canvas: #050607;
+  --canvas-soft: #0b0c0d;
+  --surface-1: #0f1011;
+  --surface-2: #131415;
+  --surface-3: #18191b;
+  --surface-4: #1c1e20;
+  --ink: #f7f8f8;
   --ink-strong: #ffffff;
-  --body: #a1a1aa;
-  --mute: #71717a;
-  --background: var(--canvas);
-  --foreground: var(--ink);
-  --card: var(--canvas-soft);
-  --card-foreground: var(--ink);
-  --secondary: var(--surface-2);
-  --secondary-foreground: var(--ink);
-  --muted: var(--surface-2);
-  --muted-foreground: var(--body);
-  --border: var(--hairline);
+  --body: #d0d6e0;
+  --mute: #8a8f98;
+  --primary: #f7f8f8;
+  --primary-soft: #ffffff;
+  --primary-deep: #ffffff;
+  --on-primary: #0a0b0c;
+  --accent: #b58a4a;
+  --success: #208057;
+  --error: #c97b7b;
+  --warning: #b58a4a;
+  --info: #6084b2;
+  --specular: rgba(255, 255, 255, 0.08);
+  --lift-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 18px 48px rgba(0, 0, 0, 0.28);
+
+  --hairline: color-mix(in srgb, var(--ink) 8%, transparent);
+  --hairline-soft: color-mix(in srgb, var(--ink) 13%, transparent);
 }
 
 @theme inline {
@@ -73,23 +99,22 @@
   --color-muted-foreground: var(--muted-foreground);
   /* shadcn "accent" = neutral hover surface for menu items etc.
      Brand gold lives on --color-gold; use text-gold / bg-gold for it. */
-  --color-accent: var(--surface-2);
+  --color-accent: var(--surface-3);
   --color-accent-foreground: var(--ink);
   --color-border: var(--border);
   --color-ring: var(--ring);
   --radius: var(--radius);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-lora), ui-serif, Georgia, "Times New Roman", serif;
-  --color-emerald: var(--primary);
+  --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-emerald: var(--success);
   --color-navy: #0B1120;
   --color-gold: var(--accent);
-  --color-emerald-dark: var(--primary-deep);
-  --color-emerald-light: var(--primary-soft);
+  --color-emerald-dark: var(--success);
+  --color-emerald-light: var(--success);
 
   /* shadcn tokens used by the ui/ primitives */
-  --color-popover: var(--card);
-  --color-popover-foreground: var(--ink);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --color-input: var(--hairline);
   --color-destructive: var(--error);
   --color-destructive-foreground: #ffffff;
@@ -98,12 +123,15 @@
      text-ink / bg-surface-2 / text-mute compile to nothing. */
   --color-canvas: var(--canvas);
   --color-canvas-soft: var(--canvas-soft);
+  --color-surface-1: var(--surface-1);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
   --color-hairline: var(--hairline);
   --color-hairline-soft: var(--hairline-soft);
   --color-ink: var(--ink);
   --color-ink-strong: var(--ink-strong);
+  --color-body: var(--body);
   --color-mute: var(--mute);
   --color-on-primary: var(--on-primary);
   --color-primary-soft: var(--primary-soft);
@@ -118,18 +146,27 @@
    BASE
    ============================================================ */
 
-body {
+html {
   background: var(--canvas);
+}
+
+body {
+  /* The landing page's ground: a soft top light and a faint green bloom. */
+  background:
+    radial-gradient(920px 520px at 50% -8%, color-mix(in srgb, var(--ink) 3%, transparent), transparent 62%),
+    radial-gradient(640px 420px at 88% 18%, color-mix(in srgb, var(--success) 3%, transparent), transparent 58%),
+    var(--canvas);
   color: var(--ink);
-  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  font-family: var(--font-sans);
+  letter-spacing: var(--track);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
 ::selection {
-  background: var(--primary);
-  color: var(--on-primary);
+  background: color-mix(in srgb, var(--ink) 18%, transparent);
+  color: var(--ink);
 }
 
 /* ============================================================
@@ -138,13 +175,17 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--hairline-soft) transparent;
+  scrollbar-color: color-mix(in srgb, var(--ink) 18%, transparent) transparent;
 }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--hairline-soft); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--mute); }
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ink) 16%, transparent) padding-box;
+  border: 2px solid transparent;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--ink) 28%, transparent) padding-box; }
 
 /* ============================================================
    TYPOGRAPHY
@@ -152,15 +193,15 @@ body {
 
 .text-display {
   font-size: clamp(2.5rem, 5vw, 3.5rem);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.05;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.034em;
 }
 
 .text-heading-1 {
   font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 700;
-  line-height: 1.1;
+  font-weight: 600;
+  line-height: 1.08;
   letter-spacing: -0.03em;
 }
 
@@ -168,23 +209,25 @@ body {
   font-size: clamp(1.25rem, 2vw, 1.75rem);
   font-weight: 600;
   line-height: 1.2;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
 }
 
 .text-heading-3 {
   font-size: 1.25rem;
   font-weight: 600;
   line-height: 1.3;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
 }
 
+/* Eyebrow = the landing page's mono section label. */
 .text-eyebrow {
-  font-size: 0.8125rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 400;
   line-height: 1.4;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--primary);
+  color: var(--mute);
 }
 
 .text-body-lg {
@@ -211,6 +254,222 @@ body {
 }
 
 /* ============================================================
+   COMPONENT PRIMITIVES
+   Plain classes so the landing page's recipes live in one place.
+   ============================================================ */
+
+@layer components {
+  /* Mono uppercase label — speaker names, section titles, metadata. */
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+
+  /* Wordmark next to the khatam. */
+  .t-wordmark {
+    font-size: 14px;
+    font-weight: 620;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  /* White pill — the landing page's primary CTA. */
+  .t-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 9999px;
+    background: var(--primary);
+    color: var(--on-primary);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition: background var(--state) var(--ease-state), transform var(--state) var(--ease-state),
+      opacity var(--state) var(--ease-state);
+  }
+  .t-btn-primary:hover { background: var(--primary-deep); }
+  .t-btn-primary:active { transform: scale(0.97); }
+  .t-btn-primary:disabled { opacity: 0.5; pointer-events: none; }
+
+  /* Dark glass pill — the landing page's secondary CTA. */
+  .t-btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 9999px;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    background: color-mix(in srgb, var(--surface-3) 70%, transparent);
+    box-shadow: inset 0 1px 0 var(--specular), inset 0 0 0 1px var(--hairline);
+    transition: background var(--state) var(--ease-state), transform var(--state) var(--ease-state),
+      opacity var(--state) var(--ease-state);
+  }
+  .t-btn-secondary:hover { background: var(--surface-4); }
+  .t-btn-secondary:active { transform: scale(0.97); }
+  .t-btn-secondary:disabled { opacity: 0.5; pointer-events: none; }
+
+  /* Quiet round icon button. */
+  .t-icon-btn {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    color: var(--mute);
+    transition: color var(--state) var(--ease-state), background var(--state) var(--ease-state),
+      transform var(--state) var(--ease-state);
+  }
+  .t-icon-btn:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
+  .t-icon-btn:active { transform: scale(0.94); }
+  .t-icon-btn:disabled { opacity: 0.4; pointer-events: none; }
+
+  /* Frosted bar/panel — the landing page's floating nav. */
+  .t-panel {
+    border: 1px solid var(--hairline);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--ink) 4%, transparent), transparent 42%),
+      color-mix(in srgb, var(--surface-1) 86%, transparent);
+    -webkit-backdrop-filter: blur(22px) saturate(1.15);
+    backdrop-filter: blur(22px) saturate(1.15);
+    box-shadow: var(--lift-shadow), inset 0 1px 0 var(--specular);
+  }
+
+  /* Glass card — the landing page's Surface. */
+  .t-card {
+    position: relative;
+    border-radius: var(--radius-frame);
+    border: 1px solid var(--hairline);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--ink) 3%, transparent), transparent 32%),
+      color-mix(in srgb, var(--surface-2) 56%, transparent);
+    box-shadow: inset 0 1px 0 var(--specular);
+  }
+
+  /* Text field — the landing page's contact form input. */
+  .t-input {
+    width: 100%;
+    border-radius: var(--radius-control);
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    background: var(--surface-2);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.4;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color var(--state) var(--ease-state), background var(--state) var(--ease-state);
+  }
+  .t-input::placeholder { color: var(--mute); }
+  .t-input:focus {
+    border-color: color-mix(in srgb, var(--ink) 30%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 8%, transparent);
+  }
+  .t-input[aria-invalid="true"] { border-color: color-mix(in srgb, var(--error) 60%, transparent); }
+
+  /* Small outlined pill — channel badges, plan tags. */
+  .t-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    border-radius: 9999px;
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    background: color-mix(in srgb, var(--ink) 4%, transparent);
+    color: var(--body);
+    padding: 3px 9px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Segmented control — the landing page's EN / UZ / RU switch. */
+  .t-segmented {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 9999px;
+    border: 1px solid var(--hairline);
+    background: color-mix(in srgb, var(--ink) 2%, transparent);
+  }
+  .t-segment {
+    min-width: 36px;
+    height: 28px;
+    padding: 0 9px;
+    border-radius: 9999px;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--mute);
+    transition: color var(--state) var(--ease-state), background var(--state) var(--ease-state);
+  }
+  .t-segment:hover { color: var(--ink); }
+  .t-segment[aria-pressed="true"] {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 9%, transparent);
+    box-shadow: inset 0 1px 0 var(--specular);
+  }
+
+  /* Round avatar — the landing page's demo avatars. */
+  .t-avatar {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    color: var(--ink);
+    border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    background: color-mix(in srgb, var(--ink) 9%, transparent);
+    box-shadow: inset 0 1px 0 var(--specular);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .t-avatar-you {
+    background: linear-gradient(145deg, color-mix(in srgb, var(--ink) 18%, transparent), color-mix(in srgb, var(--ink) 6%, transparent));
+  }
+
+  /* Sidebar / list row. */
+  .t-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    color: var(--mute);
+    transition: color var(--state) var(--ease-state), background var(--state) var(--ease-state);
+  }
+  .t-row:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 5%, transparent); }
+  .t-row[data-active="true"] {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--ink) 8%, transparent);
+    box-shadow: inset 0 1px 0 var(--specular);
+  }
+
+  /* Green "available" dot from the landing page's source rail. */
+  .t-dot {
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 9999px;
+    background: var(--success);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 16%, transparent);
+  }
+}
+
+/* ============================================================
    STREAMING CURSOR
    ============================================================ */
 
@@ -220,11 +479,15 @@ body {
 }
 
 .streaming-cursor::after {
-  content: "\25ca";
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  border-radius: 1px;
+  background: var(--ink);
   animation: blink 1s step-end infinite;
-  color: var(--primary);
-  margin-left: 1px;
-  font-size: 0.8em;
 }
 
 /* ============================================================
@@ -232,68 +495,83 @@ body {
    ============================================================ */
 
 @keyframes typing-dot {
-  0%, 60%, 100% { opacity: 0.2; transform: translateY(0); }
+  0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
   30% { opacity: 1; transform: translateY(-2px); }
 }
 
-.typing-dot:nth-child(1) { animation: typing-dot 1.4s ease-in-out infinite; }
-.typing-dot:nth-child(2) { animation: typing-dot 1.4s ease-in-out 0.2s infinite; }
-.typing-dot:nth-child(3) { animation: typing-dot 1.4s ease-in-out 0.4s infinite; }
+.typing-dot:nth-child(1) { animation: typing-dot 1s ease-in-out infinite; }
+.typing-dot:nth-child(2) { animation: typing-dot 1s ease-in-out 0.15s infinite; }
+.typing-dot:nth-child(3) { animation: typing-dot 1s ease-in-out 0.3s infinite; }
 
 /* ============================================================
    PROSE (Markdown)
    ============================================================ */
 
+.prose-tomaris {
+  font-size: 15px;
+  letter-spacing: -0.006em;
+  color: var(--body);
+}
+
+.prose-tomaris > :first-child { margin-top: 0; }
+.prose-tomaris > :last-child { margin-bottom: 0; }
+
 .prose-tomaris h1, .prose-tomaris h2, .prose-tomaris h3 {
   font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-top: 1.25em;
+  letter-spacing: -0.022em;
+  margin-top: 1.4em;
   margin-bottom: 0.5em;
   color: var(--ink);
 }
 
 .prose-tomaris h1 { font-size: 1.375rem; }
-.prose-tomaris h2 { font-size: 1.125rem; }
-.prose-tomaris h3 { font-size: 1rem; }
+.prose-tomaris h2 { font-size: 1.175rem; }
+.prose-tomaris h3 { font-size: 1.03rem; }
 
 .prose-tomaris p {
-  margin-bottom: 0.75em;
+  margin-bottom: 0.85em;
   line-height: 1.7;
-  color: var(--body);
 }
 
 .prose-tomaris ul, .prose-tomaris ol {
   margin-left: 1.25em;
-  margin-bottom: 0.75em;
+  margin-bottom: 0.85em;
 }
+.prose-tomaris ul { list-style: disc; }
+.prose-tomaris ol { list-style: decimal; }
+.prose-tomaris li::marker { color: var(--mute); }
 
 .prose-tomaris li {
-  margin-bottom: 0.25em;
+  margin-bottom: 0.3em;
+  padding-left: 0.2em;
   line-height: 1.65;
-  color: var(--body);
 }
 
 .prose-tomaris code {
-  background: var(--surface-2);
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
-  font-size: 0.85em;
-  font-family: var(--font-mono), monospace;
-  color: var(--primary-soft);
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ink) 8%, transparent);
+  padding: 0.1em 0.4em;
+  border-radius: 5px;
+  font-size: 0.86em;
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  color: var(--ink);
 }
 
 .prose-tomaris pre {
-  background: var(--canvas-soft);
+  background: var(--surface-1);
   border: 1px solid var(--hairline);
-  border-radius: 8px;
-  padding: 1em;
+  border-radius: var(--radius-panel);
+  padding: 1em 1.1em;
   overflow-x: auto;
   margin-bottom: 1em;
   font-size: 0.8125rem;
+  line-height: 1.6;
 }
 
 .prose-tomaris pre code {
   background: transparent;
+  border: 0;
   color: var(--ink);
   padding: 0;
   font-size: inherit;
@@ -308,6 +586,7 @@ body {
   margin: 0;
   border: 0;
   border-radius: 0;
+  background: transparent;
 }
 
 .prose-tomaris strong {
@@ -316,18 +595,21 @@ body {
 }
 
 .prose-tomaris blockquote {
-  border-left: 2px solid var(--primary);
+  border-left: 2px solid var(--hairline-soft);
   padding-left: 1em;
   margin-left: 0;
-  margin-bottom: 0.75em;
-  color: var(--body);
+  margin-bottom: 0.85em;
+  color: var(--mute);
 }
 
 .prose-tomaris a {
-  color: var(--primary-soft);
+  color: var(--ink);
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--state) var(--ease-state);
 }
+.prose-tomaris a:hover { text-decoration-color: var(--ink); }
 
 .prose-tomaris hr {
   border: none;
@@ -336,29 +618,28 @@ body {
 }
 
 /* ============================================================
-   ELEVATION (DESIGN.md — hairlines first, shadows sparing)
+   ELEVATION (hairlines first, shadows sparing)
    ============================================================ */
 
 :root {
-  --shadow-sm: 0 1px 2px rgba(9, 9, 11, 0.04);
-  --shadow-md: 0 4px 14px rgba(9, 9, 11, 0.08);
-  --shadow-lg: 0 12px 32px rgba(9, 9, 11, 0.12);
+  --shadow-sm: 0 1px 2px rgba(10, 11, 12, 0.04);
+  --shadow-md: 0 4px 14px rgba(10, 11, 12, 0.07);
+  --shadow-lg: 0 12px 32px rgba(10, 11, 12, 0.1);
 }
 
 .dark {
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.4);
 }
 
 /* ============================================================
-   PREMIUM MICROINTERACTIONS
+   MICROINTERACTIONS
    ============================================================ */
 
 /* Card: hairline brightens + gentle lift on hover. */
 .card-lift {
-  transition: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
-    border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s var(--ease-state), border-color 0.2s ease, box-shadow 0.2s ease;
   will-change: transform;
 }
 .card-lift:hover {
@@ -367,16 +648,13 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
-/* Button/link: subtle lift on hover, press on active. */
+/* Button/link: press on active, like the landing page's pills. */
 .btn-lift {
-  transition: transform 0.15s cubic-bezier(0.25, 0.1, 0.25, 1),
-    background-color 0.15s ease, box-shadow 0.15s ease;
-}
-.btn-lift:hover {
-  transform: translateY(-1px);
+  transition: transform var(--state) var(--ease-state), background-color var(--state) ease,
+    box-shadow var(--state) ease;
 }
 .btn-lift:active {
-  transform: translateY(0) scale(0.98);
+  transform: scale(0.97);
 }
 
 /* ============================================================
@@ -389,18 +667,16 @@ body {
   overflow: hidden;
   pointer-events: none;
 }
-/* Faint emerald wash from the top — reads engineered, not "AI gradient". */
 .hero-backdrop::before {
   content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(
     60% 42% at 50% -8%,
-    rgba(15, 143, 111, 0.1),
+    color-mix(in srgb, var(--ink) 5%, transparent),
     transparent 70%
   );
 }
-/* Hairline grid that fades out toward the content. */
 .hero-backdrop::after {
   content: "";
   position: absolute;
@@ -408,16 +684,8 @@ body {
   background-image: linear-gradient(var(--hairline) 1px, transparent 1px),
     linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
   background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(
-    ellipse 75% 55% at 50% 0%,
-    #000 0%,
-    transparent 72%
-  );
-  mask-image: radial-gradient(
-    ellipse 75% 55% at 50% 0%,
-    #000 0%,
-    transparent 72%
-  );
+  -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 0%, transparent 72%);
   opacity: 0.6;
 }
 
@@ -449,8 +717,10 @@ body {
    FOCUS
    ============================================================ */
 
-:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-  border-radius: 4px;
+/* In the base layer so `outline-none` on text fields (the composer) wins. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
+  }
 }

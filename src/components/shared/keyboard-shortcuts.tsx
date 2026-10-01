@@ -97,34 +97,34 @@ export function KeyboardShortcuts() {
       aria-label={t.shortcuts.title}
       onClick={() => setOpen(false)}
     >
-      <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" aria-hidden="true" />
       <div
-        className="relative w-full max-w-md rounded-2xl border border-border bg-card p-5 shadow-lg"
+        className="t-panel relative w-full max-w-md rounded-2xl p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-1 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-base font-semibold text-ink">{t.shortcuts.title}</h2>
-            <p className="mt-0.5 text-xs text-muted-foreground">{t.shortcuts.subtitle}</p>
+            <h2 className="text-[17px] font-semibold tracking-[-0.022em] text-ink">{t.shortcuts.title}</h2>
+            <p className="mt-1 text-[13px] text-mute">{t.shortcuts.subtitle}</p>
           </div>
           <button
             onClick={() => setOpen(false)}
             aria-label={t.shortcuts.close}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-surface-2 hover:text-ink transition-colors duration-150"
+            className="t-icon-btn h-8 w-8"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="mt-3 divide-y divide-border">
+        <div className="mt-3 divide-y divide-hairline">
           {rows.map((row) => (
             <div key={row.label} className="flex items-center justify-between py-2.5">
-              <span className="text-sm text-ink">{row.label}</span>
+              <span className="text-[14px] text-ink">{row.label}</span>
               <span className="flex items-center gap-1">
                 {row.keys.map((k) => (
                   <kbd
                     key={k}
-                    className="min-w-[1.6rem] rounded-md border border-border bg-surface-2 px-1.5 py-0.5 text-center text-[11px] font-medium text-muted-foreground"
+                    className="min-w-[1.6rem] rounded-md border border-hairline bg-ink/[0.04] px-1.5 py-0.5 text-center font-mono text-[11px] text-mute shadow-[inset_0_1px_0_var(--specular)]"
                   >
                     {k}
                   </kbd>

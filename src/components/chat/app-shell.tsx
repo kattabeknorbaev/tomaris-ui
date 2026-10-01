@@ -8,11 +8,11 @@ import { GirihGround } from "@/components/ui/girih-ground";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex h-dvh overflow-hidden bg-background">
+    <div className="relative flex h-dvh overflow-hidden">
       <GirihGround />
       <ChatSync />
       <ChatSidebar />
-      <main className="relative flex min-w-0 flex-1 flex-col z-10">{children}</main>
+      <main className="relative z-10 flex min-w-0 flex-1 flex-col">{children}</main>
       <KeyboardShortcuts />
       <FeedbackDialog />
     </div>

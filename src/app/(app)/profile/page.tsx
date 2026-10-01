@@ -54,36 +54,33 @@ export default function ProfilePage() {
     { icon: CalendarDays, label: t.profilePage.memberSince, value: memberSince },
   ];
 
+  const enter = (i: number) => ({
+    initial: { opacity: 0, y: 14 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.56, delay: i * 0.08, ease: [0.23, 1, 0.32, 1] as const },
+  });
+
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <div className="mx-auto max-w-2xl px-4 pb-12 pt-16 sm:px-6 md:pt-14">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold">{t.profilePage.title}</h1>
-          <p className="mt-2 text-muted-foreground">{t.profilePage.subtitle}</p>
+          <h1 className="text-[clamp(28px,3vw,36px)] font-semibold leading-[1.08] tracking-[-0.03em] text-ink">{t.profilePage.title}</h1>
+          <p className="mt-2 text-[15px] text-mute">{t.profilePage.subtitle}</p>
         </div>
 
         {/* User info — real session data */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 rounded-2xl border border-border bg-card p-6"
-        >
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground">
-              {initial}
+        <motion.div {...enter(0)} className="t-card mb-4 p-6">
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="t-avatar t-avatar-you h-14 w-14 text-[18px]">{initial}</span>
+            <div className="min-w-0 flex-1">
+              <h2 className="truncate text-[18px] font-semibold tracking-[-0.022em] text-ink">{name}</h2>
+              <p className="truncate text-[14px] text-mute">{email}</p>
+              <span className="t-chip mt-2">
+                <Crown className="h-3 w-3" />
+                {t.profilePage.freePlan}
+              </span>
             </div>
-            <div className="min-w-0">
-              <h2 className="truncate text-lg font-semibold">{name}</h2>
-              <p className="truncate text-sm text-muted-foreground">{email}</p>
-              <div className="mt-1 flex items-center gap-1.5">
-                <Crown className="h-3.5 w-3.5 text-gold" />
-                <span className="text-xs font-medium text-gold">{t.profilePage.freePlan}</span>
-              </div>
-            </div>
-            <Link
-              href="/pricing"
-              className="btn-lift ml-auto flex shrink-0 items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-primary-deep"
-            >
+            <Link href="/pricing" className="t-btn-primary h-10 shrink-0 px-4 text-[14px]">
               {t.profilePage.upgrade}
               <ArrowUpRight className="h-3.5 w-3.5" />
             </Link>
@@ -91,36 +88,25 @@ export default function ProfilePage() {
         </motion.div>
 
         {/* Real usage stats */}
-        <div className="mb-6 grid grid-cols-3 gap-4">
+        <div className="mb-4 grid grid-cols-3 gap-3">
           {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="rounded-2xl border border-border bg-card p-4"
-            >
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-              <div className="mt-2 text-lg font-bold">{stat.value}</div>
-              <div className="text-xs text-muted-foreground">{stat.label}</div>
+            <motion.div key={stat.label} {...enter(i + 1)} className="t-card p-4">
+              <stat.icon className="h-4 w-4 text-mute" />
+              <div className="mt-3 text-[20px] font-semibold tabular-nums tracking-[-0.022em] text-ink">{stat.value}</div>
+              <div className="t-label mt-1">{stat.label}</div>
             </motion.div>
           ))}
         </div>
 
         {/* Billing — honestly empty on the free plan */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="rounded-2xl border border-border bg-card p-6"
-        >
-          <h3 className="mb-4 font-semibold">{t.profilePage.billingHistory}</h3>
+        <motion.div {...enter(4)} className="t-card p-6">
+          <h3 className="t-label">{t.profilePage.billingHistory}</h3>
           <div className="py-8 text-center">
-            <CreditCard className="mx-auto h-8 w-8 text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">{t.profilePage.noBilling}</p>
+            <CreditCard className="mx-auto h-7 w-7 text-mute" />
+            <p className="mt-3 text-[14px] text-mute">{t.profilePage.noBilling}</p>
             <Link
               href="/pricing"
-              className="mt-3 inline-block text-sm font-medium text-primary hover:underline"
+              className="mt-3 inline-block text-[14px] text-ink underline decoration-ink/30 underline-offset-[3px] transition-colors hover:decoration-ink"
             >
               {t.profilePage.viewPlans} →
             </Link>
@@ -128,16 +114,11 @@ export default function ProfilePage() {
         </motion.div>
 
         {/* Sign out */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-6"
-        >
+        <motion.div {...enter(5)} className="mt-4">
           <button
             onClick={handleSignOut}
             disabled={signingOut}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-60"
+            className="t-btn-secondary h-11 w-full text-[14px]"
           >
             <LogOut className="h-4 w-4" />
             {signingOut ? t.chat.signingOut : t.chat.signOut}

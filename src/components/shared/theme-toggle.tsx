@@ -17,20 +17,15 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className={cn(
-        "relative flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-foreground transition-all hover:bg-muted",
-        className
-      )}
+      className={cn("t-icon-btn h-9 w-9 border border-hairline bg-ink/[0.02]", className)}
       aria-label={t.common.toggleTheme}
+      title={t.common.toggleTheme}
       suppressHydrationWarning
     >
       {mounted ? (
-        <>
-          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        </>
+        theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />
       ) : (
-        <div className="h-4 w-4" />
+        <span className="h-4 w-4" />
       )}
     </button>
   );

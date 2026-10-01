@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Paperclip, Square, X, FileText, Loader2, File, Image as ImageIcon } from "lucide-react";
-import { cn, generateId } from "@/lib/utils";
+import { ArrowUp, Paperclip, Square, X, FileText, Loader2, File, Image as ImageIcon } from "lucide-react";
+import { generateId } from "@/lib/utils";
 import { orderTranscript } from "@/lib/message-order";
 import { useChatStore } from "@/stores/chat-store";
 import { useI18n } from "@/components/shared/i18n-provider";
@@ -326,39 +326,39 @@ export function ChatInput() {
   }, []);
 
   return (
-    <div className="shrink-0 bg-transparent px-4 py-3 pb-6 sm:px-0">
-      <div className="mx-auto max-w-2xl">
+    <div className="shrink-0 px-4 pb-5 pt-2 md:px-6">
+      <div className="mx-auto max-w-[46rem]">
         {/* API status indicator */}
         {apiStatus === "error" && (
-          <div className="mb-2 rounded-md bg-warning/10 border border-warning/20 px-3 py-1.5 text-caption flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-warning shrink-0" />
+          <div className="mb-3 flex w-fit items-center gap-2 rounded-2xl border border-warning/30 bg-warning/10 px-3 py-1.5 text-[12px] text-warning">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-warning" />
             {t.chat.demoBanner}
           </div>
         )}
 
         {/* Attachments */}
         {attachments.length > 0 && (
-          <div className="mb-2 flex flex-wrap gap-2">
+          <div className="mb-2.5 flex flex-wrap gap-2">
             {attachments.map((att) => {
               const Icon = att.kind === "image" ? ImageIcon : getFileIcon(att.type);
               const reading = att.text === null;
               return (
                 <div
                   key={att.id}
-                  className="flex items-center gap-2 rounded-xl border border-border/40 bg-surface-2/40 backdrop-blur-md px-2.5 py-1.5 text-body-sm transition-colors duration-150 hover:border-border/60 shadow-[var(--shadow-sm)]"
+                  className="flex items-center gap-2 rounded-full border border-ink/10 bg-ink/[0.04] py-1 pl-3 pr-1 text-[13px] shadow-[inset_0_1px_0_var(--specular)]"
                 >
                   {reading ? (
                     <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-mute" />
                   ) : (
-                    <Icon className="h-3.5 w-3.5 text-primary shrink-0" />
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-body" />
                   )}
-                  <span className="truncate max-w-[160px] text-ink">{att.name}</span>
-                  <span className="text-caption">
+                  <span className="max-w-[160px] truncate text-ink">{att.name}</span>
+                  <span className="font-mono text-[11px] text-mute">
                     {reading && att.kind === "image" ? t.chat.imageReading : formatSize(att.size)}
                   </span>
                   <button
                     onClick={() => removeAttachment(att.id)}
-                    className="flex h-5 w-5 items-center justify-center rounded-full text-mute hover:text-error hover:bg-error/10 active:scale-90 transition-all duration-150 ml-0.5"
+                    className="t-icon-btn h-6 w-6 hover:!text-error"
                     aria-label={t.chat.remove}
                   >
                     <X className="h-3 w-3" />
@@ -369,7 +369,7 @@ export function ChatInput() {
           </div>
         )}
 
-        <div className="flex items-end gap-2 rounded-2xl border border-border/40 bg-canvas-soft/70 backdrop-blur-xl shadow-[var(--shadow-lg)] px-3 py-2 transition-all duration-200 focus-within:border-primary/50 focus-within:bg-canvas-soft/90">
+        <div className="t-panel flex items-end gap-1.5 rounded-[22px] p-2 transition-[border-color] duration-150 focus-within:border-ink/25">
           <input
             ref={fileInputRef}
             type="file"
@@ -380,7 +380,7 @@ export function ChatInput() {
           />
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-mute hover:text-ink hover:bg-surface-2 active:scale-90 transition-all duration-150"
+            className="t-icon-btn h-10 w-10"
             title={t.chat.attachFile}
             aria-label={t.chat.attachFile}
           >
@@ -394,37 +394,30 @@ export function ChatInput() {
             placeholder={t.chat.placeholder}
             rows={1}
             style={{ maxHeight: TEXTAREA_MAX_HEIGHT }}
-            className="min-h-[32px] flex-1 resize-none bg-transparent py-1 text-body-sm text-ink outline-none placeholder:text-mute"
+            className="min-h-10 flex-1 resize-none bg-transparent py-[9px] text-[15px] leading-[1.45] text-ink outline-none placeholder:text-mute"
           />
-          <div className="flex items-center gap-0.5">
-            {isStreaming ? (
-              <button
-                onClick={handleStop}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-error hover:bg-error/10 active:scale-90 transition-all duration-150"
-                title={t.chat.stop}
-                aria-label={t.chat.stop}
-              >
-                <Square className="h-4 w-4" />
-              </button>
-            ) : (
-              <button
-                onClick={handleSend}
-                disabled={!input.trim() && attachments.length === 0}
-                className={cn(
-                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
-                  input.trim() || attachments.length > 0
-                    ? "btn-lift bg-primary text-on-primary shadow-[0_4px_14px_-4px_rgba(15,143,111,0.6)] hover:bg-primary-deep"
-                    : "text-hairline-soft transition-colors duration-200"
-                )}
-                title={t.chat.send}
-                aria-label={t.chat.send}
-              >
-                <Send className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+          {isStreaming ? (
+            <button
+              onClick={handleStop}
+              className="t-btn-secondary h-10 w-10 shrink-0"
+              title={t.chat.stop}
+              aria-label={t.chat.stop}
+            >
+              <Square className="h-3.5 w-3.5 fill-current" />
+            </button>
+          ) : (
+            <button
+              onClick={handleSend}
+              disabled={!input.trim() && attachments.length === 0}
+              className="t-btn-primary h-10 w-10 shrink-0 disabled:!opacity-25"
+              title={t.chat.send}
+              aria-label={t.chat.send}
+            >
+              <ArrowUp className="h-[18px] w-[18px]" strokeWidth={2.25} />
+            </button>
+          )}
         </div>
-        <p className="mt-2 text-center text-[11px] text-mute">
+        <p className="mt-2.5 text-center text-[11.5px] text-mute">
           {t.chat.disclaimer}
         </p>
       </div>

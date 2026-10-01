@@ -7,6 +7,7 @@ import { Copy, Check, Brain, ChevronDown, RotateCcw, Pencil } from "lucide-react
 import ReactMarkdown from "react-markdown";
 import { useI18n } from "@/components/shared/i18n-provider";
 import { useChatStore } from "@/stores/chat-store";
+import { TomarisMark } from "@/components/shared/tomaris-mark";
 
 /**
  * "Oʻzbekiston Respublikasining Mehnat kodeksi" -> "Mehnat kodeksi".
@@ -48,19 +49,17 @@ function CodeBlock({ children }: { children?: ReactNode }) {
   };
 
   return (
-    <div className="code-block my-3 overflow-hidden rounded-lg border border-hairline">
-      <div className="flex items-center justify-between border-b border-hairline bg-surface-2/50 px-3 py-1.5">
-        <span className="font-mono text-[11px] uppercase tracking-wide text-mute">
-          {lang || "code"}
-        </span>
+    <div className="code-block my-3 overflow-hidden rounded-[10px] border border-hairline bg-surface-1 shadow-[inset_0_1px_0_var(--specular)]">
+      <div className="flex items-center justify-between border-b border-hairline bg-ink/[0.025] py-1 pl-3.5 pr-1.5">
+        <span className="t-label">{lang || "code"}</span>
         <button
           onClick={handleCopyCode}
-          className="flex items-center gap-1 rounded-md px-1.5 py-1 text-[11px] text-mute transition-all duration-150 hover:bg-surface-2 hover:text-ink active:scale-90"
+          className="t-icon-btn h-7 gap-1 px-2 text-[11.5px]"
           aria-label={t.chat.copyCode}
         >
           {copied ? (
             <>
-              <Check className="h-3 w-3 text-primary" /> {t.chat.copied}
+              <Check className="h-3 w-3 text-success" /> {t.chat.copied}
             </>
           ) : (
             <>
@@ -76,10 +75,10 @@ function CodeBlock({ children }: { children?: ReactNode }) {
 
 function StreamingDots() {
   return (
-    <span className="inline-flex gap-1">
-      <span className="typing-dot h-1 w-1 rounded-full bg-primary" />
-      <span className="typing-dot h-1 w-1 rounded-full bg-primary" />
-      <span className="typing-dot h-1 w-1 rounded-full bg-primary" />
+    <span className="inline-flex items-center gap-[5px]">
+      <span className="typing-dot h-[5px] w-[5px] rounded-full bg-body" />
+      <span className="typing-dot h-[5px] w-[5px] rounded-full bg-body" />
+      <span className="typing-dot h-[5px] w-[5px] rounded-full bg-body" />
     </span>
   );
 }
@@ -140,34 +139,12 @@ export const ChatMessage = memo(function ChatMessage({
   const reasoningExpanded = isThinking || reasoningOpen;
 
   return (
-    <div className={cn("group relative px-4 py-4 sm:px-0")}>
-      <div className="mx-auto max-w-2xl">
-        <div className={cn("flex gap-2.5", isUser ? "justify-end" : "justify-start")}>
-          {!isUser && (
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-primary text-[10px] font-semibold text-on-primary mt-0.5">T</div>
-          )}
-          <div className={cn("max-w-[85%] sm:max-w-[80%]", isUser ? "order-1" : "order-2")}>
-            {hasReasoning && (
-              <div className="mb-1.5">
-                <button
-                  onClick={() => setReasoningOpen((o) => !o)}
-                  aria-expanded={reasoningExpanded}
-                  className="flex items-center gap-1 text-caption text-mute hover:text-ink transition-colors duration-150"
-                >
-                  <Brain className="h-3 w-3" />
-                  <span>{isThinking ? t.chat.thinking : t.chat.reasoning}</span>
-                  {isThinking && <StreamingDots />}
-                  <ChevronDown className={cn("h-3 w-3 transition-transform duration-150", reasoningExpanded && "rotate-180")} />
-                </button>
-                {reasoningExpanded && (
-                  <div className="mt-1 max-h-60 overflow-y-auto whitespace-pre-wrap rounded-md border border-border bg-surface-2/50 px-2.5 py-1.5 text-caption leading-relaxed text-mute">
-                    {message.reasoning}
-                  </div>
-                )}
-              </div>
-            )}
-            {isUser && editing ? (
-              <div className="rounded-lg rounded-br-sm border border-primary/40 bg-primary/5 p-2">
+    <div className="group relative py-3.5">
+      {isUser ? (
+        <div className="flex justify-end gap-2.5">
+          <div className="flex min-w-0 max-w-[85%] flex-col items-end">
+            {editing ? (
+              <div className="w-full rounded-[10px] rounded-tr-[4px] border border-ink/20 bg-ink/[0.05] p-2.5 shadow-[inset_0_1px_0_var(--specular)]">
                 <textarea
                   value={draft}
                   onChange={(e) => setDraft(e.target.value)}
@@ -180,37 +157,83 @@ export const ChatMessage = memo(function ChatMessage({
                   }}
                   autoFocus
                   rows={Math.min(draft.split("\n").length + 1, 8)}
-                  className="w-full min-w-[220px] resize-none bg-transparent text-body-sm text-ink outline-none"
+                  className="w-full min-w-[240px] resize-none bg-transparent px-1 text-[15px] leading-[1.55] text-ink outline-none"
                 />
-                <div className="mt-1.5 flex justify-end gap-1.5">
-                  <button onClick={() => setEditing(false)} className="rounded-md px-2.5 py-1 text-caption text-mute hover:text-ink hover:bg-surface-2 transition-colors duration-150">
+                <div className="mt-2 flex justify-end gap-1.5">
+                  <button onClick={() => setEditing(false)} className="t-icon-btn h-8 px-3 text-[13px]">
                     {t.chat.cancelEdit}
                   </button>
-                  <button onClick={submitEdit} disabled={!draft.trim()} className="rounded-md bg-primary px-2.5 py-1 text-caption font-semibold text-on-primary hover:bg-primary-deep disabled:opacity-50 transition-colors duration-150">
+                  <button onClick={submitEdit} disabled={!draft.trim()} className="t-btn-primary h-8 px-3.5 text-[13px]">
                     {t.chat.saveEdit}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className={cn("rounded-lg px-3 py-2 text-body-sm leading-relaxed", isUser ? "rounded-br-sm bg-primary/10 text-ink" : "rounded-bl-sm bg-transparent p-0")}>
-                {isEmpty ? <StreamingDots /> : isUser ? <p className="whitespace-pre-wrap">{message.content}</p> : <MarkdownContent content={message.content} />}
-                {message.isStreaming && !!message.content && <span className="streaming-cursor" />}
+              <div className="rounded-[10px] rounded-tr-[4px] border border-ink/[0.08] bg-ink/[0.09] px-3.5 py-2.5 text-[15px] leading-[1.55] tracking-[-0.006em] text-ink shadow-[inset_0_1px_0_var(--specular)]">
+                <p className="whitespace-pre-wrap break-words">{message.content}</p>
               </div>
             )}
-            {!isUser && !message.isStreaming && message.ragBackendMissing && (
-              <div className="mt-2 rounded-md border border-border bg-surface-2/60 px-3 py-2 text-caption text-mute">
+            {!editing && !message.isStreaming && message.content && (
+              <div className="mt-1 flex items-center gap-0.5 transition-opacity duration-150 sm:opacity-0 sm:group-hover:opacity-100">
+                <button onClick={startEdit} disabled={busy} className="t-icon-btn h-8 w-8" title={t.chat.editMessage} aria-label={t.chat.editMessage}>
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+          </div>
+          <span className="t-avatar t-avatar-you">{userInitial}</span>
+        </div>
+      ) : (
+        <div className="flex gap-3">
+          <span className="t-avatar -mt-[3px]">
+            <TomarisMark size={13} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <div className="mb-1.5 flex h-[22px] items-center">
+              <span className="t-label">Tomaris</span>
+            </div>
+            {hasReasoning && (
+              <div className="mb-3">
+                <button
+                  onClick={() => setReasoningOpen((o) => !o)}
+                  aria-expanded={reasoningExpanded}
+                  className="inline-flex items-center gap-1.5 text-mute transition-colors duration-150 hover:text-ink"
+                >
+                  <Brain className="h-3.5 w-3.5" />
+                  <span className="t-label text-inherit">{isThinking ? t.chat.thinking : t.chat.reasoning}</span>
+                  {isThinking && <StreamingDots />}
+                  <ChevronDown className={cn("h-3.5 w-3.5 transition-transform duration-150", reasoningExpanded && "rotate-180")} />
+                </button>
+                {reasoningExpanded && (
+                  <div className="mt-2 max-h-60 overflow-y-auto whitespace-pre-wrap rounded-[10px] border border-hairline bg-ink/[0.03] px-3.5 py-2.5 text-[13px] leading-relaxed text-mute shadow-[inset_0_1px_0_var(--specular)]">
+                    {message.reasoning}
+                  </div>
+                )}
+              </div>
+            )}
+            {isEmpty ? (
+              <div className="flex h-7 items-center">
+                <StreamingDots />
+              </div>
+            ) : (
+              <MarkdownContent content={message.content} />
+            )}
+            {message.isStreaming && !!message.content && <span className="streaming-cursor" />}
+            {!message.isStreaming && message.ragBackendMissing && (
+              <div className="mt-3 rounded-[10px] border border-warning/30 bg-warning/10 px-3.5 py-2.5 text-[12.5px] leading-relaxed text-warning">
                 {t.chat.ragBackendMissing}
               </div>
             )}
-            {!isUser && !message.isStreaming && !!message.citations?.length && (
-              <div className="mt-2 border-t border-border pt-2">
-                <div className="text-caption mb-1.5 text-mute">{t.chat.sources}</div>
-                <div className="flex flex-wrap gap-1.5">
+            {!message.isStreaming && !!message.citations?.length && (
+              <div className="mt-4">
+                <div className="t-label mb-2">{t.chat.sources}</div>
+                <div className="flex flex-wrap gap-2">
                   {message.citations.map((c, i) => {
                     const label = `${shortCodeName(c.code_title, c.code)} ${c.article}`;
                     const chip = (
-                      <span className="inline-flex items-center rounded-md border border-border bg-surface-2/60 px-2 py-1 font-mono text-caption text-ink">
+                      <span className="inline-flex items-center gap-2.5 rounded-lg border border-hairline bg-surface-3 bg-linear-to-b from-ink/[0.03] to-transparent px-3 py-2 text-[12.5px] text-body shadow-[inset_0_1px_0_var(--specular)] transition-colors duration-150 group-hover/cite:border-hairline-soft group-hover/cite:text-ink">
                         {label}
+                        <span className="t-dot" aria-hidden="true" />
                       </span>
                     );
                     return c.lex_uz ? (
@@ -219,7 +242,7 @@ export const ChatMessage = memo(function ChatMessage({
                         href={`https://lex.uz/docs/${encodeURIComponent(c.lex_uz)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="transition-opacity duration-150 hover:opacity-70"
+                        className="group/cite"
                         title={c.code_title || c.code}
                       >
                         {chip}
@@ -233,31 +256,21 @@ export const ChatMessage = memo(function ChatMessage({
                 </div>
               </div>
             )}
-            {isUser && !editing && !message.isStreaming && message.content && (
-              <div className="mt-1.5 flex items-center justify-end gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-150">
-                <button onClick={startEdit} disabled={busy} className="flex h-7 w-7 items-center justify-center rounded-lg text-mute hover:text-ink hover:bg-surface-2 active:scale-90 disabled:opacity-40 disabled:hover:bg-transparent transition-all duration-150" title={t.chat.editMessage} aria-label={t.chat.editMessage}>
-                  <Pencil className="h-3.5 w-3.5" />
-                </button>
-              </div>
-            )}
-            {!isUser && !message.isStreaming && message.content && (
-              <div className="mt-1.5 flex items-center gap-0.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-150">
-                <button onClick={handleCopy} className="flex h-7 w-7 items-center justify-center rounded-lg text-mute hover:text-ink hover:bg-surface-2 active:scale-90 transition-all duration-150" title={t.chat.copy} aria-label={t.chat.copy}>
-                  {copied ? <Check className="h-3.5 w-3.5 text-primary" /> : <Copy className="h-3.5 w-3.5" />}
+            {!message.isStreaming && message.content && (
+              <div className="-ml-2 mt-2 flex items-center gap-0.5 transition-opacity duration-150 sm:opacity-0 sm:group-hover:opacity-100">
+                <button onClick={handleCopy} className="t-icon-btn h-8 w-8" title={t.chat.copy} aria-label={t.chat.copy}>
+                  {copied ? <Check className="h-3.5 w-3.5 text-success" /> : <Copy className="h-3.5 w-3.5" />}
                 </button>
                 {isLast && activeChatId && (
-                  <button onClick={() => regenerate(activeChatId, message.id)} disabled={busy} className="flex h-7 w-7 items-center justify-center rounded-lg text-mute hover:text-ink hover:bg-surface-2 active:scale-90 disabled:opacity-40 disabled:hover:bg-transparent transition-all duration-150" title={t.chat.regenerate} aria-label={t.chat.regenerate}>
+                  <button onClick={() => regenerate(activeChatId, message.id)} disabled={busy} className="t-icon-btn h-8 w-8" title={t.chat.regenerate} aria-label={t.chat.regenerate}>
                     <RotateCcw className="h-3.5 w-3.5" />
                   </button>
                 )}
               </div>
             )}
           </div>
-          {isUser && (
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-sm bg-surface-2 text-[10px] font-semibold uppercase text-ink order-2 mt-0.5">{userInitial}</div>
-          )}
         </div>
-      </div>
+      )}
     </div>
   );
 });

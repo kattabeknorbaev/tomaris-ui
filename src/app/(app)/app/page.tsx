@@ -8,6 +8,7 @@ import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
+import { TomarisMark } from "@/components/shared/tomaris-mark";
 import { useCallback, useEffect, useRef } from "react";
 import { orderTranscript } from "@/lib/message-order";
 
@@ -89,17 +90,20 @@ export default function AppPage() {
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <header className={cn("flex h-12 shrink-0 items-center justify-between border-b border-border/20 bg-canvas-soft/30 backdrop-blur-md px-4", !sidebarOpen && "pl-14 md:pl-4")}>
-        <span className="text-[13px] font-medium">Tomaris 27B</span>
-        <div className="flex items-center gap-1">
+      <header className={cn("flex h-16 shrink-0 items-center justify-between gap-3 px-4 md:px-6", !sidebarOpen && "pl-16 md:pl-6")}>
+        <span className="t-chip max-[359px]:hidden">
+          <TomarisMark size={11} className="text-ink" />
+          Tomaris 27B
+        </span>
+        <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
         </div>
       </header>
 
       {hasMessages ? (
-        <div ref={setScrollContainer} className="flex-1 overflow-y-auto">
-          <div className="mx-auto flex max-w-2xl flex-col py-4">
+        <div ref={setScrollContainer} className="flex-1 overflow-y-auto px-4 md:px-6">
+          <div className="mx-auto flex max-w-[46rem] flex-col pb-6 pt-2">
             {messages.map((message, i) => (
               <ChatMessage
                 key={message.id}

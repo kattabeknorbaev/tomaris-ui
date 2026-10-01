@@ -96,29 +96,28 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
     router.push("/app");
   };
 
-  const inputClass =
-    "w-full rounded-lg border border-border bg-card py-2.5 pl-10 pr-4 text-body-sm outline-none transition-colors focus:border-ring aria-invalid:border-error";
-  const primaryBtnClass =
-    "btn-lift flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-on-primary shadow-[0_4px_16px_-6px_rgba(15,143,111,0.5)] hover:bg-primary-deep disabled:opacity-60 disabled:pointer-events-none";
+  const inputClass = "t-input pl-10";
+  const primaryBtnClass = "t-btn-primary h-11 w-full text-[15px]";
+  const labelClass = "t-label mb-2 block text-[12px]";
 
   return (
     <AuthLayout>
       {step === "email" ? (
         <>
-          <h1 className="mt-10 text-heading-2">
+          <h1 className="text-[clamp(30px,3.2vw,40px)] font-semibold leading-[1.06] tracking-[-0.03em] text-ink">
             {isSignup ? t.auth.createAccount : t.auth.welcomeBack}
           </h1>
-          <p className="mt-2 text-body-sm text-muted-foreground">
+          <p className="mt-3 text-[16px] leading-[1.5] text-mute">
             {isSignup ? t.auth.signupOtpSubtitle : t.auth.loginOtpSubtitle}
           </p>
 
-          <form className="mt-8 space-y-4" onSubmit={sendCode} noValidate>
+          <form className="t-card mt-8 space-y-4 p-6" onSubmit={sendCode} noValidate>
             <div>
-              <label htmlFor="auth-email" className="text-body-sm font-medium">
+              <label htmlFor="auth-email" className={labelClass}>
                 {t.common.email}
               </label>
-              <div className="relative mt-1.5">
-                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+              <div className="relative">
+                <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden="true" />
                 <input
                   id="auth-email"
                   type="email"
@@ -133,7 +132,7 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
               </div>
             </div>
 
-            {error && <p className="text-caption text-error normal-case">{error}</p>}
+            {error && <p className="text-[13px] text-error">{error}</p>}
 
             <button type="submit" disabled={loading} className={primaryBtnClass}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
@@ -142,20 +141,17 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
 
             {GOOGLE_ENABLED && (
               <>
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-border" />
-                  </div>
-                  <div className="relative flex justify-center text-caption text-muted-foreground normal-case">
-                    <span className="bg-background px-3">{t.auth.or}</span>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <div className="h-px flex-1 bg-hairline" />
+                  <span className="t-label">{t.auth.or}</span>
+                  <div className="h-px flex-1 bg-hairline" />
                 </div>
 
                 <button
                   type="button"
                   onClick={signInWithGoogle}
                   disabled={googleLoading}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card py-2.5 text-body-sm font-medium transition-all hover:bg-muted active:scale-[0.98] disabled:opacity-60 disabled:pointer-events-none"
+                  className="t-btn-secondary h-11 w-full text-[15px]"
                 >
                   {googleLoading ? (
                     <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
@@ -172,11 +168,11 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
             )}
           </form>
 
-          <p className="mt-6 text-center text-body-sm text-muted-foreground">
+          <p className="mt-6 text-center text-[14px] text-mute">
             {isSignup ? t.auth.haveAccount : t.auth.noAccount}{" "}
             <Link
               href={isSignup ? "/login" : "/signup"}
-              className="font-medium text-foreground underline underline-offset-2"
+              className="text-ink underline decoration-ink/30 underline-offset-[3px] transition-colors hover:decoration-ink"
             >
               {isSignup ? t.auth.signIn : t.auth.signUp}
             </Link>
@@ -184,18 +180,20 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
         </>
       ) : (
         <>
-          <h1 className="mt-10 text-heading-2">{t.auth.checkEmail}</h1>
-          <p className="mt-2 text-body-sm text-muted-foreground">
+          <h1 className="text-[clamp(30px,3.2vw,40px)] font-semibold leading-[1.06] tracking-[-0.03em] text-ink">
+            {t.auth.checkEmail}
+          </h1>
+          <p className="mt-3 text-[16px] leading-[1.5] text-mute">
             {t.auth.codeSentTo} <span className="text-ink">{email}</span>
           </p>
 
-          <form className="mt-8 space-y-4" onSubmit={verifyCode} noValidate>
+          <form className="t-card mt-8 space-y-4 p-6" onSubmit={verifyCode} noValidate>
             <div>
-              <label htmlFor="auth-otp" className="text-body-sm font-medium">
+              <label htmlFor="auth-otp" className={labelClass}>
                 {t.auth.verificationCode}
               </label>
-              <div className="relative mt-1.5">
-                <KeyRound className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+              <div className="relative">
+                <KeyRound className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-mute" aria-hidden="true" />
                 <input
                   id="auth-otp"
                   inputMode="numeric"
@@ -206,12 +204,12 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
                   placeholder="123456"
                   aria-invalid={!!error}
                   autoFocus
-                  className={`${inputClass} tracking-[0.4em] font-mono`}
+                  className={`${inputClass} font-mono tracking-[0.4em]`}
                 />
               </div>
             </div>
 
-            {error && <p className="text-caption text-error normal-case">{error}</p>}
+            {error && <p className="text-[13px] text-error">{error}</p>}
 
             <button type="submit" disabled={loading} className={primaryBtnClass}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
@@ -225,9 +223,9 @@ export function AuthForm({ mode }: { mode: "login" | "signup" }) {
                 setOtp("");
                 setError(null);
               }}
-              className="flex w-full items-center justify-center gap-1.5 text-caption text-muted-foreground hover:text-ink transition-colors"
+              className="flex w-full items-center justify-center gap-1.5 text-[13px] text-mute transition-colors hover:text-ink"
             >
-              <ArrowLeft className="h-3 w-3" aria-hidden="true" />
+              <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
               {t.auth.useDifferentEmail}
             </button>
           </form>

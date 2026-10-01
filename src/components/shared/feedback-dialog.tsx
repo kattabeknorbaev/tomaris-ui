@@ -81,27 +81,27 @@ export function FeedbackDialog() {
       aria-label={t.feedback.title}
       onClick={() => setOpen(false)}
     >
-      <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" aria-hidden="true" />
       <div
-        className="relative w-full max-w-md rounded-2xl border border-border bg-card p-5 shadow-lg"
+        className="t-panel relative w-full max-w-md rounded-2xl p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-1 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-base font-semibold text-ink">{t.feedback.title}</h2>
-            <p className="mt-0.5 text-xs text-muted-foreground">{t.feedback.subtitle}</p>
+            <h2 className="text-[17px] font-semibold tracking-[-0.022em] text-ink">{t.feedback.title}</h2>
+            <p className="mt-1 text-[13px] text-mute">{t.feedback.subtitle}</p>
           </div>
           <button
             onClick={() => setOpen(false)}
             aria-label={t.feedback.cancel}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-surface-2 hover:text-ink transition-colors duration-150"
+            className="t-icon-btn h-8 w-8"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Optional sentiment */}
-        <p className="mt-4 mb-2 text-xs font-medium text-muted-foreground">{t.feedback.sentimentLabel}</p>
+        <p className="t-label mb-2 mt-5">{t.feedback.sentimentLabel}</p>
         <div className="grid grid-cols-3 gap-2">
           {sentiments.map((s) => {
             const active = sentiment === s.key;
@@ -112,10 +112,10 @@ export function FeedbackDialog() {
                 onClick={() => setSentiment(active ? "" : s.key)}
                 aria-pressed={active}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-lg border px-2 py-2.5 text-xs transition-colors duration-150",
+                  "flex flex-col items-center gap-1.5 rounded-[10px] border px-2 py-3 text-[12.5px] transition-colors duration-150",
                   active
-                    ? "border-primary bg-primary/5 text-ink"
-                    : "border-border text-muted-foreground hover:bg-surface-2 hover:text-ink"
+                    ? "border-ink/20 bg-ink/[0.09] text-ink shadow-[inset_0_1px_0_var(--specular)]"
+                    : "border-hairline text-mute hover:bg-ink/[0.05] hover:text-ink"
                 )}
               >
                 <s.icon className="h-5 w-5" />
@@ -134,20 +134,20 @@ export function FeedbackDialog() {
           placeholder={t.feedback.placeholder}
           rows={4}
           autoFocus
-          className="mt-4 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-ink outline-none focus:border-primary placeholder:text-mute"
+          className="t-input mt-4 resize-none text-[14px]"
         />
 
         <div className="mt-4 flex items-center justify-end gap-2">
           <button
             onClick={() => setOpen(false)}
-            className="rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-surface-2 hover:text-ink transition-colors duration-150"
+            className="t-icon-btn h-9 px-4 text-[14px]"
           >
             {t.feedback.cancel}
           </button>
           <button
             onClick={submit}
             disabled={sending || message.trim().length < 2}
-            className="btn-lift rounded-lg bg-primary px-4 py-2 text-sm font-medium text-on-primary hover:bg-primary-deep disabled:opacity-50 disabled:pointer-events-none"
+            className="t-btn-primary h-9 px-4 text-[14px]"
           >
             {sending ? t.feedback.sending : t.feedback.send}
           </button>

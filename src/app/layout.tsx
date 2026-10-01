@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Lora } from "next/font/google";
+import { Inter, IBM_Plex_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { I18nProvider } from "@/components/shared/i18n-provider";
@@ -7,21 +7,18 @@ import { Toaster } from "@/components/ui/sonner";
 import { SITE_URL, organizationJsonLd } from "@/lib/seo";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-// Warm editorial serif for the personal greeting. Cyrillic for Russian,
-// latin-ext for Uzbek diacritics.
-const lora = Lora({
-  variable: "--font-lora",
+// Same pairing as tomaris.ai: Inter for everything you read, IBM Plex Mono
+// for labels and metadata. Cyrillic for Russian, latin-ext for Uzbek.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin", "latin-ext", "cyrillic"],
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-ibm-plex-mono",
+  subsets: ["latin", "latin-ext", "cyrillic"],
+  weight: ["400", "500", "600"],
   display: "swap",
 });
 
@@ -96,7 +93,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${lora.variable}`}
+      className={`${inter.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>
