@@ -1,62 +1,102 @@
-<div align="center">
+<p align="center">
   <a href="https://tomaris.ai">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="public/logo.png">
-      <img src="public/logo.png" alt="Tomaris AI" width="120" />
+      <source media="(prefers-color-scheme: dark)" srcset="public/brand/mark-dark.svg">
+      <img src="public/brand/mark-light.svg" alt="Tomaris" width="64" height="64">
     </picture>
   </a>
-  <h1>Tomaris UI</h1>
-  <p>The official web platform and chat interface for <a href="https://tomaris.ai">Tomaris AI</a>.</p>
-</div>
+</p>
+
+<h1 align="center">Tomaris</h1>
+
+<p align="center">
+  Sovereign AI for Uzbekistan.<br>
+  The web app behind <a href="https://chat.tomaris.ai">chat.tomaris.ai</a>.
+</p>
+
+<p align="center">
+  <a href="https://tomaris.ai">Website</a> ·
+  <a href="https://chat.tomaris.ai">Open the chat</a>
+</p>
 
 ---
 
-**Tomaris** is a Sovereign AI platform for Uzbekistan. We provide models trained natively on the Uzbek language, a secure support agent that answers only from your approved documents, and a deployment path directly onto your own infrastructure inside the country.
+## Overview
 
-Live application: **[tomaris.ai](https://tomaris.ai)**
+Tomaris answers in Uzbek, Russian and English. Legal answers are grounded in a
+curated corpus of Uzbek statutes, and cited articles link to their source on
+[lex.uz](https://lex.uz).
 
-## ✨ Features
+This repository contains the chat application:
 
-- **Trained for the language:** Not a translation layer over a model that learned Uzbek by accident.
-- **Answers from your documents:** Your team approves the sources. Nothing else is available to it.
-- **Deployable inside your borders:** From our infrastructure today to yours, on a path you control.
-- **Handoff with context:** When a question needs account access, the agent hands the thread to a named operator and attaches every source it already matched.
-- **Operator console:** Every Telegram, web widget, and in-app conversation in one view.
+- **Chat** with streaming answers, an optional reasoning view, and cited sources
+- **Attachments**: PDFs, text and code files, plus OCR for photos of documents
+  (Uzbek Latin and Cyrillic, Russian, English), all read in the browser
+- **Accounts** with email one-time-code sign-in and optional Google sign-in;
+  chat history syncs to the account
+- **Workspace tools**: search, rename and export chats, keyboard shortcuts,
+  and in-app feedback
+- **Three languages**: interface in English, O'zbek and Русский; dark and light themes
+- **Admin dashboard** for usage and feedback
 
-## 🏗️ Architecture & Stack
+## Tech stack
 
-This project is built using a modern Next.js stack, optimized for performance and edge delivery:
+| Area      | Choice                                           |
+| --------- | ------------------------------------------------ |
+| Framework | Next.js 16 (App Router), React 19, TypeScript    |
+| Styling   | Tailwind CSS v4, Base UI primitives, Framer Motion |
+| Data      | Neon serverless Postgres, Drizzle ORM            |
+| Auth      | Better Auth (email OTP, Google OAuth)            |
+| Email     | Resend                                           |
+| State     | Zustand                                          |
+| Inference | OpenAI-compatible streaming API (`/v1/chat/completions`) |
 
-- **Framework:** Next.js 16 (App Router) with React 19 and TypeScript.
-- **Styling:** Tailwind CSS v4, Base UI primitives, and a custom design system (`DESIGN.md`).
-- **Database:** Neon Serverless PostgreSQL with Drizzle ORM.
-- **Authentication:** Better Auth.
-- **State Management:** Zustand (persisted state for chat history).
+## Getting started
 
-## 🧠 Model Backend & Inference
-
-The chat interface proxies requests to an OpenAI-compatible vLLM server (`src/app/api/chat/route.ts`).
-- The UI handles both standard text generation and reasoning outputs (`delta.reasoning` / `delta.reasoning_content`).
-- Model inference runs on our dedicated GPU cluster.
-
----
-
-## 💻 Local Development
-
-> [!NOTE]
-> You do not need to run this locally to use Tomaris! You can simply visit [tomaris.ai](https://tomaris.ai). These instructions are for developers looking to explore or contribute to the UI codebase.
-
-To run the UI locally, you'll need Node.js installed. Note that without access to our vLLM inference server, the chat will fall back to demo responses.
+Requires Node.js 20+.
 
 ```bash
-# Install dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env.local
-
-# Start the development server
+cp .env.example .env.local   # then fill in the values
+npm run db:push              # create the database tables
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser. The chat interface is available at `/app`.
+Open [http://localhost:3000/app](http://localhost:3000/app). Without a model
+server configured in `VAST_API_URL`, the chat loads but reports that the model
+is unreachable instead of answering.
+
+All environment variables are documented in [`.env.example`](.env.example).
+
+## Scripts
+
+| Command             | Description                        |
+| ------------------- | ---------------------------------- |
+| `npm run dev`       | Start the dev server               |
+| `npm run build`     | Production build                   |
+| `npm run start`     | Serve the production build         |
+| `npm run lint`      | Lint with ESLint                   |
+| `npm test`          | Run unit tests                     |
+| `npm run db:push`   | Push the Drizzle schema to the database |
+| `npm run db:studio` | Open Drizzle Studio                |
+
+## Project structure
+
+```
+src/
+  app/
+    (app)/          chat, settings and profile (signed-in only)
+    (auth)/         login and signup
+    (marketing)/    marketing pages
+    admin/          admin dashboard
+    api/            chat proxy, chat history, auth, feedback
+  components/
+    chat/           sidebar, composer, messages
+    shared/         i18n, theme, dialogs, brand mark
+    ui/             primitives
+  lib/              auth, database, i18n, file extraction
+  stores/           client chat store
+```
+
+The visual language (palette, type, components) is described in
+[`DESIGN.md`](DESIGN.md).

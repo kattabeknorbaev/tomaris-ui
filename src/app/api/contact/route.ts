@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { rateLimit, clientIp, tooManyRequests } from "@/lib/rate-limit";
 
-// Where contact/waitlist submissions land. Defaults to the founder inbox;
-// override with CONTACT_EMAIL once a team mailbox exists.
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? "contact@example.com";
+// Where contact/waitlist submissions land. Set CONTACT_EMAIL in the
+// deployment environment; the inbox address is never hardcoded here.
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL;
 const EMAIL_FROM = process.env.EMAIL_FROM ?? "Tomaris <onboarding@resend.dev>";
 
 const MAX_FIELD = 2000;
@@ -41,6 +41,11 @@ export async function POST(req: Request) {
       `Email: ${email}`,
       ...Object.entries(fields).map(([k, v]) => `${k}: ${v}`),
     ].join("\n");
+
+    if (!CONTACT_EMAIL) {
+      console.error("contact email skipped: CONTACT_EMAIL is not set");
+      return NextResponse.json({ error: "Delivery unavailable" }, { status: 503 });
+    }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { error } = await resend.emails.send({

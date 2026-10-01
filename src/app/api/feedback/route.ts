@@ -5,9 +5,8 @@ import { requireUser } from "@/lib/auth-server";
 import { db } from "@/lib/db";
 import { feedback } from "@/lib/db/schema";
 
-// Feedback lands in the same inbox as contact/waitlist. Override with
-// CONTACT_EMAIL once a team mailbox exists.
-const FEEDBACK_EMAIL = process.env.CONTACT_EMAIL ?? "contact@example.com";
+// Feedback lands in the same inbox as contact/waitlist (CONTACT_EMAIL).
+const FEEDBACK_EMAIL = process.env.CONTACT_EMAIL;
 const EMAIL_FROM = process.env.EMAIL_FROM ?? "Tomaris <onboarding@resend.dev>";
 
 const MAX_MESSAGE = 4000;
@@ -74,6 +73,12 @@ export async function POST(req: Request) {
     ]
       .filter(Boolean)
       .join("\n");
+
+    // Already saved for the admin dashboard above; email is the extra copy.
+    if (!FEEDBACK_EMAIL) {
+      console.error("feedback email skipped: CONTACT_EMAIL is not set");
+      return NextResponse.json({ ok: true });
+    }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { error } = await resend.emails.send({
