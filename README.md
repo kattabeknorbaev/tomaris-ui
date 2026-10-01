@@ -16,8 +16,19 @@
 
 <p align="center">
   <a href="https://tomaris.ai">Website</a> ·
-  <a href="https://chat.tomaris.ai">Open the chat</a>
+  <a href="https://chat.tomaris.ai">Open the chat</a> ·
+  <a href="https://tomaris.ai/contact">Book a demo</a>
 </p>
+
+<p align="center">
+  <img src=".github/assets/chat.png" alt="A conversation in the Tomaris chat" width="100%">
+</p>
+
+> [!NOTE]
+> **The model runs on request.** Anyone can sign up at
+> [chat.tomaris.ai](https://chat.tomaris.ai), but the model itself runs on GPUs
+> that are switched on for demos. Outside a demo the app loads normally and tells
+> you the model is offline. To see it answer live, [book a demo](https://tomaris.ai/contact).
 
 ---
 
@@ -38,6 +49,47 @@ This repository contains the chat application:
   and in-app feedback
 - **Three languages**: interface in English, O'zbek and Русский; dark and light themes
 - **Admin dashboard** for usage and feedback
+
+<table>
+  <tr>
+    <td width="50%"><img src=".github/assets/welcome.png" alt="Welcome screen"></td>
+    <td width="50%"><img src=".github/assets/login.png" alt="Sign-in page"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Welcome screen</sub></td>
+    <td align="center"><sub>Email sign-in</sub></td>
+  </tr>
+</table>
+
+<sub>Screenshots use sample content.</sub>
+
+## How it works
+
+```mermaid
+flowchart LR
+    B["Browser"] -->|"question + attached text"| A["Next.js app<br/>(this repo)"]
+    A -->|"conversation"| R["Retrieval server"]
+    R -->|"relevant articles"| M["Tomaris model"]
+    M -->|"draft answer"| R
+    R -->|"streamed answer<br/>+ checked citations"| A
+    A --> DB[("Postgres<br/>accounts and chats")]
+```
+
+1. **Files stay on your device.** Attachments are read in the browser (pdf.js
+   for PDFs, Tesseract for photos); only the extracted text is sent with the
+   message.
+2. **The app checks who's asking.** `/api/chat` requires a signed-in session,
+   rate-limits each user and caps the size of a conversation before forwarding
+   it.
+3. **Answers come from the statutes.** The retrieval server (a separate
+   service, not in this repo) finds the relevant articles, and the model answers
+   from them.
+4. **Citations are checked, not trusted.** Every article number in the answer
+   is checked against the articles that were actually retrieved, so an invented
+   citation can't get through. The checked list arrives with the last streamed
+   chunk and shows up as source chips linking to lex.uz.
+5. **History follows the account.** Only real model output is saved, so failed
+   or empty replies never come back on reload.
 
 ## Tech stack
 
