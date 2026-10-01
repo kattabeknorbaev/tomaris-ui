@@ -65,7 +65,7 @@ This repository contains the chat application:
 
 ## The model
 
-|                  |                                                              |
+| Spec             | Details                                                      |
 | ---------------- | ------------------------------------------------------------ |
 | **Name**         | Tomaris 27B                                                  |
 | **Size**         | 27 billion parameters                                        |
