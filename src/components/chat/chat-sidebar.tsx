@@ -189,11 +189,12 @@ export function ChatSidebar() {
               <item.icon className="h-3.5 w-3.5" />{item.label}
             </Link>
           ))}
-          {/* Help — support, what's new, and keyboard shortcuts. */}
-          <a href={process.env.NODE_ENV === "development" ? "/help" : "https://tomaris.ai/help"} target="_blank" rel="noopener noreferrer" className={rowClass}>
+          {/* Help — support, what's new, and keyboard shortcuts. These pages live in this
+              app (chat.tomaris.ai); the tomaris.ai landing site has no /help. */}
+          <a href="/help" target="_blank" rel="noopener noreferrer" className={rowClass}>
             <HelpCircle className="h-3.5 w-3.5" />{t.help.helpCenter}
           </a>
-          <a href={process.env.NODE_ENV === "development" ? "/changelog" : "https://tomaris.ai/changelog"} target="_blank" rel="noopener noreferrer" className={rowClass}>
+          <a href="/changelog" target="_blank" rel="noopener noreferrer" className={rowClass}>
             <Sparkles className="h-3.5 w-3.5" />{t.help.releaseNotes}
           </a>
           <button onClick={() => window.dispatchEvent(new CustomEvent(SHOW_SHORTCUTS_EVENT))} className={rowClass}>
