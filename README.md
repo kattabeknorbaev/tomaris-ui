@@ -63,6 +63,43 @@ This repository contains the chat application:
 
 <sub>Screenshots use sample content.</sub>
 
+## The model
+
+|                  |                                                              |
+| ---------------- | ------------------------------------------------------------ |
+| **Name**         | Tomaris 27B                                                  |
+| **Size**         | 27 billion parameters                                        |
+| **Languages**    | Uzbek, Russian, English                                      |
+| **Focus**        | Uzbek law                                                    |
+| **Legal corpus** | 7,368 statute articles across 25 codes, cited to lex.uz      |
+| **Reasoning**    | Thinks before it answers; the app can show that reasoning    |
+| **Access**       | [chat.tomaris.ai](https://chat.tomaris.ai), runs on request  |
+
+### Training data
+
+- **75,000+ lines of human-written Uzbek fine-tuning data**, written by native
+  speakers: step-by-step reasoning, translation, refusals and cultural
+  knowledge. This is what teaches the model to answer and reason the way a
+  native speaker would.
+- **Next:** 16,000 digitized Uzbek books are queued for the next training run,
+  for longer, more formal text than the web provides.
+
+### Evaluation
+
+Every release has to pass an internal **300-prompt Uzbek benchmark**, written
+by people rather than machine-translated, and graded by native speakers. It
+has four tracks:
+
+| Track                    | What it checks                                                        |
+| ------------------------ | --------------------------------------------------------------------- |
+| Fluency and linguistics  | Morphology, vowel harmony, formal vs. spoken register                 |
+| Cultural knowledge       | History, literature and everyday context missing from English data    |
+| Morphology under pressure| Long suffix chains where one wrong suffix changes the meaning         |
+| Math and logic           | 105 Olympiad-grade problems from Uzbekistan Olympiad archives         |
+
+Scores aren't published: grading long-form Uzbek is partly subjective. More in
+[Why we built our own Uzbek benchmark](https://chat.tomaris.ai/blog/benchmark-results).
+
 ## How it works
 
 ```mermaid
